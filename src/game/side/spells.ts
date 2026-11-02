@@ -154,6 +154,8 @@ export function updateHelpers(sc: SideScene): void {
 }
 
 export function shootFire(sc: SideScene): void {
+  // One fireball at a time: the next only once the last has gone out or hit.
+  if (sc.projectiles.some((pr) => pr.fromPlayer && pr.sprite === 'fireball' && !pr.dead)) return;
   const p = sc.player;
   sc.sfx('fire');
   sc.spawnProjectile({

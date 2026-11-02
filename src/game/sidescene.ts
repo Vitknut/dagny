@@ -496,13 +496,8 @@ export class SideScene implements Scene, WorldApi {
         if (pr.sprite === 'fireball') this.burn(pr);
         for (const e of this.enemies) {
           if (e.dead || !overlaps(pr.box, e.box(tmpA))) continue;
-          if (pr.sprite === 'fireball' && e.def.fireproof && !e.untouchable) {
-            pr.dead = true;
-            this.puff(pr.x + 4, pr.y + 4, 'mist');
-            this.sfx('block');
-            break;
-          }
-          const r = e.takeHit(pr.damage, pr.x, 'magic', this);
+          const resist = pr.sprite === 'fireball' ? e.def.fireResist ?? 1 : 1;
+          const r = e.takeHit(Math.max(1, Math.ceil(pr.damage * resist)), pr.x, 'magic', this);
           if (r !== 'none') {
             pr.dead = true;
             if (r === 'dead') killEnemy(this, e);

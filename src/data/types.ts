@@ -84,8 +84,8 @@ export interface EnemyDef {
   flying?: boolean;
   /** Can only be hurt from behind (strikes from the front are blocked). */
   backOnly?: boolean;
-  /** Fire does nothing: Eld's fireballs go out against it (Gruvrået and her own lamp). */
-  fireproof?: boolean;
+  /** Eld's fireballs bite less: damage is multiplied by this (Gruvrået carries her own flame). */
+  fireResist?: number;
   /** Projectile sprite for shooters (default: a water droplet). */
   shot?: string;
   /** Becomes friendly after being defeated (flavour text shown). */
