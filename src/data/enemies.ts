@@ -151,6 +151,8 @@ export const BOSSES: Readonly<Record<string, BossDef>> = {
     sprite: 'gruvra', behavior: 'boss_gruvra',
     hp: 56, damage: 3, xp: 320, speed: 2.4,
     box: { x: 2, y: 6, w: 15, h: 26 }, puff: 'mist', heavy: true,
+    // She carries her own carbide flame: fire goes out against her – only the blade will do.
+    fireproof: true,
     phases: [
       { atHpFraction: 1, sprite: 'gruvra', speed: 2.4, attackEvery: 1.6 },
       { atHpFraction: 0.5, sprite: 'gruvraVred', speed: 3.2, attackEvery: 1.1 },

@@ -6,7 +6,7 @@ import { VASEN } from '../../data/vasen';
 import { Enemy, type HitHeight } from '../../entities/enemy';
 import { Pickup, Projectile } from '../../entities/misc';
 import { damageTaken, swordDamage } from '../progression';
-import { hasFlag, setFlag } from '../state';
+import { hasFlag, hpMax, mpMax, setFlag } from '../state';
 import { tmpA, tmpB } from './shared';
 import type { SideScene } from '../sidescene';
 
@@ -103,6 +103,9 @@ export function killEnemy(sc: SideScene, e: Enemy): void {
     sc.game.toast(`${STR.vasenNew} ${e.def.name}`, 3);
   }
   if (e === sc.boss) {
+    // A guardian reconciled gives Dagny back all her strength.
+    s.hp = hpMax(s);
+    s.mp = mpMax(s);
     sc.bossOutro = 1;
     sc.shake(40, 3);
     // Whatever the guardian called up goes with it.
