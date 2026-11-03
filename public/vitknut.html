@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vitknut Studios – Dagnys äventyr</title>
+<meta name="description" content="Vitknut Studios är en liten spelstudio i Umeå. Första spelet är Dagnys äventyr, ett äventyr genom den svenska folktron.">
+<meta name="theme-color" content="#9a3324">
+<link rel="icon" href="icons/icon-192.png">
+<style>
+  /* Typsnitten ligger här bredvid (SIL Open Font License, se fonts/OFL-*.txt), så sidan hämtar inget utifrån. */
+  @font-face { font-family: 'Karla'; font-style: normal; font-weight: 400 700; font-display: swap; src: url(fonts/karla.woff2) format('woff2'); }
+  @font-face { font-family: 'Karla'; font-style: italic; font-weight: 400; font-display: swap; src: url(fonts/karla-italic.woff2) format('woff2'); }
+  @font-face { font-family: 'Young Serif'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/young-serif.woff2) format('woff2'); }
+  @font-face { font-family: 'Pixelify Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url(fonts/pixelify-sans.woff2) format('woff2'); }
+
+  :root {
+    --red: #9a3324;
+    --red-dark: #7a2418;
+    --red-deep: #5e1e15;
+    --paper: #f3ead7;
+    --card: #fffaf0;
+    --ink: #2a211c;
+    --cream: #f7f0e1;
+    --gold: #f2c14e;
+    --amber: #e2a83a;
+    --forest: #2f3d33;
+    --dots: #b9a689;
+    --muted: #5c4c40;
+    --serif: 'Young Serif', Georgia, serif;
+    --pixel: 'Pixelify Sans', monospace;
+    color-scheme: light;
+  }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'Karla', system-ui, sans-serif; font-size: 18px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: #8a2d20; }
+  a:hover { color: var(--red-deep); }
+  input:focus-visible, a:focus-visible, button:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+  .serif { font-family: var(--serif); font-weight: 400; }
+  .kicker { margin: 0 0 14px; font-family: var(--pixel); font-size: 14px; letter-spacing: 0.08em; color: var(--red-dark); }
+
+  /* Sidhuvud och hero */
+  .site-header { background: var(--red); color: var(--cream); border-bottom: 6px solid var(--paper); }
+  .site-header .wrap { padding-top: 18px; padding-bottom: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
+  .brand { display: flex; align-items: center; gap: 12px; color: var(--cream); text-decoration: none; }
+  .brand span { font-family: var(--serif); font-size: 24px; letter-spacing: 0.01em; }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 4px 22px; font-weight: 600; font-size: 16px; }
+  .site-nav a, .site-header a:hover { color: var(--cream); }
+  .site-nav a { text-decoration: none; padding: 10px 0; }
+  .hero { background: var(--red); color: var(--cream); background-image: repeating-linear-gradient(90deg, rgba(0,0,0,0) 0 62px, rgba(0,0,0,0.13) 62px 64px); }
+  .hero .wrap { padding-top: 56px; padding-bottom: 88px; display: flex; flex-wrap: wrap; align-items: center; gap: 48px; }
+  .hero-text { flex: 1 1 400px; min-width: 0; }
+  .hero-kicker { margin: 0 0 18px; font-family: var(--pixel); font-size: 15px; letter-spacing: 0.08em; color: var(--gold); }
+  .hero h1 { margin: 0; font-size: clamp(38px, 5.4vw, 62px); line-height: 1.08; }
+  .hero-lead { margin: 24px 0 0; max-width: 32em; font-size: 19px; color: #f3e6d2; }
+  .actions { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 14px; }
+  .button { display: inline-block; background: var(--paper); color: var(--red-deep); font-weight: 700; text-decoration: none; padding: 14px 22px; border-radius: 3px; box-shadow: 0 4px 0 #3b120c; }
+  .hero .button:hover { color: var(--red-deep); }
+  .link-light { display: inline-block; color: var(--cream); font-weight: 600; padding: 14px 6px; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+  .hero .link-light:hover { color: #fff; }
+  .hero-figure { flex: 1 1 440px; min-width: 0; margin: 0; }
+  .frame { position: relative; background: var(--cream); padding: 12px; box-shadow: 0 10px 0 rgba(40,10,6,0.35); transform: rotate(-1.2deg); }
+  .frame svg { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+  .corner { position: absolute; width: 14px; height: 14px; background: var(--cream); box-shadow: 0 0 0 2px var(--red-dark); }
+  .corner.tl { left: -7px; top: -7px; } .corner.tr { right: -7px; top: -7px; }
+  .corner.bl { left: -7px; bottom: -7px; } .corner.br { right: -7px; bottom: -7px; }
+  .hero-figure figcaption { margin-top: 22px; font-size: 15px; color: #f0dccb; font-style: italic; }
+
+  /* Spelet */
+  .game { padding-top: 88px; padding-bottom: 40px; }
+  .game .wrap, .lists .wrap { display: flex; flex-wrap: wrap; }
+  .game .wrap { gap: 48px 64px; }
+  .story { flex: 3 1 460px; min-width: 0; }
+  .story h2 { margin: 0 0 24px; font-size: clamp(32px, 4vw, 44px); line-height: 1.15; color: var(--red-dark); }
+  .story p { margin: 0 0 18px; }
+  .story p:last-child { margin: 0; }
+  .facts { flex: 2 1 300px; min-width: 0; align-self: flex-start; background: var(--card); border: 2px solid var(--ink); padding: 26px 26px 22px; box-shadow: 6px 6px 0 var(--ink); }
+  .facts dl { margin: 0; display: grid; gap: 14px; font-size: 17px; }
+  .facts dt { font-weight: 700; }
+  .facts dd { margin: 0; }
+
+  /* Väsen och saker */
+  .lists { padding-top: 48px; padding-bottom: 96px; }
+  .lists .wrap { gap: 40px 56px; }
+  .list { flex: 1 1 420px; min-width: 0; }
+  .list h3 { margin: 0 0 18px; font-size: 28px; color: var(--ink); }
+  .list ul { list-style: none; margin: 0; padding: 0; border-top: 2px dotted var(--dots); }
+  .list li { display: flex; flex-wrap: wrap; gap: 0 12px; justify-content: space-between; padding: 12px 0; border-bottom: 2px dotted var(--dots); }
+  .list li b { font-weight: 700; }
+  .list li span { color: var(--muted); }
+
+  /* Om studion */
+  .about { background: var(--forest); color: #efe6d2; }
+  .about .wrap { padding-top: 80px; padding-bottom: 80px; display: flex; flex-wrap: wrap; gap: 32px 64px; align-items: flex-start; }
+  .about-mark { flex: 1 1 280px; min-width: 0; }
+  .about-text { flex: 3 1 460px; min-width: 0; }
+  .about h2 { margin: 0 0 20px; font-size: clamp(30px, 3.6vw, 40px); line-height: 1.15; }
+  .about p { margin: 0 0 18px; }
+  .about .small { margin: 0; color: #c8bea9; font-size: 16px; }
+
+  /* Brev */
+  .letter { padding-top: 88px; padding-bottom: 96px; }
+  .letter-card { max-width: 640px; margin: 0 auto; background: var(--card); border: 2px solid var(--ink); box-shadow: 8px 8px 0 var(--amber); padding: 36px 32px 32px; }
+  .letter-card .kicker { margin-bottom: 8px; }
+  .letter-card h2 { margin: 0 0 12px; font-size: 32px; line-height: 1.2; }
+  .letter-card > p { margin: 0 0 24px; }
+  .letter form { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .field { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-weight: 700; font-size: 16px; }
+  .field input { font: inherit; font-size: 17px; padding: 12px 14px; border: 2px solid var(--ink); border-radius: 3px; background: #fff; min-height: 48px; box-sizing: border-box; }
+  .letter button { font: inherit; font-weight: 700; font-size: 17px; background: var(--red); color: #fff7ea; border: 2px solid var(--ink); border-radius: 3px; padding: 12px 22px; min-height: 48px; cursor: pointer; }
+
+  /* Sidfot */
+  .site-footer { background: var(--red); color: #f3e6d2; border-top: 6px solid var(--paper); }
+  .site-footer .wrap { padding-top: 26px; padding-bottom: 26px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-size: 15px; }
+  .site-footer a, .site-footer a:hover { color: var(--cream); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="#">
+      <svg width="34" height="34" viewBox="0 0 17 17" shape-rendering="crispEdges" aria-hidden="true">
+        <rect x="0" y="0" width="17" height="17" fill="#f7f0e1"/>
+        <rect x="3" y="3" width="11" height="11" fill="#7a2418"/>
+        <rect x="3" y="3" width="2" height="11" fill="#f7f0e1"/>
+        <rect x="12" y="3" width="2" height="11" fill="#f7f0e1"/>
+        <rect x="7" y="7" width="3" height="3" fill="#f2c14e"/>
+      </svg>
+      <span>Vitknut</span>
+    </a>
+    <nav class="site-nav" aria-label="Huvudmeny">
+      <a href="#spelet">Spelet</a>
+      <a href="#vitknut">Om oss</a>
+      <a href="#brev">Brev</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-text">
+      <p class="hero-kicker">DAGNYS ÄVENTYR · SOMMAREN 1964</p>
+      <h1 class="serif">Det är midsommar, och skogen är på dåligt humör.</h1>
+      <p class="hero-lead">Dagnys äventyr är ett litet spel för telefonen. Dagny går från by till by, lär sig gamla läsningar av de äldre och letar upp sju platser i skogen som alla har glömt bort.</p>
+      <div class="actions">
+        <a class="button" href="#spelet">Berätta mer</a>
+        <a class="link-light" href="#brev">Få ett brev när det släpps</a>
+      </div>
+    </div>
+
+    <figure class="hero-figure">
+      <div class="frame">
+        <svg viewBox="0 0 96 54" shape-rendering="crispEdges" role="img" aria-label="Pixelbild: en röd stuga med vita knutar en ljus sommarnatt. En flicka med kopparfärgat hår och en lykta står vid sjön, och irrbloss lyser i skogen.">
+          <rect x="0" y="0" width="96" height="10" fill="#27355c"/>
+          <rect x="0" y="10" width="96" height="8" fill="#344673"/>
+          <rect x="0" y="18" width="96" height="7" fill="#4e5f8e"/>
+          <rect x="0" y="25" width="96" height="6" fill="#7c7ea6"/>
+          <rect x="0" y="31" width="96" height="5" fill="#c79a93"/>
+          <rect x="0" y="36" width="96" height="4" fill="#eebd88"/>
+          <rect x="8" y="4" width="1" height="1" fill="#f4ecd8"/>
+          <rect x="21" y="8" width="1" height="1" fill="#f4ecd8"/>
+          <rect x="34" y="3" width="1" height="1" fill="#f4ecd8"/>
+          <rect x="53" y="7" width="1" height="1" fill="#f4ecd8"/>
+          <rect x="71" y="2" width="1" height="1" fill="#f4ecd8"/>
+          <rect x="89" y="9" width="1" height="1" fill="#f4ecd8"/>
+          <rect x="83" y="4" width="3" height="4" fill="#f4ecd8"/>
+          <rect x="84" y="3" width="3" height="4" fill="#27355c"/>
+          <g fill="#1c2e24">
+            <rect x="4" y="27" width="1" height="2"/><rect x="3" y="29" width="3" height="3"/><rect x="2" y="32" width="5" height="4"/><rect x="1" y="36" width="7" height="4"/>
+            <rect x="11" y="30" width="1" height="2"/><rect x="10" y="32" width="3" height="3"/><rect x="9" y="35" width="5" height="5"/>
+            <rect x="19" y="25" width="1" height="2"/><rect x="18" y="27" width="3" height="3"/><rect x="17" y="30" width="5" height="4"/><rect x="16" y="34" width="7" height="6"/>
+            <rect x="38" y="29" width="1" height="2"/><rect x="37" y="31" width="3" height="3"/><rect x="36" y="34" width="5" height="6"/>
+            <rect x="48" y="21" width="1" height="3"/><rect x="47" y="24" width="3" height="2"/><rect x="46" y="26" width="5" height="1"/><rect x="47" y="27" width="3" height="13"/>
+            <rect x="54" y="31" width="1" height="2"/><rect x="53" y="33" width="3" height="3"/><rect x="52" y="36" width="5" height="4"/>
+            <rect x="84" y="26" width="1" height="2"/><rect x="83" y="28" width="3" height="3"/><rect x="82" y="31" width="5" height="4"/><rect x="81" y="35" width="7" height="5"/>
+            <rect x="91" y="29" width="1" height="2"/><rect x="90" y="31" width="3" height="3"/><rect x="89" y="34" width="5" height="6"/>
+          </g>
+          <rect x="48" y="28" width="1" height="1" fill="#f2c14e"/>
+          <rect x="0" y="40" width="96" height="14" fill="#22352a"/>
+          <rect x="0" y="41" width="32" height="3" fill="#6d77a0"/>
+          <rect x="0" y="44" width="26" height="2" fill="#6d77a0"/>
+          <rect x="0" y="46" width="17" height="2" fill="#6d77a0"/>
+          <rect x="5" y="42" width="7" height="1" fill="#c7a48e"/>
+          <rect x="14" y="44" width="8" height="1" fill="#c7a48e"/>
+          <rect x="56" y="32" width="20" height="1" fill="#3b2a26"/>
+          <rect x="57" y="31" width="18" height="1" fill="#3b2a26"/>
+          <rect x="58" y="30" width="16" height="1" fill="#3b2a26"/>
+          <rect x="59" y="29" width="14" height="1" fill="#3b2a26"/>
+          <rect x="60" y="28" width="12" height="1" fill="#3b2a26"/>
+          <rect x="61" y="27" width="10" height="1" fill="#3b2a26"/>
+          <rect x="62" y="26" width="8" height="1" fill="#3b2a26"/>
+          <rect x="70" y="24" width="2" height="4" fill="#3b2a26"/>
+          <rect x="58" y="33" width="16" height="9" fill="#a23b2a"/>
+          <rect x="58" y="33" width="1" height="9" fill="#f4ecd8"/>
+          <rect x="73" y="33" width="1" height="9" fill="#f4ecd8"/>
+          <rect x="61" y="35" width="3" height="3" fill="#f2c14e"/>
+          <rect x="68" y="35" width="3" height="3" fill="#f2c14e"/>
+          <rect x="65" y="37" width="2" height="5" fill="#4a2a22"/>
+          <rect x="65" y="42" width="2" height="2" fill="#5e5038"/>
+          <rect x="63" y="44" width="3" height="2" fill="#5e5038"/>
+          <rect x="60" y="46" width="4" height="2" fill="#5e5038"/>
+          <rect x="78" y="30" width="1" height="14" fill="#ece4d0"/>
+          <rect x="78" y="33" width="1" height="1" fill="#2a2a2a"/>
+          <rect x="78" y="38" width="1" height="1" fill="#2a2a2a"/>
+          <rect x="76" y="22" width="4" height="2" fill="#4f7a3a"/>
+          <rect x="75" y="24" width="7" height="3" fill="#4f7a3a"/>
+          <rect x="74" y="27" width="9" height="3" fill="#4f7a3a"/>
+          <rect x="44" y="42" width="2" height="1" fill="#c2622a"/>
+          <rect x="43" y="43" width="1" height="2" fill="#c2622a"/>
+          <rect x="44" y="43" width="2" height="1" fill="#f0c9a0"/>
+          <rect x="44" y="44" width="2" height="3" fill="#4b6ea8"/>
+          <rect x="44" y="47" width="1" height="1" fill="#2b2b2b"/>
+          <rect x="45" y="47" width="1" height="1" fill="#2b2b2b"/>
+          <rect x="46" y="45" width="1" height="1" fill="#f6d36b"/>
+          <rect x="45" y="44" width="3" height="3" fill="#f6d36b" opacity="0.25"/>
+          <rect x="29" y="37" width="3" height="3" fill="#f6e27a" opacity="0.3"/>
+          <rect x="30" y="38" width="1" height="1" fill="#f6e27a"/>
+          <rect x="34" y="47" width="3" height="3" fill="#f6e27a" opacity="0.3"/>
+          <rect x="35" y="48" width="1" height="1" fill="#f6e27a"/>
+          <rect x="86" y="45" width="3" height="3" fill="#f6e27a" opacity="0.3"/>
+          <rect x="87" y="46" width="1" height="1" fill="#f6e27a"/>
+          <rect x="52" y="50" width="1" height="1" fill="#3a5a40"/>
+          <rect x="70" y="51" width="1" height="1" fill="#3a5a40"/>
+          <rect x="24" y="51" width="1" height="1" fill="#3a5a40"/>
+        </svg>
+        <span class="corner tl" aria-hidden="true"></span>
+        <span class="corner tr" aria-hidden="true"></span>
+        <span class="corner bl" aria-hidden="true"></span>
+        <span class="corner br" aria-hidden="true"></span>
+      </div>
+      <figcaption>Skiss ur spelet. Dagny har lyktan med sig, för det är ljust men inte så ljust.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="spelet" class="game">
+  <div class="wrap">
+    <div class="story">
+      <h2 class="serif">Natten då klockan ringde</h2>
+      <p>Midsommarnatten 1946 börjar kyrkklockan ringa, fast ingen drar i repet. Under klockstapeln hittar barnmorskan Hulda ett spädbarn i en näverfilt. Bredvid ligger en gammal svärdsklinga utan fäste.</p>
+      <p>Barnet får heta Dagny. Hon säger aldrig något.</p>
+      <p>Arton somrar senare har folk slutat bry sig om de gamla platserna i skogen. Väsendena som bor där har vaknat, och de är arga. Så Dagny tar klingan och går ut i sommarnatten.</p>
+      <p>Hon är inte ute efter att döda någon. När ett väsen har lugnat sig tackar det, och berättar något om Dagnys mamma som hon inte visste.</p>
+    </div>
+
+    <aside class="facts">
+      <p class="kicker">BRA ATT VETA</p>
+      <dl>
+        <div><dt>Var spelar man?</dt><dd>På telefonen, i webbläsaren. Det går att spela utan nät. En Android-app kommer.</dd></div>
+        <div><dt>Hur stort är det?</dt><dd>Sju byar och sju tempel, plus en karta att gå runt på.</dd></div>
+        <div><dt>När?</dt><dd>[SLÄPPDATUM]</dd></div>
+        <div><dt>Svårt?</dt><dd>Det finns ett lugnt läge där väsendena slår hälften så hårt.</dd></div>
+      </dl>
+    </aside>
+  </div>
+</section>
+
+<section class="lists">
+  <div class="wrap">
+    <div class="list">
+      <h3 class="serif">Vilka bor i skogen?</h3>
+      <ul>
+        <li><b>Kyrkogrimmen</b><span>i kryptan under stenkyrkan</span></li>
+        <li><b>Gruvrået</b><span>nere i den gamla gruvan</span></li>
+        <li><b>Bäckahästen</b><span>vid kvarnen, där forsen går</span></li>
+        <li><b>Havsfrun</b><span>ute vid fyren i skären</span></li>
+        <li><b>Spelmannen</b><span>spelar fiol i folkparken om natten</span></li>
+        <li><b>Skogsrået</b><span>i fäbodskogen. Gå runt henne.</span></li>
+        <li><b>Bergakungen</b><span>längst in i Trollberget</span></li>
+      </ul>
+    </div>
+
+    <div class="list">
+      <h3 class="serif">Och i ryggsäcken, så småningom</h3>
+      <ul>
+        <li><b>Ekan</b><span>för att ta sig över sjön</span></li>
+        <li><b>Karbidlampan</b><span>för gruvan</span></li>
+        <li><b>Gummistövlarna</b><span>för myren, så klart</span></li>
+        <li><b>Ficklampan</b><span>för nattskogen, där granarna står tätt</span></li>
+        <li><b>Transistorradion</b><span>brusar när det finns en dold gång</span></li>
+        <li><b>Näverluren</b><span>kallar på en vätte som hjälper till</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="vitknut" class="about">
+  <div class="wrap">
+    <div class="about-mark">
+      <svg width="120" height="120" viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true">
+        <rect x="0" y="0" width="24" height="24" fill="#9a3324"/>
+        <rect x="0" y="3" width="24" height="1" fill="#7a2418"/>
+        <rect x="0" y="8" width="24" height="1" fill="#7a2418"/>
+        <rect x="0" y="13" width="24" height="1" fill="#7a2418"/>
+        <rect x="0" y="18" width="24" height="1" fill="#7a2418"/>
+        <rect x="15" y="0" width="5" height="4" fill="#f4ecd8"/>
+        <rect x="17" y="4" width="5" height="5" fill="#f4ecd8"/>
+        <rect x="15" y="9" width="5" height="5" fill="#f4ecd8"/>
+        <rect x="17" y="14" width="5" height="5" fill="#f4ecd8"/>
+        <rect x="15" y="19" width="5" height="5" fill="#f4ecd8"/>
+      </svg>
+    </div>
+    <div class="about-text">
+      <h2 class="serif">Varför heter vi Vitknut?</h2>
+      <p>På en röd stuga är hörnen ofta målade vita. Där går stockarna in i varandra, och de vita hörnen kallas knutar. Det tyckte vi lät fint.</p>
+      <p>Vitknut Studios är en liten spelstudio i Umeå. Dagnys äventyr är det första spelet, och fler är på väg. All utveckling görs av Saman Akbarian.</p>
+      <p class="small">Inga riktiga märken, inga köp i spelet. Bara folktro, falurött och en hel del mjölkpallar.</p>
+    </div>
+  </div>
+</section>
+
+<section id="brev" class="letter">
+  <div class="wrap">
+    <div class="letter-card">
+      <p class="kicker">BREV FRÅN VITKNUT</p>
+      <h2 class="serif">Vill du veta när det går att spela?</h2>
+      <p>Vi skickar ett brev när vi har något att visa, och aldrig mer än ett i månaden.</p>
+      <form>
+        <div class="field">
+          <label for="epost">Din e-postadress</label>
+          <input id="epost" type="email" autocomplete="email" placeholder="namn@exempel.se">
+        </div>
+        <button type="button">Ja tack</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© 2026 Vitknut Studios, Umeå</span>
+    <a href="mailto:[E-POST]">[E-POST]</a>
+  </div>
+</footer>
+
+</body>
+</html>
