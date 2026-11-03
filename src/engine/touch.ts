@@ -11,6 +11,8 @@ export interface TouchLayout {
   /** Distance from the screen edges in CSS px (placement). */
   offsetX: number;
   offsetY: number;
+  /** Show an extra "LÅGT" button for a low strike. */
+  lowButton: boolean;
 }
 
 /**
@@ -56,6 +58,7 @@ export class TouchControls {
     s.setProperty('--ctl-opacity', String(layout.opacity));
     s.setProperty('--ctl-offset-x', `${layout.offsetX}px`);
     s.setProperty('--ctl-offset-y', `${layout.offsetY}px`);
+    this.root.classList.toggle('no-low', !layout.lowButton);
     if (modeChanged) {
       this.stickEl.remove();
       this.buildStick();
@@ -68,6 +71,7 @@ export class TouchControls {
     this.button('ctl-btn ctl-jump', 'HOPPA', Act.Jump);
     this.button('ctl-btn ctl-sword', 'SVÄRD', Act.Sword);
     this.button('ctl-btn ctl-magic', 'MAGI', Act.Magic);
+    this.button('ctl-btn ctl-low', 'LÅGT', Act.LowSword);
     const pause = this.el('ctl ctl-small ctl-pause', 'II');
     pause.setAttribute('aria-label', 'Paus');
     pause.addEventListener('pointerdown', (e) => {
@@ -92,31 +96,59 @@ export class TouchControls {
     return d;
   }
 
+  /** The action buttons, and which fingers hold each (a thumb may slide from one to the next). */
+  private buttons = new Map<HTMLElement, { action: Action; pointers: Set<number> }>();
+  /** Which button each finger is on now. */
+  private fingers = new Map<number, HTMLElement>();
+
   private button(cls: string, label: string, action: Action): void {
     const d = this.el(`ctl ${cls}`, label);
-    const pointers = new Set<number>();
-    const down = (e: PointerEvent): void => {
+    this.buttons.set(d, { action, pointers: new Set() });
+    d.addEventListener('pointerdown', (e: PointerEvent) => {
       e.preventDefault();
-      pointers.add(e.pointerId);
       try {
         d.setPointerCapture(e.pointerId);
       } catch {
         /* ignore */
       }
-      d.classList.add('pressed');
-      this.input.press(action);
-    };
-    const up = (e: PointerEvent): void => {
-      pointers.delete(e.pointerId);
-      if (pointers.size === 0) {
-        d.classList.remove('pressed');
-        this.input.release(action);
-      }
-    };
-    d.addEventListener('pointerdown', down);
+      this.input.setSource('touch');
+      this.hold(e.pointerId, d);
+    });
+    // A thumb that slides off one button onto another lets go of the first and
+    // presses the second – jump, then roll onto the sword, without lifting.
+    d.addEventListener('pointermove', (e: PointerEvent) => {
+      if (!this.fingers.has(e.pointerId)) return;
+      const hit = document.elementFromPoint(e.clientX, e.clientY)?.closest('.ctl-btn') as HTMLElement | null;
+      if (hit && hit !== this.fingers.get(e.pointerId) && this.buttons.has(hit)) this.hold(e.pointerId, hit);
+    });
+    const up = (e: PointerEvent): void => this.hold(e.pointerId, null);
     d.addEventListener('pointerup', up);
     d.addEventListener('pointercancel', up);
     d.addEventListener('lostpointercapture', up);
+  }
+
+  /** Moves a finger onto a button (or off all of them), pressing and releasing as it goes. */
+  private hold(pointer: number, el: HTMLElement | null): void {
+    const was = this.fingers.get(pointer);
+    if (was === el) return;
+    if (was) {
+      const b = this.buttons.get(was)!;
+      b.pointers.delete(pointer);
+      if (b.pointers.size === 0) {
+        was.classList.remove('pressed');
+        this.input.release(b.action);
+      }
+      this.fingers.delete(pointer);
+    }
+    if (el) {
+      const b = this.buttons.get(el)!;
+      if (b.pointers.size === 0) {
+        el.classList.add('pressed');
+        this.input.press(b.action);
+      }
+      b.pointers.add(pointer);
+      this.fingers.set(pointer, el);
+    }
   }
 
   private buildStick(): void {
@@ -159,18 +191,19 @@ export class TouchControls {
       const mag = Math.hypot(dx, dy);
       let l = false, rr = false, u = false, d = false;
       if (mag > dead) {
-        // 8-way with generous diagonals; diagonals are narrower for the d-pad.
-        const ang = Math.atan2(dy, dx);
-        const sector = Math.round(ang / (Math.PI / 4));
-        switch (sector) {
-          case 0: rr = true; break;
-          case 1: rr = true; d = true; break;
-          case 2: d = true; break;
-          case 3: l = true; d = true; break;
-          case 4: case -4: l = true; break;
-          case -3: l = true; u = true; break;
-          case -2: u = true; break;
-          case -1: rr = true; u = true; break;
+        // Left and right get the widest slices (±30°), so walking never turns
+        // into a duck or an up-thrust by a slightly slanted thumb; straight up
+        // and down get ±25°, and the diagonals what is left between.
+        const slope = (Math.atan2(Math.abs(dy), Math.abs(dx)) * 180) / Math.PI;
+        const horiz = slope < 65;
+        const vert = slope > 30;
+        if (horiz) {
+          l = dx < 0;
+          rr = dx > 0;
+        }
+        if (vert) {
+          u = dy < 0;
+          d = dy > 0;
         }
       }
       this.setDirs(l, rr, u, d);

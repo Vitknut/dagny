@@ -12,6 +12,8 @@ export interface Settings {
   placement: number;
   vibration: boolean;
   showFps: boolean;
+  /** Extra touch button for a low strike (instead of Down + Sword). */
+  lowButton: boolean;
 }
 
 export const SETTINGS_KEY = 'dagny.settings';
@@ -26,6 +28,7 @@ export const DEFAULT_SETTINGS: Settings = {
   placement: 0,
   vibration: true,
   showFps: false,
+  lowButton: false,
 };
 
 const clamp = (v: unknown, lo: number, hi: number, d: number): number =>
@@ -45,6 +48,7 @@ export function loadSettings(store: KeyValueStore): Settings {
       s.placement = Math.round(clamp(raw.placement, 0, 2, s.placement));
       s.vibration = raw.vibration !== false;
       s.showFps = raw.showFps === true;
+      s.lowButton = raw.lowButton === true;
     }
   } catch {
     /* defaults */

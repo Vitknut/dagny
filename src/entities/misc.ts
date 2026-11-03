@@ -15,6 +15,7 @@ export class Npc {
   private t: number;
 
   constructor(readonly def: NpcDef, px: number, py: number) {
+    if (def.still) this.facing = 1;
     const size = spriteSize(def.sprite);
     this.w = size.w;
     this.h = size.h;
@@ -30,7 +31,7 @@ export class Npc {
   update(playerX: number): void {
     this.t++;
     const cx = this.x + this.w / 2;
-    if (Math.abs(playerX - cx) < 64) this.facing = playerX < cx ? -1 : 1;
+    if (!this.def.still && Math.abs(playerX - cx) < 64) this.facing = playerX < cx ? -1 : 1;
   }
 
   render(ctx: CanvasRenderingContext2D, camX: number, camY: number): void {
@@ -40,7 +41,7 @@ export class Npc {
   }
 }
 
-export type PickupKind = 'bulle' | 'termos' | 'lingon' | 'key' | 'treasure' | 'cat' | 'quest';
+export type PickupKind = 'bulle' | 'termos' | 'lingon' | 'key' | 'treasure' | 'cat' | 'quest' | 'container' | 'life';
 
 export class Pickup {
   vy = 0;
@@ -62,8 +63,8 @@ export class Pickup {
   ) {
     this.life = dropped ? 600 : Infinity;
     this.vy = dropped ? -2 : 0;
-    this.w = kind === 'treasure' ? 16 : kind === 'cat' ? 14 : 8;
-    this.h = kind === 'termos' ? 12 : kind === 'treasure' ? 10 : kind === 'cat' ? 10 : 8;
+    this.w = kind === 'treasure' ? 16 : kind === 'cat' ? 14 : kind === 'container' ? 12 : 8;
+    this.h = kind === 'termos' ? 12 : kind === 'treasure' ? 10 : kind === 'cat' ? 10 : kind === 'container' ? 12 : 8;
     this.dropped = dropped;
   }
 
@@ -88,7 +89,7 @@ export class Pickup {
   render(ctx: CanvasRenderingContext2D, camX: number, camY: number): void {
     if (this.life < 120 && Math.floor(this.life / 4) % 2 === 0) return;
     const bob = this.dropped || this.kind === 'cat' ? 0 : Math.round(Math.sin(this.t / 15) * 1.5);
-    if (this.kind === 'treasure') {
+    if (this.kind === 'treasure' || this.kind === 'container') {
       // A soft glow behind key treasures.
       ctx.globalAlpha = 0.35 + Math.sin(this.t / 10) * 0.15;
       ctx.fillStyle = PALETTE.Y;

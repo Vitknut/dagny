@@ -46,6 +46,44 @@ export const trollSprites: Record<string, SpriteDef> = {
       'KKKKKKKKKKKKKKKK',
     ],
   ),
+  /** A passage into the mountain (decor, marks a door in Trollgångarna): top half. */
+  tunnelTop: t([
+    'KKKKKKKKKKKKKKKK',
+    'KKKKKgggggKKKKKK',
+    'KKKggGGGGGggKKKK',
+    'KKgGGkkkkkGGgKKK',
+    'KgGGkkkkkkkGGgKK',
+    'KgGkkkkkkkkkGgKK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+  ]),
+  /** …and bottom half, down to the floor. */
+  tunnelBottom: t([
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGkkkkkkkkkkkGgK',
+    'gGGkkkkkkkkkGGgK',
+    'ggGGGGGGGGGGGggK',
+  ]),
   /** The stone throne (decor). */
   throne: t([
     'KKKgGGGGGGGGgKKK',
@@ -205,7 +243,35 @@ export const trollSprites: Record<string, SpriteDef> = {
     frames: [],
     recolor: { M: 'G', m: 'g', l: 'Y', e: 'w', k: 'Y' },
   },
+  /**
+   * The Game Over screen: Bergakungen as a black shadow with ember eyes,
+   * the way Ganon's shadow laughs when Zelda II ends.
+   */
+  bergakungSkugga: {
+    base: 'bergakung',
+    w: 40,
+    h: 48,
+    frames: [],
+    outline: 'p',
+    recolor: { y: 'k', Y: 'R', k: 'd', g: 'k', G: 'K', w: 'K', e: 'K', l: 'K', M: 'K', m: 'K' },
+  },
   /** Dagmar – the last Väktare, Dagny's mother, as a figure of light. */
+  /** Skuggan: Dagny in shadow colours, red-eyed, with a violet glow round her. */
+  skuggan: {
+    base: 'dagny', w: 16, h: 24, frames: [], outline: 'P',
+    recolor: { h: 'k', B: 'K', s: 'g', S: 'K', k: 'R', y: 'p', M: 'n', m: 'k', b: 'K', K: 'k' },
+  },
+  /** Skuggan's blade. */
+  skuggsvard: { base: 'sword', w: 14, h: 5, frames: [], recolor: { y: 'p', B: 'K', w: 'P', W: 'C' } },
+  skuggsvardUp: { base: 'swordUp', w: 5, h: 14, frames: [], recolor: { y: 'p', B: 'K', w: 'P', W: 'C' } },
+  /** The cut Skuggan throws along the floor or at head height. */
+  skuggslag: {
+    w: 10, h: 6, outline: 'p',
+    frames: [
+      ['..PPP.....', '....PPP...', '.....CPP..', '.....CPP..', '....PPP...', '..PPP.....'],
+      ['...PP.....', '....PPPP..', '......CP..', '......CP..', '....PPPP..', '...PP.....'],
+    ],
+  },
   dagmar: { base: 'woman', w: 16, h: 24, frames: [], recolor: { Y: 'o', r: 'C' } },
   /** The midsummer pole, dressed in birch leaves and flowers. 24×56 */
   maypole: {

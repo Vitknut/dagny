@@ -20,6 +20,8 @@ export interface WorldApi {
   spawnEnemy(id: string, px: number, py: number): boolean;
   /** Live creatures in the room besides the boss. */
   minions(): number;
+  /** Lyse is burning: the room is light, and nothing can hide in the fog. */
+  lit(): boolean;
 }
 
 export interface ProjectileInit {

@@ -24,6 +24,12 @@ describe('save format', () => {
     expect(back!.state).toEqual(s);
   });
 
+  it('a container once given in a dialog keeps counting, under the id of the one now lying in the room', () => {
+    const s = newGame();
+    s.containers.push('magi:kolartorpet', 'liv:kyrkogarden', 'liv:fabodtorpet', 'liv:kompass');
+    expect(deserialize(serialize(s))!.state.containers).toEqual(['magi:kolartorpet:17,9', 'liv:kyrkogarden:21,9', 'liv:fabodtorpet:17,9', 'liv:kompass']);
+  });
+
   it('rejects garbage', () => {
     expect(deserialize(null)).toBeNull();
     expect(deserialize('')).toBeNull();
@@ -58,7 +64,8 @@ describe('save format', () => {
     const f = deserialize(text)!;
     expect(f).not.toBeNull();
     const s = f.state;
-    expect(s.levels).toEqual({ styrka: 8, magi: 1, liv: 1 });
+    // A version-1 save: the (clamped) old max 8 becomes the new max 12.
+    expect(s.levels).toEqual({ styrka: 12, magi: 1, liv: 1 });
     expect(s.hp).toBe(maxHp(1));
     expect(s.mp).toBe(0);
     expect(s.xp).toBe(0);
@@ -109,5 +116,56 @@ describe('storage', () => {
     } finally {
       delete g.localStorage;
     }
+  });
+
+  it('converts levels from a version-1 save to the 12-step scale', () => {
+    const old = { ...newGame(), levels: { styrka: 4, magi: 3, liv: 4 } };
+    const f = deserialize(JSON.stringify({ v: 1, savedAt: 0, state: old }))!;
+    expect(f.state.levels).toEqual({ styrka: 6, magi: 4, liv: 6 });
+    // A current save keeps its levels as they are.
+    const now = deserialize(serialize({ ...newGame(), levels: { styrka: 4, magi: 3, liv: 4 } }))!;
+    expect(now.state.levels).toEqual({ styrka: 4, magi: 3, liv: 4 });
+  });
+});
+
+describe('version 3 (the larger overworld)', () => {
+  it('puts Dagny beside her last village instead of at old map coordinates', async () => {
+    const { OVERWORLD } = await import('../src/data/overworld');
+    const old = { ...newGame(), items: ['svard', 'eka'], lastVillage: 'gruvsamhallet', ow: { x: 40, y: 9 }, loc: { area: 'overworld', x: 40, y: 9 } };
+    const f = deserialize(JSON.stringify({ v: 2, savedAt: 0, state: old }))!;
+    const p = OVERWORLD.places.find((x) => x.area === 'gruvsamhallet')!;
+    expect(f.state.ow).toEqual({ x: p.x, y: p.y + 1 });
+    expect(f.state.loc).toEqual({ area: 'overworld', x: p.x, y: p.y + 1 });
+  });
+
+  it('a save in a region Dagny cannot leave (no lamp) is moved home to Mormors by', async () => {
+    const { OVERWORLD } = await import('../src/data/overworld');
+    const p = OVERWORLD.places.find((x) => x.area === 'stationssamhallet')!;
+    const stuck = {
+      ...newGame(), items: ['svard', 'eka', 'karbidlampa', 'stovlar'], lastVillage: 'stationssamhallet',
+      ow: { x: p.x, y: p.y + 1 }, loc: { area: 'stationssamhallet', x: 40, y: 100 },
+      checkpoint: { area: 'folkparken_2', x: 10, y: 10 },
+    };
+    const f = deserialize(serialize(stuck))!;
+    expect(f.state.loc.area).toBe('mormors_by');
+    expect(f.state.lastVillage).toBe('mormors_by');
+    expect(f.state.ow).toEqual(OVERWORLD.start);
+    expect(f.state.checkpoint).toBeNull();
+    // With the flashlight the same save stays where it was.
+    const fine = deserialize(serialize({ ...stuck, items: [...stuck.items, 'ficklampa'] }))!;
+    expect(fine.state.loc.area).toBe('stationssamhallet');
+    expect(fine.state.lastVillage).toBe('stationssamhallet');
+  });
+});
+
+describe('version 4 (Kartan 2.0, 96 × 72)', () => {
+  it('moves a version-3 save beside its village and counts again what Dagny has seen', async () => {
+    const { OVERWORLD } = await import('../src/data/overworld');
+    const { isExplored } = await import('../src/game/explored');
+    const old = { ...newGame(), items: ['svard', 'eka'], lastVillage: 'kyrkbyn', ow: { x: 70, y: 40 }, loc: { area: 'overworld', x: 70, y: 40 }, explored: 'AAAA' };
+    const f = deserialize(JSON.stringify({ v: 3, savedAt: 0, state: old }))!;
+    const p = OVERWORLD.places.find((x) => x.area === 'kyrkbyn')!;
+    expect(f.state.ow).toEqual({ x: p.x, y: p.y + 1 });
+    expect(isExplored(f.state, p.x, p.y)).toBe(true);
   });
 });

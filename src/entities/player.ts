@@ -26,7 +26,17 @@ const JUMP_CUT = 2;
 /** Generous touch tolerance. */
 const COYOTE = 7;
 const BUFFER = 8;
+/** A sword press is kept this long, so a press during a swing or a stagger still strikes. */
+const SWORD_BUFFER = 10;
+/**
+ * Every jump rises with the button "held" for at least this long, so a quick
+ * tap on glass (60–100 ms) still gives a proper hop of two tiles instead of a
+ * skip. Holding goes higher, to three tiles.
+ */
+const MIN_JUMP = 7;
 const ATTACK_FRAMES = 15;
+/** Frames into a strike during which Dagny can still turn round (before the blade is far out). */
+const TURN_IN_STRIKE = 4;
 const ATTACK_ACTIVE: [number, number] = [2, 10];
 const INVULN = 60;
 
@@ -58,6 +68,9 @@ export class Player implements Body {
   /** A down-thrust bounce is not cut short by releasing jump. */
   private bouncing = false;
   private buffer = 0;
+  private swordBuffer = 0;
+  /** Frames since the jump began (for MIN_JUMP). */
+  private jumpT = 99;
   private animT = 0;
   private walkFrame = 0;
   private breatheT = 0;
@@ -131,12 +144,13 @@ export class Player implements Body {
   hurt(fromX: number): void {
     if (this.invuln > 0 || this.state === 'dead') return;
     this.state = 'hurt';
-    this.hurtT = 18;
+    this.hurtT = 14;
     this.invuln = INVULN;
     this.downThrust = false;
+    // A short knock back, about one tile (as in Zelda II), not a flight.
     const dir = this.x + this.w / 2 < fromX ? -1 : 1;
-    this.vx = dir * 2.2;
-    this.vy = -2.6;
+    this.vx = dir * 1.6;
+    this.vy = -2;
     this.setDuck(false, null);
   }
 
@@ -186,6 +200,17 @@ export class Player implements Body {
     return true;
   }
 
+  /**
+   * Remember fresh jump and sword presses (the buffers count down each step).
+   * Also called while the game is frozen for a hit, so no press is lost.
+   */
+  queue(c: PlayerControls): void {
+    if (c.jumpPressed) this.buffer = BUFFER;
+    else if (this.buffer > 0) this.buffer--;
+    if (c.swordPressed) this.swordBuffer = SWORD_BUFFER;
+    else if (this.swordBuffer > 0) this.swordBuffer--;
+  }
+
   update(c: PlayerControls, grid: TileGrid): void {
     this.landed = false;
     this.jumped = false;
@@ -203,8 +228,7 @@ export class Player implements Body {
     }
 
     // Buffers for forgiving touch play.
-    if (c.jumpPressed) this.buffer = BUFFER;
-    else if (this.buffer > 0) this.buffer--;
+    this.queue(c);
     if (this.onGround) this.coyote = COYOTE;
     else if (this.coyote > 0) this.coyote--;
 
@@ -223,7 +247,8 @@ export class Player implements Body {
     this.downThrust = this.canDownThrust && !this.onGround && c.down && this.state !== 'hurt' && this.vy > -1.5;
 
     // Attack.
-    if (c.swordPressed && this.state === 'normal') {
+    if (this.swordBuffer > 0 && this.state === 'normal') {
+      this.swordBuffer = 0;
       this.state = 'attack';
       this.attackT = 0;
       this.lowAttack = this.ducking;
@@ -239,8 +264,13 @@ export class Player implements Body {
     }
     if (this.downThrust && this.animT % 12 === 0) this.hitIds.clear();
 
-    // Facing (not while striking).
+    // Facing (not while striking – except in the wind-up: a strike started a
+    // moment before the thumb reaches the other way still turns to meet it).
     if (move !== 0 && this.state === 'normal') this.facing = move > 0 ? 1 : -1;
+    else if (move !== 0 && this.state === 'attack' && this.attackT < TURN_IN_STRIKE && (move > 0 ? 1 : -1) !== this.facing) {
+      this.facing = move > 0 ? 1 : -1;
+      this.hitIds.clear();
+    }
 
     // Horizontal movement.
     const canWalk = this.state !== 'hurt' && !(this.ducking && this.onGround) && !(this.state === 'attack' && this.onGround);
@@ -252,7 +282,7 @@ export class Player implements Body {
       const f = this.onGround ? FRICTION : 0.04;
       if (Math.abs(this.vx) <= f) this.vx = 0;
       else this.vx -= Math.sign(this.vx) * f;
-    }
+    } else this.vx *= 0.94;
 
     // Jump (coyote time + jump buffer).
     if (this.buffer > 0 && this.coyote > 0 && this.state !== 'hurt') {
@@ -263,14 +293,17 @@ export class Player implements Body {
         this.coyote = 0;
         this.buffer = 0;
         this.jumped = true;
+        this.jumpT = 0;
       }
     }
 
     // Variable jump height: lighter gravity while rising with the button held,
     // and releasing early cuts the jump short.
     if (this.vy >= 0) this.bouncing = false;
-    if (!c.jumpHeld && this.vy < -JUMP_CUT && this.state !== 'hurt' && !this.bouncing) this.vy = -JUMP_CUT;
-    const g = this.vy < 0 && c.jumpHeld ? GRAV_HOLD : GRAV;
+    const held = c.jumpHeld || this.jumpT < MIN_JUMP;
+    this.jumpT++;
+    if (!held && this.vy < -JUMP_CUT && this.state !== 'hurt' && !this.bouncing) this.vy = -JUMP_CUT;
+    const g = this.vy < 0 && held ? GRAV_HOLD : GRAV;
     this.vy = Math.min(MAX_FALL, this.vy + g);
 
     const wasGround = this.onGround;
@@ -307,6 +340,11 @@ export class Player implements Body {
     this.vx += (mx * sp - this.vx) * 0.2;
     this.vy += (my * sp + 0.15 - this.vy) * 0.2;
     moveBody(grid, this);
+    // The sky above a room is not a way round its walls and locked doors.
+    if (this.y < 0) {
+      this.y = 0;
+      if (this.vy < 0) this.vy = 0;
+    }
   }
 
   render(ctx: CanvasRenderingContext2D, camX: number, camY: number, frame: number): void {

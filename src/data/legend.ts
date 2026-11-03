@@ -12,10 +12,15 @@ import { Kind, type TileKind } from '../engine/collision';
  *  1–9  NPCs (AreaDef.npcs)
  *  v vätte  V gravvätte  l lyktgubbe  t tomtenisse  m myrkatt  r kråka
  *  s stenknekt  j sjörå-skott  w skuggvarg  f fladdermus  u gruvvätte  z kvarnnisse  e mås  B boss
+ *  d dansgast  i fiolspöke  y dimvätte  x strandkrabba  o stubbtroll  a bergtroll
+ *  *  Skuggan (Dagny's shadow, Trollberget)
  *  b bulle  T termos  g lingon  M Murre the cat (side quest)
  *  q the area's quest item (AreaDef.questItem)
  *  %  &  dance-floor squares that come and go with the beat (AreaDef.beat)
  *  ?  hidden passage: looks solid until Dagny carries the transistor radio
+ *  h  life container (livbehållare)   p  magic container (magibehållare)
+ *  +  näverdocka – an extra life (taken once)
+ *  !  hatch in a floor: solid until struck from below with Uppåtstöt (opened once)
  */
 export const ENEMY_CHARS: Readonly<Record<string, string>> = {
   v: 'vatte',
@@ -31,6 +36,13 @@ export const ENEMY_CHARS: Readonly<Record<string, string>> = {
   u: 'gruvvatte',
   z: 'kvarnnisse',
   e: 'mas',
+  d: 'dansgast',
+  i: 'fiolspoke',
+  y: 'dimvatte',
+  x: 'strandkrabba',
+  o: 'stubbtroll',
+  a: 'bergtroll',
+  '*': 'skuggan',
 };
 
 export const PICKUP_CHARS: Readonly<Record<string, 'bulle' | 'termos' | 'lingon'>> = {
@@ -64,6 +76,7 @@ export function kindOf(ch: string): TileKind {
     case '#':
     case 'L':
     case '?':
+    case '!':
       return Kind.Solid;
     case '%':
     case '&':
@@ -139,6 +152,8 @@ export const DECO: Readonly<Record<string, string>> = {
   I: 'turfTopR',
   X: 'crystal',
   J: 'throne',
+  '1': 'tunnelTop',
+  '2': 'tunnelBottom',
   v: 'wallW',
   '<': 'cornerW',
   '>': 'cornerRW',

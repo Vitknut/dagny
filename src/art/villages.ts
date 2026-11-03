@@ -261,9 +261,17 @@ export const villageSprites: Record<string, SpriteDef> = {
   kid4: v('kid', { U: 'y', u: 'b' }, 16, 24),
 
   // Side-quest items.
+  /** Johannesört – a sprig of yellow star flowers. */
+  tang: item(['k.....k.', 'gk...kg.', '.gk.kg..', '..gkg...', '..kgk...', '.k...k..', 'b.....b.', 'b.....b.']),
+  johannesort: item(['.Y...Y..', 'YyY.YyY.', '.Y.M.Y..', '..MMM...', '...M..Y.', '...M.YyY', '...MM.Y.', '...M....']),
   psalmbok: item(['.kkkkkk.', 'kbbbbbbk', 'kbbYbbbk', 'kbYYYbbk', 'kbbYbbbk', 'kbbYbbbk', 'kbbbbbbW', '.kkkkkkW']),
   medaljong: item(['...yy...', '..y..y..', '...yy...', '..yYYy..', '.yYWWYy.', '.yYWiYy.', '..yYYy..', '...yy...']),
   kompass: item(['..gggg..', '.gWWWWg.', 'gWWrWWWg', 'gWWrWWWg', 'gWWkWWWg', 'gWWkWWWg', '.gWWWWg.', '..gggg..']),
   skalla: item(['...gg...', '..gYYg..', '.gYYYYg.', '.gYYYYg.', '.gYyYYg.', 'gyyyyyyg', '...kk...', '...kk...']),
+  hacka: item(['.ggggg..', 'gGWGGgg.', 'g..b..gk', '...b....', '...b....', '...b....', '...b....', '...bk...']),
+  solsten: item(['...WW...', '..WCCW..', '.WCWWCc.', 'WCWYWCcW', '.cCWCcW.', '..cCcW..', '...cW...', '........']),
+  ronnkvist: item(['......M.', '..M..MM.', '.MMb.M..', '..Mb.R..', '...bRRR.', '..RbRR..', '.RRb....', '...b....']),
+  fjader: item(['......kW', '.....kWW', '....kWW.', '...kWk..', '..kWk...', '.kWk....', '.Wk.....', 'W.......']),
+  askvigg: item(['..gggg..', '.gGGGGg.', 'gGGwGGGg', 'gGGGGGgk', '.gGGGgk.', '..gGgk..', '...gk...', '........']),
   visselpipa: item(['........', '........', '..gggggg', '.gGGGGGg', 'gGGkGGGg', 'gGGGGGg.', '.ggggg..', '........']),
 };

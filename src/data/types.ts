@@ -1,3 +1,5 @@
+import type { TerrainType } from './terrain';
+
 /**
  * Data model shared by all data files. The engine only reads these
  * structures, so temples, creatures, dialog and maps can be changed
@@ -47,6 +49,9 @@ export type Behavior =
   | 'tank'
   | 'shooter'
   | 'wolf'
+  | 'waltzer'
+  | 'blinker'
+  | 'shadow'
   | 'boss_grim'
   | 'boss_gruvra'
   | 'boss_backahast'
@@ -56,7 +61,7 @@ export type Behavior =
   | 'boss_bergakung'
   | 'boss_placeholder';
 
-export type PuffKind = 'moss' | 'leaf' | 'mist';
+export type PuffKind = 'moss' | 'leaf' | 'mist' | 'dust';
 
 export interface EnemyDef {
   id: string;
@@ -79,6 +84,10 @@ export interface EnemyDef {
   flying?: boolean;
   /** Can only be hurt from behind (strikes from the front are blocked). */
   backOnly?: boolean;
+  /** Eld's fireballs bite less: damage is multiplied by this (Gruvrået carries her own flame). */
+  fireResist?: number;
+  /** Projectile sprite for shooters (default: a water droplet). */
+  shot?: string;
   /** Becomes friendly after being defeated (flavour text shown). */
   befriend?: string;
 }
@@ -105,6 +114,8 @@ export interface TempleDef {
   id: string;
   number: number;
   name: string;
+  /** Short name for tight spots (the map's list). */
+  short: string;
   /** Environment / mechanic description (design notes, shown nowhere). */
   mechanic: string;
   tone: string;
@@ -126,6 +137,8 @@ export interface VillageDef {
   /** Entry point in that area used when waking up after a defeat. */
   wakeEntry: string;
   teaches: SpellId | SkillId | null;
+  /** The temple near it: once reconciled, the village's tune turns brighter. */
+  place?: string;
 }
 
 // --- Dialog -----------------------------------------------------------------
@@ -147,8 +160,18 @@ export type DialogAction =
   | { type: 'giveItem'; item: string }
   | { type: 'takeItem'; item: string }
   | { type: 'heal' }
+  /** Fills the magic bar. */
+  | { type: 'magic' }
+  /** Gives a life or magic container (a quest reward), counted once by id. */
+  | { type: 'container'; kind: 'liv' | 'magi'; id: string }
+  /** Gives one extra life (a quest reward), once per id. */
+  | { type: 'life'; id: string }
+  /** Dagny blinks Dagmar's signal across the lake (game/signal.ts), then `then` is said. */
+  | { type: 'signal'; then: string }
   /** Hands over to a story scene (the ending, the credits). */
-  | { type: 'scene'; scene: 'ending' | 'credits' };
+  | { type: 'scene'; scene: 'ending' | 'credits' }
+  /** Takes the train to a village with a station (the stationmaster's whistle found). */
+  | { type: 'travel'; area: string };
 
 export interface DialogChoice {
   text: string;
@@ -184,6 +207,15 @@ export interface NpcDef {
   if?: Condition[];
   /** Follows Dagny around slowly (e.g. the cat when found). */
   wander?: number;
+  /** A thing rather than a person (a gravestone, a charcoal stack): never turns round. */
+  still?: boolean;
+  /**
+   * Catches fire when one of Dagny's fireballs (the Eld reading) hits it:
+   * sets the flag and shows the dialog. Nothing in the talk does it for her.
+   */
+  burns?: { flag: string; dialog?: string };
+  /** Sends up smoke (a lit charcoal stack). */
+  smoke?: boolean;
 }
 
 // --- Areas --------------------------------------------------------------------
@@ -289,8 +321,12 @@ export interface AreaDef {
   props?: Prop[];
   platforms?: PlatformDef[];
   wind?: WindZone[];
-  /** Dance-floor squares ('%' and '&') swap every `period` steps. */
-  beat?: { period: number };
+  /**
+   * Dance-floor squares ('%' and '&') swap every `period` steps. With `wake`, the
+   * light strings are dark – the floor is not there – until Åska is cast in the
+   * room; then the flag is set and it dances for good.
+   */
+  beat?: { period: number; wake?: string };
   /** Dark area – only lit around Dagny, candles and spells. */
   dark?: boolean;
   /** How dark a dark area is, 0–1 (default 0.93). */
@@ -305,13 +341,56 @@ export interface AreaDef {
   showName?: boolean;
   /** Ambient life. */
   ambience?: Array<'fireflies' | 'mosquitoes' | 'dust' | 'mist' | 'leaves' | 'rain' | 'spray'>;
+  /**
+   * Things only seen in the light of a lamp Dagny carries (karbidlampan,
+   * ficklampan): a container lying there, or words to read (Up).
+   */
+  lampSecrets?: Array<{ item: 'karbidlampa' | 'ficklampa'; tx: number; ty: number; container?: 'liv' | 'magi'; dialog?: string; gives?: string }>;
+  /**
+   * Containers that appear in the room once a task here is done (the flag is
+   * set), to be picked up like any other: a box under a gravestone, the
+   * bottom of a spring.
+   */
+  rewards?: Array<{ flag: string; kind: 'liv' | 'magi'; tx: number; ty: number }>;
+  /** Items lying in the room, picked up once (dialog `hittade_<item>`; gone for good once `<item>_klar`). With `after`, it lies there only once that flag is set (someone has asked for it). */
+  finds?: Array<{ item: string; tx: number; ty: number; after?: string }>;
   /** NPC that appears where the boss stood once it is reconciled. */
   afterBoss?: { npc: string; tx: number; ty: number };
+  /**
+   * The way on stays shut until every creature here is beaten (Skuggan's hall).
+   * Once cleared, flag `<area id>_rensad` keeps the room empty for good.
+   */
+  sealed?: { dialog: string; music?: string };
+  /**
+   * The door (its character) a vätte called with the näverlur runs to and waits
+   * by when there is nothing to fight: the one way on among several (Vättegången).
+   */
+  lurGuide?: string;
+  /**
+   * Parts of the room only a reading gets Dagny up to – a ledge too high for an
+   * ordinary jump that Hopp reaches (tile boxes, inclusive). For the
+   * playthrough solver; the room's shape is what really keeps her out.
+   */
+  needsSpell?: Array<{ spell: string; x0: number; y0: number; x1: number; y1: number }>;
+  /**
+   * A cave-in that chases Dagny: once she passes tile column `at` (coming in
+   * from the left), the roof comes down behind her and the rubble moves right
+   * at `speed` px per step until she gets out. Escaped once, `flag` is set and
+   * it never happens again – and the `rubble` heaps (tiles) lie on the floor from then on.
+   */
+  cavein?: { at: number; speed: number; flag: string; rubble?: Array<[number, number]> };
+  /** Parts of the room built of something else (the mill's stone house by the rapids): tiles inside use that theme. */
+  themeBoxes?: Array<{ x0: number; y0: number; x1: number; y1: number; theme: string }>;
+  /** Leaving by the right exit sets this flag: a way that opens only from inside. */
+  opens?: string;
+  /** Tougher creatures (the last temple): more health and harder blows. */
+  hard?: boolean;
   /** Dialog started automatically the first time (needs flag to not repeat). */
   onEnter?: { dialog: string; unlessFlag: string; setFlag: string };
 }
 
 // --- Overworld --------------------------------------------------------------
+
 
 export interface OverworldPlace {
   /** Character on the overworld map. */
@@ -325,14 +404,37 @@ export interface OverworldPlace {
   dialog?: string;
   /** Flags needed before the area opens; `dialog` is shown until then. */
   requires?: string[];
+  /**
+   * A hidden place: 'near' shows only when Dagny stands right beside it
+   * (a cave behind a waterfall); 'radio' only when she carries the radio.
+   */
+  hidden?: 'near' | 'radio';
+  /** What a 'near' place shows when Dagny is beside it (default: the cave behind a waterfall). */
+  sprite?: string;
+  /** A viewpoint: standing here maps this many tiles round about (Kyrkbacken). */
+  view?: number;
+  /**
+   * Something only the radio picks up, out in the open (no cave): the place does
+   * nothing, and shows nowhere, without it.
+   */
+  radio?: boolean;
+  /** Once this flag is set the place's `dialog` is not shown again (a radio voice heard). */
+  doneFlag?: string;
+  /**
+   * A passage through rock: going in here, the room leads out onto the map at
+   * this tile (for reachability – game/reach.ts; the rooms' exits are what
+   * really take Dagny there, and tests check the two agree).
+   */
+  leadsTo?: { x: number; y: number };
 }
+
 
 export interface EncounterDef {
   sprite: 'owShadow' | 'owWisp';
   /** Terrain characters it may wander on. */
   terrain: string;
-  /** Side-view area it leads to; defaults to OverworldDef.areaByTerrain. */
-  area?: string;
+  /** Encounter table to use (data/encounters.ts); defaults to the terrain Dagny stands on. */
+  table?: TerrainType;
   /** Start tile. */
   x: number;
   y: number;
@@ -345,8 +447,6 @@ export interface OverworldDef {
   places: OverworldPlace[];
   encounters: EncounterDef[];
   start: { x: number; y: number };
-  /** Encounter area by the terrain character the creature stands on. */
-  areaByTerrain: Record<string, string>;
   /** Terrain that needs an item to cross: char → item id. */
   needs: Record<string, string>;
   /** Terrain that can never be crossed. */

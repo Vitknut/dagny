@@ -16,9 +16,11 @@ export const Act = {
   Magic: 6,
   Pause: 7,
   Confirm: 8,
+  /** Touch only (optional button): a low strike, the same as Down + Sword. */
+  LowSword: 9,
 } as const;
 export type Action = (typeof Act)[keyof typeof Act];
-const COUNT = 9;
+const COUNT = 10;
 
 export type InputSource = 'keyboard' | 'gamepad' | 'touch';
 

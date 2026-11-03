@@ -5,9 +5,13 @@ import { enemySprites } from './enemies';
 import { tileSprites } from './tiles';
 import { itemSprites } from './items';
 import { overworldSprites } from './overworld';
+import { landscapeSprites } from './landscape';
+import { smallPlaceSprites } from './smallplaces';
 import { mineSprites } from './mine';
 import { gruvbySprites } from './gruvby';
 import { millSprites } from './mill';
+import { landmarkSprites } from './landmarks';
+import { templePropSprites } from './templeprops';
 import { lighthouseSprites } from './lighthouse';
 import { parkSprites } from './park';
 import { forestSprites } from './forest';
@@ -22,9 +26,13 @@ export const SPRITES: Record<string, SpriteDef> = {
   ...tileSprites,
   ...itemSprites,
   ...overworldSprites,
+  ...landscapeSprites,
+  ...smallPlaceSprites,
   ...mineSprites,
   ...gruvbySprites,
   ...millSprites,
+  ...landmarkSprites,
+  ...templePropSprites,
   ...lighthouseSprites,
   ...parkSprites,
   ...forestSprites,

@@ -88,7 +88,8 @@ export class DialogOverlay implements Overlay {
       this.menu.update(input);
       return true;
     }
-    const advance = input.confirm() || input.pressed(Act.Sword) || input.taps.length > 0;
+    // Up too: it is what started the talk, so it is what players press to go on.
+    const advance = input.confirm() || input.pressed(Act.Sword) || input.pressed(Act.Up) || input.taps.length > 0;
     if (this.shown < this.total) {
       const fast = input.held(Act.Jump) || input.held(Act.Sword);
       const before = Math.floor(this.shown);

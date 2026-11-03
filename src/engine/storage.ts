@@ -77,3 +77,28 @@ export class SafeLocalStore implements KeyValueStore {
     }
   }
 }
+
+/** The part of `navigator.storage` used here (missing in older browsers). */
+export interface PersistentStorageApi {
+  persisted?(): Promise<boolean>;
+  persist?(): Promise<boolean>;
+}
+
+/**
+ * Asks the browser to keep the game's storage instead of clearing it when
+ * space runs low or the site hasn't been visited for a while (iOS Safari, for
+ * one, clears it after seven days unless the game is on the home screen).
+ * Asks only if the storage is not already kept. Returns whether it is kept;
+ * never throws. Call it from a tap or key press: Firefox may ask the player.
+ */
+export async function requestPersistentStorage(
+  api: PersistentStorageApi | undefined = typeof navigator !== 'undefined' ? navigator.storage : undefined,
+): Promise<boolean> {
+  try {
+    if (!api?.persist) return false;
+    if (await api.persisted?.()) return true;
+    return await api.persist();
+  } catch {
+    return false;
+  }
+}

@@ -11,11 +11,17 @@
     "preview": "vite preview --host",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "icons": "node --experimental-strip-types --no-warnings scripts/gen-icons.mjs"
+    "icons": "node --experimental-strip-types --no-warnings scripts/gen-icons.mjs",
+    "lint": "eslint .",
+    "check": "npm run lint && npm test && npm run build",
+    "walkthrough": "WALKTHROUGH=1 vitest run tests/playthrough.test.ts"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@types/node": "^22.20.5",
+    "eslint": "^9.39.5",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.71.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.4"
   }

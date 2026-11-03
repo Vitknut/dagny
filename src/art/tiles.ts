@@ -669,6 +669,25 @@ export const tileSprites: Record<string, SpriteDef> = {
     '.gggggggggggggg.',
     '................',
   ]),
+  /** A trapdoor in a floor: solid until struck from below with an up-thrust (Uppåtstöt). */
+  hatch: t([
+    'kkkkkkkkkkkkkkkk',
+    'kBBBBBBkBBBBBBBk',
+    'kBtBBBBkBBBtBBBk',
+    'kBBBBBBkBBBBBBBk',
+    'kggggggggggggggk',
+    'kBBBBBBkBBBBBBBk',
+    'kBBBtBBkBBBBBtBk',
+    'kBBBBBBkBBBBBBBk',
+    'kBBBBBykyBBBBBBk',
+    'kBBBBykkkyBBBBBk',
+    'kBBBBBykyBBBBBBk',
+    'kggggggggggggggk',
+    'kBBBBBBkBBBBBBBk',
+    'kBtBBBBkBBBBtBBk',
+    'kBBBBBBkBBBBBBBk',
+    'kkkkkkkkkkkkkkkk',
+  ]),
   /** Locked door – solid until opened with a key. */
   lockedDoor: t([
     'gBBBBBBBBBBBBBBg',

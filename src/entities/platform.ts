@@ -26,6 +26,8 @@ export class MovingPlatform {
   private pos = 0;
   private dir: 1 | -1 = 1;
   private pause = 0;
+  /** Steps Dagny has waited at the other end of an empty ride platform. */
+  private waited = 0;
   private wheel = 0;
   /** Water wheels: centre, radius and current angle. */
   private readonly cx: number;
@@ -85,7 +87,12 @@ export class MovingPlatform {
     return Math.hypot(this.bx - this.ax, this.by - this.ay) || 1;
   }
 
-  update(ridden: boolean): void {
+  /**
+   * `waiting` is where Dagny stands on firm ground (not aboard), if she does:
+   * an empty ride platform at the far end comes back for her after a moment,
+   * so a fall from a cart never strands her on the wrong side.
+   */
+  update(ridden: boolean, waiting: number | null = null): void {
     const ox = this.x;
     const oy = this.y;
     if (this.def.kind === 'wheel' || this.def.kind === 'carousel') {
@@ -110,8 +117,19 @@ export class MovingPlatform {
           // Rest at the end until Dagny steps off and on again.
           this.pause = -1;
         }
-      } else if (!ridden && this.pause === -1) {
-        this.pause = 0;
+      } else if (!ridden) {
+        if (this.pause === -1) this.pause = 0;
+        const home = waiting === null ? null : Math.abs(waiting - (this.ax + this.w / 2)) < Math.abs(waiting - (this.bx + this.w / 2)) ? 0 : 1;
+        if (home === null || home === this.pos) this.waited = 0;
+        else if (++this.waited > 45) {
+          // Roll back to her end, then set off the other way when she boards.
+          this.pos += (home === 0 ? -1 : 1) * stepFrac;
+          if (this.pos >= 1 || this.pos <= 0) {
+            this.pos = home;
+            this.dir = home === 0 ? 1 : -1;
+            this.waited = 0;
+          }
+        }
       }
     }
     this.place();

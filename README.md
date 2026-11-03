@@ -16,7 +16,9 @@ Kräver Node 20 eller senare (22 rekommenderas).
 npm install
 npm run dev        # http://localhost:5173
 npm test           # Vitest: kollision, XP-kurva, sparformat, rörelse och dataintegritet
+npm run lint       # ESLint
 npm run build      # statisk mapp i dist/ (typkontroll + Vite)
+npm run check      # allt ovan i följd – samma som CI kör vid varje push
 npm run preview    # servera dist/ lokalt (med service worker)
 ```
 
@@ -30,7 +32,7 @@ npm run preview    # servera dist/ lokalt (med service worker)
    - **iOS Safari:** Dela → "Lägg till på hemskärmen". Startar i helskärm och fungerar offline.
    - **Android Chrome:** meny → "Installera app".
 
-Lägg till `?debug` i adressen för att få alla läsningar och tekniker direkt, vilket är praktiskt när man testar. `window.dagny` exponerar spelobjektet i konsolen.
+Lägg till `?debug` i adressen för att få alla läsningar och tekniker direkt, vilket är praktiskt när man testar. `window.dagny` exponerar spelobjektet i konsolen (bara i utvecklingsläge).
 
 ## Kontroller
 
@@ -41,7 +43,10 @@ Lägg till `?debug` i adressen för att få alla läsningar och tekniker direkt,
 | Svärd (håll NER = lågt) | X | B | SVÄRD |
 | Magi (vald läsning) | C | Y | MAGI |
 | Prata / gå in genom dörr | Upp | Upp | Upp, eller tryck på personen |
+| Bläddra i dialog | Z, Enter, X eller Upp | A, B eller Upp | Tryck var som helst |
 | Paus | Esc / P | Start | ❚❚ |
+
+Efter en dialog startar inget nytt samtal förrän efter en halv sekund. Samma person eller skylt startar inte om förrän Dagny har gått därifrån en bit, eller efter tre sekunder, så man öppnar inte samtalet igen av misstag när man trycker sig förbi sista sidan.
 
 Pekkontrollerna visas automatiskt vid beröring och döljs när tangentbord eller handkontroll används. Storlek, placering, genomskinlighet, styrspak/styrkors och vibration ställs in under **Inställningar**.
 
@@ -51,6 +56,18 @@ Mappen `android/` innehåller en Trusted Web Activity som paketerar webbversione
 och `.github/workflows/android.yml` bygger en signerad `.aab`. Steg för steg (Pages, signeringsnyckel,
 Play Console, Digital Asset Links) finns i [`android/README.md`](android/README.md).
 
+## Dokumentation
+
+| Dokument | Innehåll |
+|---|---|
+| [docs/kartor/](docs/kartor/README.md) | Världskartan och regionerna, ritade ur speldata |
+| [docs/arkitektur.md](docs/arkitektur.md) | Kodens uppbyggnad, mönster, kvalitet och känd teknisk skuld |
+| [docs/speldesign.md](docs/speldesign.md) | Progression, vem som lär ut vad, liv och Game Over, templens ordning, Trollberget |
+| [docs/soundtrack.md](docs/soundtrack.md) | Musiken: två ljudvärldar, Väktarmotivet, alla låtar och jinglar |
+| [docs/lore-audit.md](docs/lore-audit.md) | Genomgång av berättelsen och dess detaljer |
+| [docs/hamn-audit.md](docs/hamn-audit.md) | Regler för fågelformen Hamn |
+| [docs/mobil-testchecklista.md](docs/mobil-testchecklista.md) | Checklista för att testa på telefon |
+
 ## Var ligger vad?
 
 ```
@@ -59,8 +76,12 @@ src/
                kollision, sprites, bitmappsteckensnitt, ljudsynt + sequencer, lagring
   game/        scener (titel, sidovy, överblickskarta, berättelsekort), dialog, menyer,
                HUD, sparformat, XP-logik, parallax
-  entities/    Dagny, väsen och bossar, NPC:er, projektiler, föremål, partiklar
+    side/      sidovyns system: room (bygga rummet), combat, pickups, spells, render
+  entities/    Dagny, väsen, NPC:er, projektiler, föremål, partiklar
+    behaviors/ ett beteende per fil: walker, diver, shadow … och de sju bossarna
   data/        ALL speldata – se nedan
+    areas/     rummen, en fil per region eller tempel
+    dialog/    dialogerna, en fil per plats
   art/         sprites som teckenrutnät + bitmappsteckensnittet
   audio/       låtar (noter) och ljudeffekter (syntparametrar)
 public/        manifest, ikoner (service worker genereras vid build från src/sw-template.js)
@@ -73,15 +94,16 @@ tests/         Vitest
 | Fil | Innehåll |
 |---|---|
 | `src/data/palettes.ts` | **Paletten** (~32 färger, ingen ren svart) och **tonfiltren** per område (sommarkväll, grå augusti, midnattssol, lyktsken, krypta …) |
-| `src/data/areas.ts` | Sidovyområden: tilemap + dekorlager, utgångar, NPC:er, rekvisita, mörker. Tecknen förklaras i `src/data/legend.ts` |
-| `src/data/overworld.ts` | Överblickskartan, platser, synliga möten, vad som kräver eka/stövlar |
+| `src/data/areas/*.ts` | Sidovyområden, en fil per region eller tempel (samlas i `areas.ts`): tilemap + dekorlager, utgångar, NPC:er, rekvisita, mörker. Tecknen förklaras i `src/data/legend.ts` |
+| `src/data/overworld.ts` | Överblickskartan: platser, dolda platser, sevärdheter och synliga möten |
+| `src/data/terrain.ts` | Varje sorts mark på kartan: namn, sprite, vad den kräver och vilka möten den ger |
 | `src/data/temples.ts` | De sju templen och byarna |
-| `src/data/enemies.ts` | Väsen (beteende, liv, skada, XP, drops) och bossar med två faser |
-| `src/data/dialog.ts` | All dialog. Dagny säger aldrig något – val beskriver vad hon gör |
+| `src/data/enemies.ts` | Väsen (beteende, liv, skada, XP, drops) och bossar med två faser. Beteendena finns i `src/entities/behaviors/` |
+| `src/data/dialog/*.ts` | All dialog, en fil per plats (samlas i `dialog.ts`). Dagny säger aldrig något – val beskriver vad hon gör |
 | `src/data/npcs.ts` | Bybor och vilken dialog de väljer beroende på flaggor |
 | `src/data/spells.ts` | De sju läsningarna och teknikerna (nedåtstöt, uppåtstöt) |
 | `src/data/items.ts` | Föremål och nyckelskatter |
-| `src/data/progression.ts` | XP-kurvan och värden per nivå (Styrka, Magi, Liv, 1–8) |
+| `src/data/progression.ts` | XP-kurvan och värden per nivå (Styrka, Magi, Liv, 1–12) |
 | `src/data/strings.ts` | All gränssnittstext (förberett för översättning) |
 | `src/art/*.ts` | Sprites som rutnät av tecken mot paletten. `getSprite(id, frame)` i `src/engine/sprites.ts` är det enda gränssnittet, så handritade PNG-ark kan ersätta datat senare |
 | `src/audio/songs.ts` | Musiken som noter (`"e5:4 f#5:2 r:2"`, längd i sextondelar) |
@@ -92,11 +114,13 @@ tests/         Vitest
 
 - **Rendering:** Canvas 2D i 320×180. Heltalsskalning när den fyller minst ~85 % av skärmen, annars den största skalan som får plats. `image-rendering: pixelated`. Statiska tiles förrenderas per område och sprites cachas på offscreen-canvas vid uppstart.
 - **Spelloop:** fast tidssteg 60 Hz, rendering på `requestAnimationFrame`. Vid `visibilitychange` pausas och sparas spelet, ljudet stängs av och pausmenyn öppnas när man kommer tillbaka.
-- **Sparning:** `localStorage` bakom en wrapper som aldrig kastar fel och faller tillbaka på minnet. Spelet autosparar vid varje områdesbyte, vila, ljusstake (checkpoint), nyckel och när appen tappar fokus. Sparfilen är versionerad och valideras fält för fält.
-- **Ljud:** Web Audio-synt med dragspels-, nyckelharps-, flöjt-, kyrkklocke- och orgelklanger. Låses upp vid första tryck (krav på iOS).
+- **Sparning:** `localStorage` bakom en wrapper som aldrig kastar fel och faller tillbaka på minnet. Spelet autosparar vid varje områdesbyte, vila, ljusstake (checkpoint), nyckel och när appen tappar fokus. Sparfilen är versionerad och valideras fält för fält. Vid första tryck ber spelet webbläsaren att aldrig rensa lagringen (`navigator.storage.persist()`). Annars kan till exempel iOS Safari radera den efter sju dagar utan besök.
+- **Ljud:** Web Audio-synt med folkklanger (dragspel, harpa, flöjt, kyrkklocka, orgel) för byarna och NES-pulsvågor för äventyret. Jinglar spelas ovanpå musiken. Låses upp vid första tryck (krav på iOS). Se [docs/soundtrack.md](docs/soundtrack.md).
 - **Förlåtande styrning:** coyote time, hoppbuffert, variabel hopphöjd, stora träffytor och "lugnt läge" som halverar skadan.
 
 ## Status och nästa steg
+
+*Historiken nedan berättar hur spelet byggdes. Templens egna låtar som nämns där har sedan ersatts av en gemensam tempellåt (se [docs/soundtrack.md](docs/soundtrack.md)).*
 
 **Leverans 1:** hela loopen by → karta → krypta (4 rum, nycklar, låsta dörrar, ljusstakar som checkpoints, mörkt benhus) → Kyrkogrimmen (två faser) → ekan → tillbaka till Hulda. Dessutom sidouppgiften med katten Murre, mentorn som lär ut nedåtstöt, nivåmeny, alla sju läsningar i motorn (Läkning lärs ut i spelet), synliga möten, PWA och offline.
 
@@ -137,4 +161,10 @@ Motorn har nu bossar som kallar på väsen (`spawnEnemy`), projektiler som sköl
 
 Fem nya sidouppdrag, ett per by, där föremålen ligger i templen: Ingrids psalmbok (kryptan), Rosas medaljong (kvarnen), fiskaren Johans kompass (fyren), Lill-Pers koskälla (Fäbodskogen) och stinsens visselpipa (folkparken).
 
-Nästa steg: polering. Sedan Dagnys äventyr 2.
+**Världen (version 1.1):** överblickskartan är 80 × 56 rutor, mot 44 × 32 förut. Den är delad i sju regioner, och varje tempels skatt öppnar vägen till nästa, som i Zelda II: ekan (sjön), karbidlampan (den mörka gruvgången), stövlarna (tidvattenkärret), ficklampan (Nattskogen), radion (det dolda passet) och sist vägen till Trollberget. Varje skatt säger vart den leder.
+
+**Liv och ett svårare slut (version 1.2):** Dagny har 3 liv. Game Over skickar henne tillbaka till mormor, men i Trollberget till bergets fot. Åtta näverdockor ger extra liv. Trollberget har fått tuffare väsen, labyrinten Trollgångarna och Skuggsalen, där Dagnys egen skugga väntar. Läkning och Nedåtstöt får man inte längre gratis i början: Sven vill ha johannesört från Björkhagen, och Algot lär ut sitt knep först när kryptan är klarad.
+
+**Soundtracket:** tempel 1–6 delar en tempellåt och en bosslåt, som i Zelda II. Väktarmotivet binder ihop templen, bossarna, Trollberget och segerfanfaren. Nytt finns också: möteslåt, grottlåt, Skuggans tema och jinglar för fynd och lärdomar. Se [docs/soundtrack.md](docs/soundtrack.md).
+
+Nästa steg: polering, minskad teknisk skuld (se [docs/arkitektur.md](docs/arkitektur.md)), och sedan Dagnys äventyr 2.

@@ -8,11 +8,13 @@ import { drawText, measure } from '../engine/text';
 import { TONES, PALETTE, type ToneFilter } from '../data/palettes';
 import { STR } from '../data/strings';
 import { TEMPLES } from '../data/temples';
+import { SpellRite } from './rite';
+import { SignalScene } from './signal';
+import { DialogOverlay } from './dialog';
 import type { Condition, DialogAction } from '../data/types';
 import { loadSettings, saveSettings, PLACEMENT_OFFSETS, type Settings } from './settings';
 import { readSave, writeSave } from './save';
-import { hasFlag, hasItem, setFlag, type GameState } from './state';
-import { maxHp, maxMp } from './progression';
+import { MAX_LIVES, addContainer, hasFlag, hasItem, hpMax, mpMax, setFlag, type GameState } from './state';
 
 export interface Scene {
   /** Music id to play while this scene is active. */
@@ -33,6 +35,8 @@ export interface Overlay {
   render(ctx: CanvasRenderingContext2D): void;
   /** Hide the HUD while open. */
   hideHud?: boolean;
+  /** Don't draw the overlays beneath this one while it is open. */
+  hidesBelow?: boolean;
 }
 
 interface Toast {
@@ -57,12 +61,22 @@ export class Game {
   overlays: Overlay[] = [];
   /** Logic frames since start. */
   frame = 0;
+  /** The frame the last overlay (dialog, menu) closed. */
+  overlayClosedAt = -1000;
+  /**
+   * Buns, thermoses and lingonberries lying in rooms that Dagny has taken
+   * (by room position). They stay gone until she rests or wakes in a village
+   * (a new day), so going in and out of a place refills nothing. Meetings on
+   * the map are fresh ground each time (game/flow.ts).
+   */
+  readonly taken = new Set<string>();
   private fade = 0;
   private fadeDir = 0;
   private fadeCb: (() => void) | null = null;
   private toasts: Toast[] = [];
   private vignettes = new Map<string, HTMLCanvasElement>();
-  private paused = false;
+  /** True while the app is in the background (audio stays silent). */
+  paused = false;
   /** Set by the main module – draws the "turn your phone" screen. */
   rotateScreen: { update(): void; render(ctx: CanvasRenderingContext2D): void } | null = null;
   /** Opens the pause menu (set by main to avoid an import cycle). */
@@ -84,6 +98,10 @@ export class Game {
     // Taps on the canvas (menus, NPCs). Also unlock audio and show touch controls.
     canvas.addEventListener('pointerdown', (e) => {
       e.preventDefault();
+      // preventDefault also stops the browser moving keyboard focus here – and
+      // when the game runs inside a frame (a web page, the demo), the keys would
+      // keep going to the page around it. Take focus ourselves.
+      window.focus();
       this.audio.unlock();
       if (e.pointerType === 'touch') {
         this.input.setSource('touch');
@@ -93,6 +111,9 @@ export class Game {
       this.input.addTap(p.x, p.y);
     });
     controlsRoot.addEventListener('pointerdown', () => this.audio.unlock(), { capture: true });
+    // Any click or touch anywhere gives the game the keyboard (see above).
+    document.addEventListener('pointerdown', () => window.focus(), { capture: true });
+    window.focus();
     for (const ev of ['touchstart', 'touchend', 'gesturestart', 'dblclick', 'contextmenu'] as const) {
       document.addEventListener(ev, (e) => {
         if (ev === 'touchstart' || ev === 'touchend') this.audio.unlock();
@@ -108,6 +129,7 @@ export class Game {
       mode: this.settings.stickMode,
       scale: this.settings.controlScale,
       opacity: this.settings.controlOpacity,
+      lowButton: this.settings.lowButton,
       offsetX: off.x,
       offsetY: off.y,
     };
@@ -121,22 +143,29 @@ export class Game {
   }
 
   toggleFullscreen(): void {
-    const d = document as Document & { webkitFullscreenElement?: Element; webkitExitFullscreen?: () => void };
+    const d = document as Document & { webkitFullscreenElement?: Element; webkitExitFullscreen?: () => void; webkitFullscreenEnabled?: boolean };
     const el = document.documentElement as HTMLElement & { webkitRequestFullscreen?: () => void };
+    // Not allowed here: inside a frame that forbids it (e.g. a preview page),
+    // or a browser without fullscreen for pages (iPhone Safari). Say so.
+    const explain = (): void => this.toast(STR.noFullscreen, 4);
     try {
       if (document.fullscreenElement || d.webkitFullscreenElement) {
         if (document.exitFullscreen) void document.exitFullscreen();
         else d.webkitExitFullscreen?.();
+      } else if (!(document.fullscreenEnabled || d.webkitFullscreenEnabled)) {
+        explain();
       } else if (el.requestFullscreen) {
         void el.requestFullscreen({ navigationUI: 'hide' }).then(() => {
           const o = screen.orientation as ScreenOrientation & { lock?: (o: string) => Promise<void> };
           o?.lock?.('landscape').catch(() => undefined);
-        }).catch(() => undefined);
+        }).catch(explain);
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
       } else {
-        el.webkitRequestFullscreen?.();
+        explain();
       }
     } catch {
-      /* not supported (e.g. iPhone Safari) – installing as PWA gives fullscreen */
+      explain();
     }
   }
 
@@ -231,6 +260,7 @@ export class Game {
   onAction: ((a: DialogAction) => void) | null = null;
   /** Story scenes (the ending, the credits), wired up in main.ts. */
   onScene: ((scene: 'ending' | 'credits') => void) | null = null;
+  onTravel: ((area: string) => void) | null = null;
 
   runAction(a: DialogAction): void {
     const s = this.state;
@@ -242,19 +272,26 @@ export class Game {
       case 'learnSpell':
         if (!s.spells.includes(a.spell)) s.spells.push(a.spell);
         s.selectedSpell ??= a.spell;
-        this.audio.play('levelup');
+        this.audio.jingle('lara');
+        // The rite: the reading is written in the air before the teacher goes on.
+        this.pushOverlay(new SpellRite(this, a.spell));
         break;
       case 'learnSkill':
         if (!s.skills.includes(a.skill)) s.skills.push(a.skill);
-        this.audio.play('levelup');
+        this.audio.jingle('lara');
         break;
       case 'rest':
-        s.hp = maxHp(s.levels.liv);
-        s.mp = maxMp(s.levels.magi);
+        this.taken.clear();
+        s.hp = hpMax(s);
+        s.mp = mpMax(s);
         this.audio.play('heal');
         break;
       case 'heal':
-        s.hp = maxHp(s.levels.liv);
+        s.hp = hpMax(s);
+        this.audio.play('heal');
+        break;
+      case 'magic':
+        s.mp = mpMax(s);
         this.audio.play('heal');
         break;
       case 'xp':
@@ -263,7 +300,7 @@ export class Game {
         break;
       case 'giveItem':
         if (!s.items.includes(a.item)) s.items.push(a.item);
-        this.audio.play('key');
+        this.audio.jingle('fynd');
         break;
       case 'takeItem':
         s.items = s.items.filter((i) => i !== a.item);
@@ -271,6 +308,25 @@ export class Game {
       case 'scene':
         this.onScene?.(a.scene);
         break;
+      case 'travel':
+        this.onTravel?.(a.area);
+        break;
+      case 'container':
+        if (addContainer(s, a.kind, a.id)) this.audio.jingle('fynd');
+        break;
+      case 'life':
+        if (!s.opened.includes(`liv1:${a.id}`)) {
+          s.opened.push(`liv1:${a.id}`);
+          s.lives = Math.min(MAX_LIVES, s.lives + 1);
+          this.audio.jingle('fynd');
+          this.toast(STR.extraLife, 3);
+        }
+        break;
+      case 'signal': {
+        const then = a.then;
+        this.pushOverlay(new SignalScene(this, () => this.pushOverlay(new DialogOverlay(this, then))));
+        break;
+      }
     }
     this.onAction?.(a);
     if (a.type === 'rest') this.save();
@@ -319,6 +375,7 @@ export class Game {
         const i = this.overlays.lastIndexOf(top);
         if (i >= 0) this.overlays.splice(i, 1);
         this.input.consume();
+        this.overlayClosedAt = this.frame;
       }
     } else {
       this.scene?.update();
@@ -336,7 +393,10 @@ export class Game {
     ctx.fillStyle = PALETTE.k;
     ctx.fillRect(0, 0, VIEW_W, VIEW_H);
     this.scene?.render(ctx);
-    for (const o of this.overlays) o.render(ctx);
+    // An overlay that takes the whole stage (the rite) hides the ones beneath it.
+    let from = 0;
+    this.overlays.forEach((o, i) => { if (o.hidesBelow) from = i; });
+    for (const o of this.overlays.slice(from)) o.render(ctx);
     this.renderToasts(ctx);
     if (this.fade > 0) {
       ctx.globalAlpha = Math.min(1, this.fade);

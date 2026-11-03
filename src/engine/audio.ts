@@ -28,6 +28,8 @@ export interface SongDef {
   /** Derive from another song (e.g. placeholder temple themes). */
   base?: string;
   transpose?: number;
+  /** A song that doesn't loop goes straight on into this one (an intro and its loop). */
+  then?: string;
 }
 
 export interface SfxStep {
@@ -58,6 +60,7 @@ interface ParsedTrack {
 interface ParsedSong {
   bpm: number;
   loop: boolean;
+  then?: string;
   tracks: ParsedTrack[];
 }
 
@@ -102,7 +105,8 @@ export class AudioEngine {
   private songs: Record<string, SongDef> = {};
   private sfx: Record<string, SfxStep[]> = {};
   private parsed = new Map<string, ParsedSong>();
-  private current: { id: string; song: ParsedSong; idx: number[]; time: number[]; startedAt: number } | null = null;
+  /** `origin` is the song asked for, when this is the loop its intro went on into. */
+  private current: { id: string; origin: string; song: ParsedSong; idx: number[]; time: number[]; startedAt: number } | null = null;
   private wanted: string | null = null;
   private musicVol = 0.6;
   private sfxVol = 0.7;
@@ -215,6 +219,7 @@ export class AudioEngine {
     const song: ParsedSong = {
       bpm,
       loop: def.loop,
+      then: def.then,
       tracks: tracks.map((t) => {
         const notes = parseNotes(t.notes, t.inst === 'drum' ? 0 : transpose + (t.shift ?? 0));
         return { def: t, notes, totalLen: notes.reduce((a, n) => a + n.len, 0) };
@@ -232,7 +237,7 @@ export class AudioEngine {
       this.stopSong();
       return;
     }
-    if (this.current?.id === id) return;
+    if (this.current?.id === id || this.current?.origin === id) return;
     this.startSong(id);
   }
 
@@ -261,6 +266,7 @@ export class AudioEngine {
     const t0 = this.ctx.currentTime + 0.3;
     this.current = {
       id,
+      origin: id,
       song,
       idx: song.tracks.map(() => 0),
       time: song.tracks.map(() => t0),
@@ -290,15 +296,61 @@ export class AudioEngine {
       }
       if (cur.idx[ti] < track.notes.length || cur.song.loop) allDone = false;
     });
+    // An intro ends right where its loop begins, to the sixteenth.
+    if (allDone && !cur.song.loop && cur.song.then) {
+      const next = this.parse(cur.song.then);
+      if (next) {
+        const t0 = Math.max(...cur.time);
+        this.current = { id: cur.song.then, origin: cur.origin, song: next, idx: next.tracks.map(() => 0), time: next.tracks.map(() => t0), startedAt: t0 };
+        return;
+      }
+    }
     if (allDone && !cur.song.loop && ctx.currentTime > Math.max(...cur.time)) {
       this.current = null;
       if (this.wanted === cur.id) this.wanted = null;
     }
   }
 
-  private playNote(t: TrackDef, midi: number, when: number, dur: number): void {
+  /**
+   * A short jingle (a find, a lesson learned) played over the music, which
+   * dips meanwhile and comes back on its own – the song never restarts.
+   */
+  jingle(id: string): void {
+    const ctx = this.ctx;
+    if (!ctx || !this.musicBus || !this.master || ctx.state !== 'running') return;
+    const song = this.parse(id);
+    if (!song) return;
+    if (!this.jingleBus) {
+      this.jingleBus = ctx.createGain();
+      this.jingleBus.connect(this.master);
+    }
+    this.jingleBus.gain.value = this.musicVol * this.musicVol * 0.6;
+    const sixteenth = 60 / song.bpm / 4;
+    const t0 = ctx.currentTime + 0.03;
+    let end = t0;
+    for (const track of song.tracks) {
+      let at = t0;
+      for (const n of track.notes) {
+        const dur = n.len * sixteenth;
+        this.playNote(track.def, n.midi, at, dur, this.jingleBus);
+        at += dur;
+      }
+      end = Math.max(end, at);
+    }
+    const g = this.musicBus.gain;
+    const full = this.musicVol * this.musicVol * 0.5;
+    g.cancelScheduledValues(t0);
+    g.setValueAtTime(g.value, t0);
+    g.linearRampToValueAtTime(full * 0.15, t0 + 0.06);
+    g.setValueAtTime(full * 0.15, end);
+    g.linearRampToValueAtTime(full, end + 0.6);
+  }
+
+  private jingleBus: GainNode | null = null;
+
+  private playNote(t: TrackDef, midi: number, when: number, dur: number, out?: AudioNode): void {
     const ctx = this.ctx!;
-    const bus = this.musicBus!;
+    const bus = out ?? this.musicBus!;
     if (midi === -1) return;
     const vol = t.vol;
     if (t.inst === 'drum' || midi < -1) {
@@ -515,8 +567,11 @@ export class AudioEngine {
     src.stop(when + len + 0.02);
   }
 
-  /** Play a sound effect. Rapid repeats of the same effect are throttled. */
-  play(id: string): void {
+  /**
+   * Play a sound effect. Rapid repeats of the same effect are throttled.
+   * `vol` scales it (distance), `pan` places it left (-1) to right (1).
+   */
+  play(id: string, opts?: { vol?: number; pan?: number }): void {
     const ctx = this.ctx;
     const steps = this.sfx[id];
     if (!ctx || !steps || ctx.state !== 'running' || !this.sfxBus) return;
@@ -524,11 +579,18 @@ export class AudioEngine {
     const last = this.lastSfx.get(id) ?? -1;
     if (now - last < 0.03) return;
     this.lastSfx.set(id, now);
+    let out: AudioNode = this.sfxBus;
+    if (opts?.pan) {
+      const p = ctx.createStereoPanner();
+      p.pan.value = Math.max(-1, Math.min(1, opts.pan));
+      p.connect(this.sfxBus);
+      out = p;
+    }
     for (const s of steps) {
       const when = now + (s.at ?? 0);
       const g = ctx.createGain();
-      g.connect(this.sfxBus);
-      const vol = (s.vol ?? 0.5) * 0.6;
+      g.connect(out);
+      const vol = Math.max(0.002, (s.vol ?? 0.5) * 0.6 * (opts?.vol ?? 1));
       g.gain.setValueAtTime(vol, when);
       g.gain.exponentialRampToValueAtTime(0.001, when + s.dur);
       if (s.wave === 'noise') {

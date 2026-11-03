@@ -55,6 +55,66 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
     description: 'Anders lyckofickur i mässing. Det tickar fortfarande.',
     sprite: 'fickur',
   },
+  prastkragar: {
+    id: 'prastkragar',
+    name: 'Prästkragar',
+    description: 'En bukett prästkragar till de som vilar vid pestkorset.',
+    sprite: 'prastkragar',
+  },
+  runbit: {
+    id: 'runbit',
+    name: 'Runstensbit',
+    description: 'En bit av runstenen vid skeppssättningen.',
+    sprite: 'runbit',
+  },
+  posthorn: {
+    id: 'posthorn',
+    name: 'Posthornet',
+    description: 'Postiljonens mässingshorn, hittat vid forsen.',
+    sprite: 'posthorn',
+  },
+  tang: {
+    id: 'tang',
+    name: 'Smedtången',
+    description: 'Algots gamla smidestång från smedjan öster om byn. Han vill ha tillbaka den.',
+    sprite: 'tang',
+  },
+  hacka: {
+    id: 'hacka',
+    name: 'Berghackan',
+    description: 'En gammal berghacka med ett K inbränt i skaftet. Förman Karlsson i Bruksorten vill ha tillbaka den.',
+    sprite: 'hacka',
+  },
+  solsten: {
+    id: 'solsten',
+    name: 'Solstenen',
+    description: 'En klar, kantig sten som samlar ljuset även i dimma. Gamla Elin i Gruvsamhället väntar på den.',
+    sprite: 'solsten',
+  },
+  ronnkvist: {
+    id: 'ronnkvist',
+    name: 'Rönnkvisten',
+    description: 'En kvist rönn från kvarnen vid forsen, med bären kvar. Smeden Holm i Bruksorten väntar på den.',
+    sprite: 'ronnkvist',
+  },
+  fjader: {
+    id: 'fjader',
+    name: 'Ärlans fjäder',
+    description: 'En lätt, svartvit fjäder från en sädesärla. Viola i Fiskeläget väntar på den.',
+    sprite: 'fjader',
+  },
+  askvigg: {
+    id: 'askvigg',
+    name: 'Åskviggen',
+    description: 'En slipad stenyxa. Folk sa att åskan kastat ner den. Telegrafisten Oskar väntar på den.',
+    sprite: 'askvigg',
+  },
+  johannesort: {
+    id: 'johannesort',
+    name: 'Johannesört',
+    description: 'En kvist johannesört från Björkhagen. Gamle Sven behöver den till sin läsning.',
+    sprite: 'johannesort',
+  },
   psalmbok: {
     id: 'psalmbok',
     name: 'Psalmboken',
@@ -85,6 +145,36 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
     description: 'Stinsens visselpipa i nysilver. Utan den går inga tåg.',
     sprite: 'visselpipa',
   },
+  malm: {
+    id: 'malm',
+    name: 'Järnmalm',
+    description: 'En tung klump malm från gamla gruvan. Smeden Holm i Bruksorten kan härda klingan med den.',
+    sprite: 'malm',
+  },
+  askstenen: {
+    id: 'askstenen',
+    name: 'Åskstenen',
+    description: 'En glaserad sten där blixten slog ner vid fyren. Den är fortfarande varm.',
+    sprite: 'askstenen',
+  },
+  klingaHardad: {
+    id: 'klingaHardad',
+    name: 'Härdad klinga',
+    description: 'Smeden Holm har härdat klingan med gruvans malm. Den biter hårdare. (+1 skada)',
+    sprite: 'klingaHardad',
+  },
+  klingaBlank: {
+    id: 'klingaBlank',
+    name: 'Åskslipad klinga',
+    description: 'Slipad med åskstenen. Det knastrar om eggen när den svingas. (+1 skada)',
+    sprite: 'klingaBlank',
+  },
+  silverbeslag: {
+    id: 'silverbeslag',
+    name: 'Silverbeslaget',
+    description: 'Grå-Pelles gömda silver, nu ett beslag runt kläppen. Väsen ryggar för silver. (+1 skada)',
+    sprite: 'silverbeslag',
+  },
   murre: {
     id: 'murre',
     name: 'Murre',
@@ -94,4 +184,4 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
 };
 
 /** Order shown in the items menu. */
-export const ITEM_ORDER = ['svard', 'eka', 'karbidlampa', 'stovlar', 'ficklampa', 'radio', 'naverlur', 'murre', 'fickur', 'psalmbok', 'medaljong', 'kompass', 'skalla', 'visselpipa'];
+export const ITEM_ORDER = ['svard', 'eka', 'karbidlampa', 'stovlar', 'ficklampa', 'radio', 'naverlur', 'klingaHardad', 'klingaBlank', 'silverbeslag', 'malm', 'askstenen', 'murre', 'tang', 'hacka', 'solsten', 'ronnkvist', 'fjader', 'askvigg', 'johannesort', 'prastkragar', 'runbit', 'posthorn', 'fickur', 'psalmbok', 'medaljong', 'kompass', 'skalla', 'visselpipa'];

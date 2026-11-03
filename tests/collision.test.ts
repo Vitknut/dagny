@@ -137,3 +137,15 @@ describe('firmlySupported', () => {
     expect(firmlySupported(g, { x: 4, y: 0, w: 12, h: 12 })).toBe(false);
   });
 });
+
+describe('nearestFreeSpot (a saved spot inside rock after a map change)', () => {
+  it('lifts Dagny out of a filled-in gap onto the rock', async () => {
+    const { nearestFreeSpot } = await import('../src/game/sidescene');
+    const g = grid(['......', '...###', '...###', '######']);
+    // Feet on the bottom row inside the block at x 4.
+    const spot = nearestFreeSpot(g, 4 * 16 + 2, 3 * 16 - 22, 10, 22)!;
+    expect(spot).not.toBeNull();
+    expect(spot.y + 22).toBeLessThanOrEqual(16);
+    expect(nearestFreeSpot(g, 2, 0, 10, 14)).toBeNull();
+  });
+});

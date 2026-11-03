@@ -103,6 +103,7 @@ export class TitleScene implements Scene {
     ctx.fillStyle = PALETTE.y;
     ctx.fillRect(VIEW_W / 2 - 54, ty + 13, 108, 1);
     drawText(ctx, STR.subtitle, VIEW_W / 2, ty + 17, 'Y', { align: 'center', outline: 'k' });
+    drawText(ctx, STR.tagline, VIEW_W / 2, ty + 29, 'C', { align: 'center', outline: 'k' });
 
     if (!this.started) {
       if (Math.floor(this.t / 30) % 2 === 0) {

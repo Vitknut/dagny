@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { AREAS } from '../src/data/areas';
-import { DIALOG } from '../src/data/dialog';
+import { AREAS, AREA_GROUPS } from '../src/data/areas';
+import { PLACE_CHARS, TERRAIN } from '../src/data/terrain';
+import { DIALOG, DIALOG_GROUPS } from '../src/data/dialog';
 import { BOSSES, ENEMIES } from '../src/data/enemies';
 import { ITEMS, ITEM_ORDER } from '../src/data/items';
 import { DECO, ENEMY_CHARS, FRONT, PICKUP_CHARS } from '../src/data/legend';
@@ -8,6 +9,7 @@ import { NPCS } from '../src/data/npcs';
 import { OVERWORLD } from '../src/data/overworld';
 import { PALETTE, TONES } from '../src/data/palettes';
 import { SPELLS, SPELL_ORDER } from '../src/data/spells';
+import { MAX_LEVEL } from '../src/data/progression';
 import { STR } from '../src/data/strings';
 import { TEMPLES, VILLAGES } from '../src/data/temples';
 import { SPRITES } from '../src/art';
@@ -18,7 +20,7 @@ import { parseNotes } from '../src/engine/audio';
 import { wrap } from '../src/engine/text';
 import type { DialogAction } from '../src/data/types';
 
-const KNOWN_TILE = new Set(['.', '#', '=', '^', '~', 'n', 'L', 'k', 'c', 'X', '@', 'q', '%', '&', '?', ...Object.keys(ENEMY_CHARS), ...Object.keys(PICKUP_CHARS), 'B', 'M']);
+const KNOWN_TILE = new Set(['.', '#', '=', '^', '~', 'n', 'L', 'k', 'c', 'X', '@', 'q', '%', '&', '?', ...Object.keys(ENEMY_CHARS), ...Object.keys(PICKUP_CHARS), 'B', 'M', 'h', 'p', '+', '!']);
 
 describe('palette', () => {
   it('has about 32 colours and no pure black', () => {
@@ -180,7 +182,7 @@ describe('creatures, temples, spells', () => {
   it('has the seven läsningar and their villages', () => {
     expect(SPELL_ORDER.length).toBe(7);
     for (const id of SPELL_ORDER) {
-      expect(SPELLS[id].cost.length).toBe(8);
+      expect(SPELLS[id].cost.length).toBe(MAX_LEVEL);
       expect(VILLAGES.some((v) => v.name === SPELLS[id].village)).toBe(true);
     }
   });
@@ -236,7 +238,10 @@ describe('dialog and text', () => {
     for (const n of Object.values(NPCS)) {
       expect(SPRITES[n.sprite], n.sprite).toBeDefined();
       for (const t of n.talk) expect(DIALOG[t.dialog], `${n.id}: ${t.dialog}`).toBeDefined();
-      expect(n.talk[n.talk.length - 1].if, `${n.id} needs a fallback dialog`).toBeUndefined();
+      // Only a thing (a glowing charcoal stack) may have nothing to say.
+      if (n.talk.length) expect(n.talk[n.talk.length - 1].if, `${n.id} needs a fallback dialog`).toBeUndefined();
+      else expect(n.still, `${n.id} has nothing to say`).toBe(true);
+      if (n.burns?.dialog) expect(DIALOG[n.burns.dialog], n.burns.dialog).toBeDefined();
     }
     for (const p of OVERWORLD.places) if (p.dialog) expect(DIALOG[p.dialog], p.dialog).toBeDefined();
     for (const id of ['behover_eka', 'behover_stovlar', 'nyckel_saknas', 'grim_vaknar', 'murre_hittad']) expect(DIALOG[id]).toBeDefined();
@@ -253,7 +258,11 @@ describe('overworld', () => {
     for (const r of OVERWORLD.tiles) expect(r.length).toBe(w);
     for (const p of OVERWORLD.places) {
       const ch = OVERWORLD.tiles[p.y]?.[p.x];
-      expect('VKGBOMQYPZT').toContain(ch);
+      // Hidden places sit on the waterfall, the cliff door or the sea cleft that hides them;
+      // small places on the croft, cross, stone or churchyard that marks them.
+      // Voices the radio picks up hang in the open air, on any walkable ground.
+      const ok = p.radio ? !TERRAIN[ch]?.blocked : p.hidden ? 'AE3'.includes(ch) : PLACE_CHARS.includes(ch) || !!TERRAIN[ch]?.visitable || !!TERRAIN[ch]?.passage;
+      expect(ok, `${p.name} on '${ch}'`).toBe(true);
       if (p.area) {
         expect(AREAS[p.area], p.area).toBeDefined();
         if (p.entry) expect(AREAS[p.area].tiles.join('')).toContain(p.entry);
@@ -262,12 +271,8 @@ describe('overworld', () => {
     expect(OVERWORLD.tiles[OVERWORLD.start.y][OVERWORLD.start.x]).not.toBe('^');
   });
 
-  it('encounters start on their terrain and lead to real areas', () => {
-    for (const e of OVERWORLD.encounters) {
-      expect(e.terrain).toContain(OVERWORLD.tiles[e.y][e.x]);
-      if (e.area) expect(AREAS[e.area]).toBeDefined();
-    }
-    for (const a of Object.values(OVERWORLD.areaByTerrain)) expect(AREAS[a]).toBeDefined();
+  it('encounters start on their terrain', () => {
+    for (const e of OVERWORLD.encounters) expect(e.terrain).toContain(OVERWORLD.tiles[e.y][e.x]);
   });
 
   it('the far side of the lake cannot be reached without the eka', () => {
@@ -280,7 +285,7 @@ describe('overworld', () => {
       const k = `${x},${y}`;
       if (seen.has(k)) continue;
       const ch = t[y]?.[x];
-      if (!ch || ch === '^' || ch === '~' || ch === 's') continue;
+      if (!ch || TERRAIN[ch]?.blocked || TERRAIN[ch]?.needs) continue;
       seen.add(k);
       stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
     }
@@ -361,12 +366,48 @@ describe('the ending', () => {
   });
 });
 
+describe('data split into files', () => {
+  it('no room or dialog is defined in two files', () => {
+    for (const [name, groups] of [['areas', AREA_GROUPS], ['dialog', DIALOG_GROUPS]] as const) {
+      const keys = groups.flatMap((g) => Object.keys(g));
+      expect(new Set(keys).size, name).toBe(keys.length);
+    }
+  });
+});
+
 describe('music and sound', () => {
   it('every song parses and its tracks loop in sync', () => {
     for (const [id, song] of Object.entries(SONGS)) {
       const tracks = song.tracks.length ? song.tracks : SONGS[song.base!].tracks;
       const lengths = tracks.map((t) => parseNotes(t.notes).reduce((a, n) => a + n.len, 0));
       if (song.loop) for (const l of lengths) expect(l, `${id}: ${lengths.join(', ')}`).toBe(lengths[0]);
+    }
+  });
+
+  it('the soundtrack hangs together: one temple theme, one guardian fight, the last temple its own', () => {
+    for (const t of TEMPLES) {
+      const last = t.id === 'trollberget';
+      expect(t.music, t.id).toBe(last ? 'trollberget' : 'tempel');
+      expect(t.bossMusic, t.id).toBe(last ? 'bergakung' : 'boss');
+      for (const a of Object.values(AREAS).filter((x) => x.temple === t.id)) expect(a.music, a.id).toBe(t.music);
+    }
+  });
+
+  it('every song is used somewhere', () => {
+    const used = new Set([...Object.values(AREAS).flatMap((a) => [a.music, a.sealed?.music]), ...TEMPLES.flatMap((t) => [t.music, t.bossMusic])]);
+    const elsewhere = ['titel', 'karta', 'seger', 'somnar', 'soluppgang', 'midsommar', 'fynd', 'lara'];
+    // A village's brighter tune plays once its place has woken (SideScene.music).
+    const bright = (id: string): boolean => id.endsWith('_ljus') && used.has(id.slice(0, -5));
+    // An intro's loop plays when the intro ends.
+    const after = new Set(Object.values(SONGS).map((x) => x.then).filter(Boolean));
+    for (const id of Object.keys(SONGS)) expect(used.has(id) || elsewhere.includes(id) || bright(id) || after.has(id), id).toBe(true);
+    for (const x of Object.values(SONGS)) if (x.then) expect(SONGS[x.then], x.then).toBeDefined();
+  });
+
+  it('every village plays brighter once its place has woken', () => {
+    for (const v of VILLAGES) {
+      expect(TEMPLES.some((x) => x.id === v.place), v.name).toBe(true);
+      expect(SONGS[`${AREAS[v.area!].music}_ljus`], v.name).toBeDefined();
     }
   });
 
@@ -380,5 +421,45 @@ describe('music and sound', () => {
     expect(cs5).toEqual({ midi: 73, len: 4 });
     expect(r).toEqual({ midi: -1, len: 2 });
     expect(() => parseNotes('x9')).toThrow();
+  });
+});
+
+describe('dialog pages', () => {
+  it('every page fits the dialog box (four lines)', () => {
+    // The box is VIEW_W - 48 px wide inside its margins; longer pages are cut off.
+    for (const [id, d] of Object.entries(DIALOG)) {
+      d.pages.forEach((p, i) => expect(wrap(p, 272).length, `${id}[${i}]`).toBeLessThanOrEqual(4));
+    }
+  });
+
+  it('the story twist is told the same way everywhere', () => {
+    const all = Object.values(DIALOG).flatMap((d) => d.pages).join('\n') + STR.ending.join('\n');
+    expect(all).toContain('Och hon var min dotter.');
+    expect(all).toContain('Näst sist står HULDA');
+    expect(all).not.toMatch(/din mors ögon|fick komma hem till slut|bästa vän/);
+  });
+});
+
+describe('spell costs', () => {
+  it('a reading never costs more than Dagny can hold (Åska with no magic levels or containers)', async () => {
+    const { newGame, spellCost, mpMax } = await import('../src/game/state');
+    const s = newGame();
+    expect(spellCost(s, 'aska')).toBeLessThanOrEqual(mpMax(s));
+    expect(spellCost(s, 'lakning')).toBe(SPELLS.lakning.cost[0]);
+  });
+});
+
+describe('Väsensboken', () => {
+  it('has a page for every creature and guardian, and every page fits its panel', async () => {
+    const { VASEN } = await import('../src/data/vasen');
+    const { LINE_HEIGHT } = await import('../src/engine/text');
+    for (const id of [...Object.keys(ENEMIES), ...Object.keys(BOSSES)]) expect(VASEN[id], id).toBeDefined();
+    for (const id of Object.keys(VASEN)) expect(ENEMIES[id] ?? BOSSES[id], id).toBeDefined();
+    // The text panel: 170 px wide, from y 48 to the panel's bottom edge (156 - 6).
+    const lines = Math.floor((156 - 48 - 6) / LINE_HEIGHT);
+    for (const [id, e] of Object.entries(VASEN)) {
+      expect(wrap(e.folktro, 170).length, `${id} folktro`).toBeLessThanOrEqual(lines);
+      expect(wrap(e.berattelse, 170).length, `${id} berättelse`).toBeLessThanOrEqual(lines);
+    }
   });
 });

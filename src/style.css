@@ -150,6 +150,16 @@ body {
   bottom: calc(var(--safe-bottom) + 16px + var(--ctl-size) * 1.2 + var(--ctl-offset-y));
 }
 
+.ctl-low {
+  right: calc(var(--safe-right) + 16px + var(--ctl-size) * 2.3 + var(--ctl-offset-x));
+  bottom: calc(var(--safe-bottom) + 16px + var(--ctl-offset-y));
+  font-size: 12px;
+}
+
+#controls.no-low .ctl-low {
+  display: none;
+}
+
 .ctl-small {
   width: 48px;
   height: 48px;

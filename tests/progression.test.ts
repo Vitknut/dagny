@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { COSTS, MAX_HP, MAX_LEVEL, MAX_MP, SWORD_DAMAGE } from '../src/data/progression';
+import { COSTS, MAX_HP, MAX_LEVEL, MAX_MP, SWORD_DAMAGE, convertOldLevel } from '../src/data/progression';
 import { affordable, canLevelUp, damageTaken, nextCost, nextTarget, raise, type Levels } from '../src/game/progression';
 
 describe('XP curve', () => {
@@ -23,11 +23,12 @@ describe('XP curve', () => {
 });
 
 describe('raising stats', () => {
-  it('spends XP and raises the level', () => {
+  it('raises the level and spends all the XP, as in Zelda II', () => {
     const lv: Levels = { styrka: 1, magi: 1, liv: 1 };
     const xp = raise(100, lv, 'magi');
+    expect(COSTS.magi[0]).toBeLessThan(100);
     expect(lv.magi).toBe(2);
-    expect(xp).toBe(100 - COSTS.magi[0]);
+    expect(xp).toBe(0);
   });
 
   it('refuses when there is not enough XP', () => {
@@ -47,7 +48,7 @@ describe('raising stats', () => {
     expect(canLevelUp(0, lv)).toBe(false);
     expect(affordable(COSTS.magi[0], lv).sort()).toEqual(['liv', 'magi']);
     expect(nextTarget(lv)).toBe(Math.min(COSTS.styrka[0], COSTS.magi[0], COSTS.liv[0]));
-    expect(nextTarget({ styrka: 8, magi: 8, liv: 8 })).toBeNull();
+    expect(nextTarget({ styrka: MAX_LEVEL, magi: MAX_LEVEL, liv: MAX_LEVEL })).toBeNull();
   });
 });
 
@@ -57,5 +58,32 @@ describe('damage', () => {
     expect(damageTaken(4, true, false)).toBe(2);
     expect(damageTaken(4, true, true)).toBe(1);
     expect(damageTaken(1, true, true)).toBe(1);
+  });
+});
+
+describe('the 12-level scale (version 1.1)', () => {
+  it('old 8-step levels are stretched to the new scale, ends kept', () => {
+    expect(convertOldLevel(1)).toBe(1);
+    expect(convertOldLevel(8)).toBe(MAX_LEVEL);
+    for (let l = 1; l < 8; l++) expect(convertOldLevel(l + 1)).toBeGreaterThan(convertOldLevel(l));
+  });
+
+  it('a converted level is never weaker than before', () => {
+    const OLD_HP = [8, 10, 12, 14, 16, 18, 20, 24];
+    const OLD_MP = [4, 5, 6, 7, 8, 9, 10, 12];
+    const OLD_DMG = [2, 3, 4, 5, 6, 8, 10, 12];
+    for (let l = 1; l <= 8; l++) {
+      const n = convertOldLevel(l) - 1;
+      expect(MAX_HP[n], `liv ${l}`).toBeGreaterThanOrEqual(OLD_HP[l - 1]);
+      expect(MAX_MP[n], `magi ${l}`).toBeGreaterThanOrEqual(OLD_MP[l - 1]);
+      expect(SWORD_DAMAGE[n], `styrka ${l}`).toBeGreaterThanOrEqual(OLD_DMG[l - 1]);
+    }
+  });
+
+  it('values never go down with level, and the top values stay the same', () => {
+    for (const arr of [MAX_HP, MAX_MP, SWORD_DAMAGE]) for (let i = 1; i < arr.length; i++) expect(arr[i]).toBeGreaterThanOrEqual(arr[i - 1]);
+    expect(MAX_HP.at(-1)).toBe(24);
+    expect(MAX_MP.at(-1)).toBe(12);
+    expect(SWORD_DAMAGE.at(-1)).toBe(12);
   });
 });

@@ -20,6 +20,12 @@ export const STR = {
   spells: 'Läsningar',
   items: 'Föremål',
   map: 'Karta',
+  vasen: 'Väsensboken',
+  vasenNew: 'Ny sida i Väsensboken:',
+  vasenEmpty: 'Här skrivs varje väsen in när Dagny har besegrat eller förlikat det.',
+  vasenFolktro: 'Folktron',
+  vasenBerattelse: 'I berättelsen',
+  tagline: 'Ett äventyr genom den svenska folktron',
   saveQuit: 'Spara och avsluta',
   back: 'Tillbaka',
   noSpells: 'Du kan inga läsningar ännu. Byarnas äldre lär ut dem.',
@@ -46,6 +52,9 @@ export const STR = {
   placementNames: ['Nära kanten', 'Mitten', 'Längre in'],
   vibration: 'Vibration',
   showFps: 'Visa FPS',
+  noFullscreen: 'Helskärm går inte här – installera spelet',
+  lowButton: 'Knapp för lågt hugg',
+  lowButtonHelp: 'Egen knapp i stället för NER + SVÄRD',
   on: 'På',
   off: 'Av',
 
@@ -54,7 +63,7 @@ export const STR = {
   xp: 'XP',
   key: 'Nyckel',
   levelUpTitle: 'Nivå upp!',
-  levelUpHelp: 'Välj vad Dagny ska bli bättre på:',
+  levelUpHelp: 'Välj, så börjar XP om från noll:',
   levelUpLater: 'Spara till senare',
   levelMax: 'MAX',
   needXp: 'XP',
@@ -67,9 +76,26 @@ export const STR = {
 
   // Game over
   gameOverTitle: 'Dagny somnar...',
-  gameOverText: 'Men XP och minnen finns kvar.',
-  retryCheckpoint: 'Försök igen vid ljusstaken',
+  livesLeft: 'Liv kvar:',
+  lastLife: 'Sista livet!',
+  retryRoom: 'Försök igen',
+  gameOverEnd: 'Allt blev mörkt',
+  gameOverEndText: 'Alla liv är slut. Oanvänd XP gick förlorad.',
+  gameOverMountain: 'Berget släpper dig inte så lätt.',
+  restartHome: 'Börja om hos mormor',
+  restartMountain: 'Börja om vid bergets fot',
+  extraLife: 'Ett extra liv!',
+  sealOpen: 'Vägen är fri',
+  meetingShut: 'Vägen tillbaka är stängd. Bara framåt.',
+  mapKeyTemple: 'Tempel',
+  mapKeyVillage: 'By',
+  mapKeyPlace: 'Plats',
+  mapKeyRumour: 'Hört talas om',
+  lightsWake: 'Åskan rinner in i ljusslingorna. Dansbanan vaknar!',
+  sank: 'Den ljusa mossan ger vika. Under den finns ingen botten, och stövlarna hjälper inte. Dagny tar sig upp där marken bar.',
+  mountainRumble: 'Det mullrar i Trollberget.',
   wakeHome: 'Vakna hos mormor',
+  wakeIn: 'Vakna i',
 
   // Rotate screen
   rotate: 'Vänd telefonen',
@@ -85,22 +111,16 @@ export const STR = {
     'Bredvid barnet låg en sliten svärdsklinga utan fäste. Solen gick upp när Hulda bar hem henne. Hon kallades Dagny – "ny dag".',
     'Nu är det sommaren 1964, och sommaren är ovanligt mörk.',
   ],
-  // Shown after the first temple – end of the vertical slice.
-  sliceEnd: [
-    'Ljuset kommer tillbaka.',
-    'En av sju platser är förlikad. Sex sover ännu.',
-    'Tack för att du spelade första delen av Dagnys äventyr!',
-  ],
   // Trollberget is reconciled – sunrise on midsummer morning.
   ending: [
-    'Dagmar blev ljus. Ljuset steg genom berget och ut över skogen, sjön och åkrarna.',
+    'Dagmar blev ljus – för en tid. Ljuset steg genom berget och ut över skogen, sjön och åkrarna.',
     'I Kyrkbyn började klockan i klockstapeln ringa av sig själv. Den här gången väckte den ingen vrede.',
     'Över Trollberget gick solen upp. Det var midsommarmorgon, och sommaren var ljus igen.',
     'Alla sju platser är förlikade.',
   ],
   // The credits after the epilogue.
   credits: [
-    'Co-Dawn Studio presenterar\n\nDagnys äventyr\nEtt spel om att minnas.',
+    'Co-Dawn Studio presenterar\n\nDagnys äventyr\nEtt äventyr genom den svenska folktron.',
     'Idé och manus\nSaman Akbarian och Claude\n\nProgrammering, grafik och musik\nSaman Akbarian och Claude',
     'Tack till alla väsen som lät sig förlikas, och till alla som spelade ända hit.',
   ],
@@ -108,6 +128,7 @@ export const STR = {
   teaser: [
     'Hösten 1965. Ett brev kommer till Mormors by, utan frimärke och utan avsändare.',
     '"Det finns fler platser än sju. Norrut, där tåget slutar gå."',
+    'Handstilen är densamma som i anteckningsboken från Väktarkammaren.',
     'Dagnys äventyr 2 – kommer.',
   ],
 };
