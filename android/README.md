@@ -1,8 +1,8 @@
 # Dagny på Google Play
 
 Android-appen är en **Trusted Web Activity (TWA)**: ett litet skal som öppnar spelet från
-`https://samanakbarian.github.io/dagny/` i helskärm. All spelkod finns i webbversionen, så en
-uppdatering av `master` når appen direkt. Ny `.aab` behövs bara när själva skalet ändras
+`https://vitknut.github.io/dagny/` i helskärm. All spelkod finns i webbversionen, så en
+uppdatering av `master` når appen direkt (via publiceringen i `docs/publicering.md`). Ny `.aab` behövs bara när själva skalet ändras
 (namn, ikon, färger, version).
 
 Projektet genererades med Bubblewrap (`twa-manifest.json`) och byggs av GitHub Actions
@@ -11,16 +11,16 @@ Projektet genererades med Bubblewrap (`twa-manifest.json`) och byggs av GitHub A
 | | |
 |---|---|
 | Paketnamn | `io.github.samanakbarian.dagny` |
-| Startadress | `https://samanakbarian.github.io/dagny/` |
+| Startadress | `https://vitknut.github.io/dagny/` |
 | Orientering | liggande, helskärm |
 | Min. Android | 7.0 (API 24), target API 36 |
 
-## 1. Slå på GitHub Pages (en gång)
+## 1. Publicera webbversionen (en gång)
 
-Repo → **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-Därefter publiceras spelet vid varje push till `master`
-(`.github/workflows/pages.yml`). Kontrollera att
-`https://samanakbarian.github.io/dagny/` fungerar innan du går vidare.
+Spelet publiceras i Vitknuts sajtrepo `Vitknut/vitknut.github.io` under `dagny/`
+(`.github/workflows/pages.yml`, upplägget i [`docs/publicering.md`](../docs/publicering.md)).
+Därefter publiceras det vid varje push till `master`. Kontrollera att
+`https://vitknut.github.io/dagny/` fungerar innan du går vidare.
 
 ## 2. Skapa uppladdningsnyckeln (en gång, på din egen dator)
 
@@ -63,7 +63,7 @@ DAGNY_KEYSTORE_PATH=../upload-keystore.jks DAGNY_KEYSTORE_PASSWORD=... DAGNY_KEY
 1. Skapa appen i [Play Console](https://play.google.com/console). Välj spel, gratis och svenska som standardspråk.
 2. **Testa och släpp → Testning → Stängd testning:** skapa ett spår, ladda upp `.aab` och godkänn Play App Signing.
 3. Fyll i **Appens innehåll**:
-   - Integritetspolicy: `https://samanakbarian.github.io/dagny/integritet.html`
+   - Integritetspolicy: `https://vitknut.github.io/dagny/integritet.html`
    - Datasäkerhet: inga uppgifter samlas in eller delas.
    - Annonser: nej.
    - Innehållsklassning: frågeformuläret. Spelet har tecknad fantasyvåld utan blod.
@@ -82,12 +82,12 @@ Utan den här kopplingen visar Android en webbläsarlist med adressen överst i 
    ```bash
    node scripts/assetlinks.mjs AA:BB:...  CC:DD:... > assetlinks.json
    ```
-3. Filen måste ligga i **domänens rot**: `https://samanakbarian.github.io/.well-known/assetlinks.json`.
-   Ett projekt-repo (`/dagny/`) kan inte lägga filer där, så det finns två vägar:
-   - **Enklast:** skapa repot `samanakbarian/samanakbarian.github.io`, lägg filen i
-     `.well-known/assetlinks.json`, lägg till en tom `.nojekyll` i roten och slå på Pages för det repot.
-   - **Egen domän** (t.ex. `dagnysaventyr.se`): peka den mot Pages och lägg filen i
-     `public/.well-known/` här. Då måste `host` i `twa-manifest.json` och `app/build.gradle` ändras.
+3. Filen måste ligga i **domänens rot**: `https://vitknut.github.io/.well-known/assetlinks.json`.
+   Lägg den som `.well-known/assetlinks.json` i repot `Vitknut/vitknut.github.io` (där finns redan
+   `.nojekyll`, så mappen publiceras).
+   - **Egen domän senare** (t.ex. `vitknut.se`): peka den mot sajtrepots Pages. Då måste `host` i
+     `twa-manifest.json`, `hostName` och adresserna i `app/build.gradle` och `site` i
+     `app/src/main/res/values/strings.xml` ändras, och appen byggas om.
 4. Verifiera med [Statement List Tester](https://developers.google.com/digital-asset-links/tools/generator).
 
 ## Ändra appen senare

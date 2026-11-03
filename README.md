@@ -4,7 +4,7 @@ Ett mysigt 2D-actionäventyr för webbläsaren, mobile first. Sommaren 1964, sve
 
 Hela spelet går att spela från början till slut: alla sju heliga platser, finalen på Trollberget, ett slut i soluppgången och en epilog på midsommarafton.
 
-**Spela:** https://samanakbarian.github.io/dagny/ (publiceras automatiskt från `master`)
+**Spela:** https://vitknut.github.io/dagny/ (publiceras automatiskt från `master`, se [docs/publicering.md](docs/publicering.md))
 
 **Sätta upp publicering och Google Play:** se [`SETUP.md`](SETUP.md).
 
