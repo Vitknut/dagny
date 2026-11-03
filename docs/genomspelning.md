@@ -61,7 +61,7 @@ what is checked is that every door, gate, condition and dialog fits together.
 
 ## 9
 
-- **Bruksorten**: meets Smeden Holm, Förman Karlsson, Rosa, Sigge, Rut på värdshuset; learns Skydd; Karlsson asks for his pick (Sidoorten), and gives Uppåtstöt for it
+- **Bruksorten**: meets Smeden Holm, Förman Karlsson, Rosa, Sigge, Rut på värdshuset; learns Skydd; Karlsson asks for his pick (behind the waterfall, Fallgrottan), and gives Uppåtstöt for it
 - **Kvarnen vid forsen**: finds a key
 - **Fallgrottan**: finds a container; finds a näverdocka
 - **Pestkorset**: meets Den grå frun; gets Prästkragar

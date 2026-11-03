@@ -168,7 +168,8 @@ export function build(sc: SideScene): void {
   // The treasure appears on the altar once the guardian is reconciled.
   if (sc.altar && a.treasure && !hasItem(s, a.treasure) && (!sc.boss)) spawnTreasure(sc);
   if (a.afterBoss && a.temple && hasFlag(s, `${a.temple}_boss`)) spawnAfterBoss(sc);
-  for (const fd of a.finds ?? []) placeFind(sc, fd.item, fd.tx, fd.ty);
+  // A thing someone asked for shows only once they have asked (`after`).
+  for (const fd of a.finds ?? []) if (!fd.after || hasFlag(s, fd.after)) placeFind(sc, fd.item, fd.tx, fd.ty);
   // Secrets only the lamps reveal.
   for (const ls of a.lampSecrets ?? []) {
     if (!hasItem(s, ls.item)) continue;

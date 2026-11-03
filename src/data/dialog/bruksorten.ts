@@ -26,26 +26,14 @@ export const BRUKSORTEN: Record<string, DialogDef> = {
     pages: [
       'Upp på loftet, du? Här är det varmt, ässjan står rakt under.',
       'Jag kan en läsning som skyddar. Men den ska sägas med rönn i handen, annars är den bara ord.',
-      'Kolarna vid torpet i söder har alltid haft rönn vid milan, mot skogsrået. Bryt en kvist åt mig.',
+      'Mjölnarn vid forsen har alltid haft en rönn vid kvarnen, mot det som bor i vattnet. Bryt en kvist åt mig.',
     ],
     actions: [{ type: 'flag', flag: 'ronnkvist_uppdrag' }],
-  },
-
-  /** Asked for it, but Dagny has it already: straight on to the lesson. */
-  holm_uppdrag_har: {
-    speaker: 'Smeden Holm',
-    pages: [
-      'Upp på loftet, du? Här är det varmt, ässjan står rakt under.',
-      'Jag kan en läsning som skyddar. Men den ska sägas med rönn i handen, annars är den bara ord.',
-      'Vänta nu. Vad är det du har där?',
-    ],
-    actions: [{ type: 'flag', flag: 'ronnkvist_uppdrag' }],
-    next: 'holm_lar',
   },
 
   holm_vantar: {
     speaker: 'Smeden Holm',
-    pages: ['Rönnen växer vid kolartorpet. Kolarna litar på den.'],
+    pages: ['Rönnen står vid kvarnen vid forsen. Mjölnarn litade på den.'],
   },
 
   holm_lar: {
@@ -73,7 +61,7 @@ export const BRUKSORTEN: Record<string, DialogDef> = {
     speaker: 'Förman Karlsson',
     pages: [
       'Kom du genom Gamla stollen? Då hade du tur. Jag var med när taket gick 1931.',
-      'Vi sprang för livet, och min hacka blev kvar därinne. I sidoorten, där vi brukade äta vår matsäck. Hämta den åt mig, så ska jag lära dig något.',
+      'Efteråt byggde vi kvarndammen, och verktygen gömde vi bakom vattenfallet norr om kvarnen. Min hacka ligger kvar där. Hämta den åt mig, så ska jag lära dig något.',
       'Den som har slagit upp lika många luckor i taket som jag vet hur man hugger uppåt.',
     ],
     actions: [{ type: 'flag', flag: 'hacka_uppdrag' }],
@@ -81,13 +69,13 @@ export const BRUKSORTEN: Record<string, DialogDef> = {
 
   karlsson_vantar: {
     speaker: 'Förman Karlsson',
-    pages: ['Sidoorten går in från Rasgången, mitt i stollen. Hackan ligger nog högt upp, där vi ställde undan verktygen.'],
+    pages: ['Bakom vattenfallet norr om kvarnen. Man ser grottan först när man står alldeles intill.'],
   },
 
   karlsson_lar: {
     speaker: 'Förman Karlsson',
     pages: [
-      'Min hacka! Ja, där sitter mitt K i skaftet. Trettiotre år har den legat i berget.',
+      'Min hacka! Ja, där sitter mitt K i skaftet. Trettiotre år har den legat bakom fallet.',
       'Nu ska du få ditt. Håll UPP och slå, så går klingan rakt upp. Bra mot fladdermöss och sådant som hänger i taket.',
       'Ska du till kvarnen vid forsen? Där sitter en lucka i taket som mjölnarn alltid slog upp underifrån. Nu vet du hur.',
     ],

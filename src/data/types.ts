@@ -352,8 +352,8 @@ export interface AreaDef {
    * bottom of a spring.
    */
   rewards?: Array<{ flag: string; kind: 'liv' | 'magi'; tx: number; ty: number }>;
-  /** Items lying in the room, picked up once (dialog `hittade_<item>`; gone for good once `<item>_klar`). */
-  finds?: Array<{ item: string; tx: number; ty: number }>;
+  /** Items lying in the room, picked up once (dialog `hittade_<item>`; gone for good once `<item>_klar`). With `after`, it lies there only once that flag is set (someone has asked for it). */
+  finds?: Array<{ item: string; tx: number; ty: number; after?: string }>;
   /** NPC that appears where the boss stood once it is reconciled. */
   afterBoss?: { npc: string; tx: number; ty: number };
   /**

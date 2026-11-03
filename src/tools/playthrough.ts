@@ -300,7 +300,7 @@ export function playthrough(opts: Options = {}): Playthrough {
       }
     }
     if (a.sealed && [...seen].some((i) => ENEMY_CHARS[a.tiles[Math.floor(i / w)][i % w]])) setFlag(`${a.id}_rensad`);
-    for (const fd of a.finds ?? []) if (reached(fd.tx, fd.ty) && !flags.has(`${fd.item}_klar`)) pickUp(fd.item);
+    for (const fd of a.finds ?? []) if (reached(fd.tx, fd.ty) && !flags.has(`${fd.item}_klar`) && (!fd.after || flags.has(fd.after))) pickUp(fd.item);
     for (const r of a.rewards ?? []) {
       const key = `${r.kind}:${a.id}:${r.tx},${r.ty}`;
       if (flags.has(r.flag) && reached(r.tx, r.ty) && !containers.has(key)) {

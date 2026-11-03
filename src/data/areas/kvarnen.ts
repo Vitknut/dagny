@@ -6,6 +6,7 @@ export const KVARNEN: Record<string, AreaDef> = {
     id: 'kvarnen_1',
     name: 'Kvarnen vid forsen',
     kind: 'temple',
+    finds: [{ item: 'ronnkvist', tx: 50, ty: 7, after: 'ronnkvist_uppdrag' }],
     temple: 'kvarnen',
     tone: 'gra_augusti',
     music: 'tempel',

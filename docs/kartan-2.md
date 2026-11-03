@@ -140,7 +140,7 @@ har blivit vilda, och bandet håller på att brista. Därför:
 
 - **Resan:** **Gamla stollen** är en kort sidovybana i 2–3 rum genom fjället, mörk och bara upplyst av karbidlampan. Den har gruvvagnar, ett eget litet hot (ett ras som jagar) och ett vägval där ena grenen leder till ett gömt rum.
 - **Område:** Bruksorten, Kvarnen vid forsen, Pestkorset, Fallgrottan bakom vattenfallet.
-- **Byn drar in:** kvarnen kräver **Uppåtstöt** från förman Karlsson i Bruksorten. Han lär ut den först när Dagny har hämtat hans berghacka, som blev kvar i Sidoorten när taket gick 1931. En lucka i kvarnen kan bara slås upp underifrån. Bruksorten ligger på vägen från stollen till kvarnen.
+- **Byn drar in:** kvarnen kräver **Uppåtstöt** från förman Karlsson i Bruksorten. Han lär ut den först när Dagny har hämtat hans berghacka, gömd bakom vattenfallet norr om kvarnen (Fallgrottan). En lucka i kvarnen kan bara slås upp underifrån. Bruksorten ligger på vägen från stollen till kvarnen.
 - **Återkomst:** stollen har en sidogång som leder tillbaka till Gruvsamhället, en genväg.
 
 ### Kapitel 5 – Myren och kusten (vilse)

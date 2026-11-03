@@ -26,26 +26,14 @@ export const STATIONSSAMHALLET: Record<string, DialogDef> = {
     pages: [
       'Här uppe har jag kvar en mottagare. Den knastrar fortfarande, fast tråden är död.',
       'Åskan kan man inte bara be om. Man måste ha något som åskan själv har rört vid. En åskvigg.',
-      'Folk hittade sådana i åkrarna förr och murade in dem mot blixten. Vid gamla kyrkogården finns det en, har jag hört.',
+      'Folk plöjde upp sådana i åkrarna förr och murade in dem mot blixten. Vid milstolpen västerut ska det ligga en.',
     ],
     actions: [{ type: 'flag', flag: 'askvigg_uppdrag' }],
-  },
-
-  /** Asked for it, but Dagny has it already: straight on to the lesson. */
-  oskar_uppdrag_har: {
-    speaker: 'Telegrafisten Oskar',
-    pages: [
-      'Här uppe har jag kvar en mottagare. Den knastrar fortfarande, fast tråden är död.',
-      'Åskan kan man inte bara be om. Man måste ha något som åskan själv har rört vid. En åskvigg.',
-      'Vänta nu. Vad är det du har där?',
-    ],
-    actions: [{ type: 'flag', flag: 'askvigg_uppdrag' }],
-    next: 'oskar_lar',
   },
 
   oskar_vantar: {
     speaker: 'Telegrafisten Oskar',
-    pages: ['Åskviggen ska finnas vid gamla kyrkogården. Leta högt, inte i jorden.'],
+    pages: ['Åskviggen ska ligga i åkern vid milstolpen, västerut. På en av stenarna.'],
   },
 
   oskar_lar: {

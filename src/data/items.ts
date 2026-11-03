@@ -94,7 +94,7 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
   ronnkvist: {
     id: 'ronnkvist',
     name: 'Rönnkvisten',
-    description: 'En kvist rönn från kolartorpet, med bären kvar. Smeden Holm i Bruksorten väntar på den.',
+    description: 'En kvist rönn från kvarnen vid forsen, med bären kvar. Smeden Holm i Bruksorten väntar på den.',
     sprite: 'ronnkvist',
   },
   fjader: {

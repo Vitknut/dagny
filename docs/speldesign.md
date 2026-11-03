@@ -15,13 +15,13 @@ or a hidden place. At the start she has only the blade Mormor gives her.
 |---|---|---|---|
 | Läkning | Gamle Sven | Mormors by | Fetch **johannesört** from the high ledges in Björkhagen (nettles, crows, jumps) |
 | Nedåtstöt | Smeden Algot | Mormors by | Fetch his **tongs** from Gamla smedjan, east of the village – before the crypt, which he warns against entering without it (Grimmen hovers high) |
-| Lyse | Gamla Elin | Gruvsamhället | Dagmar's **solsten** from Måsskäret, the skerry in the fog (the village is reached by boat) |
+| Lyse | Gamla Elin | Gruvsamhället | Dagmar's **solsten**, deep in the old mine (the next temple) |
 | Eld | Prosten | Kyrkbyn | After the crypt |
-| Skydd | Smeden Holm | Bruksorten | A **rönnkvist** from Kolartorpet – charcoal burners kept rowan by the kiln against the skogsrå |
-| Uppåtstöt | Förman Karlsson | Bruksorten | For his pick, left in Sidoorten in 1931 |
-| Hopp | Viola | Fiskeläget | A wagtail's **fjäder**, high among the rocks at Signalstranden |
+| Skydd | Smeden Holm | Bruksorten | A **rönnkvist** from the rowan by the mill – rowan was planted by mills and water against Bäckahästen |
+| Uppåtstöt | Förman Karlsson | Bruksorten | For his pick, hidden behind the waterfall north of the mill (Fallgrottan) |
+| Hopp | Viola | Fiskeläget | A wagtail's **fjäder**, on the rocks of the lighthouse skerry |
 | Hamn | Gammelmor Karna | Fäboden | After the mine |
-| Åska | Telegrafisten Oskar | Stationssamhället | An **åskvigg** (a stone-age axe folk thought the thunder threw down) from Gamla kyrkogården |
+| Åska | Telegrafisten Oskar | Stationssamhället | An **åskvigg** (a stone-age axe folk thought the thunder threw down) from the field by Milstolpen |
 
 The seven readings are taught up in attics (`data/areas/vindar.ts`): each
 teacher sits under the roof of a house in the village, behind the house's own
@@ -35,6 +35,8 @@ Dagny, sparks rise, a flash, and the reading's name stands written in the air.
 Like Zelda II, a reading cast in a room lasts until Dagny leaves it (Skydd,
 Hopp, Lyse, Eld and Hamn); casting one that is already burning costs nothing
 and does nothing. A bird that casts again comes down where there is room.
+
+Each thing a teacher asks for lies further on, past their village and before the temple that needs the reading, and only once they have asked (`finds` with `after`).
 
 The NPC dialog conditions are in `src/data/npcs.ts`; `tests/start.test.ts`
 checks that Läkning and Nedåtstöt cannot be had for free.
