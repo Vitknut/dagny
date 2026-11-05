@@ -20,6 +20,8 @@ export interface WorldApi {
   spawnEnemy(id: string, px: number, py: number): boolean;
   /** Live creatures in the room besides the boss. */
   minions(): number;
+  /** Another bird is winding up or diving: wait your turn. */
+  diveBusy?(self: unknown): boolean;
   /** Lyse is burning: the room is light, and nothing can hide in the fog. */
   lit(): boolean;
 }

@@ -139,6 +139,9 @@ export class Enemy implements Body {
     if (!this.def.heavy) {
       this.vx = fromX < this.x + this.w / 2 ? 2 : -2;
       if (!this.flying) this.vy = -1.5;
+    } else if (this.def.nudge) {
+      // Stone rocks back half a tile, but never leaves the ground.
+      this.vx = fromX < this.x + this.w / 2 ? this.def.nudge : -this.def.nudge;
     }
     if (this.hp <= 0) {
       this.dead = true;

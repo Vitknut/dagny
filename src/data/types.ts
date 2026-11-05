@@ -80,6 +80,8 @@ export interface EnemyDef {
   drops?: { bulle?: number; termos?: number; lingon?: number };
   /** Takes no knockback. */
   heavy?: boolean;
+  /** A heavy creature that still rocks back this much from a strike (no hop). */
+  nudge?: number;
   /** Ignores gravity. */
   flying?: boolean;
   /** Can only be hurt from behind (strikes from the front are blocked). */
