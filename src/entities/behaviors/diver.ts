@@ -3,7 +3,14 @@ import type { Enemy } from '../enemy';
 import type { WorldApi } from '../types';
 import type { Behavior, Sense } from './types';
 
-/** Birds: hover, shriek and rise (the warning), dive at the locked aim, then climb back. A shield parry or a crash leaves them dazed. */
+/** Birds: hover, shriek and rise (the warning), dive at the locked aim, then climb back. A shield parry or a crash leaves them dazed.
+ *  Only one bird in a room winds up or dives at a time; the others wait their turn. */
+
+/** Steps of warning (shriek and rise) before the dive. */
+export const DIVE_WARNING = 40;
+/** Steps of hovering between dives. */
+const DIVE_REST = 90;
+
 export const diver: Behavior = {
   update(e: Enemy, world: WorldApi, s: Sense): void {
     const { p, cx, cy, dx, dist, sp } = s;
@@ -14,9 +21,13 @@ export const diver: Behavior = {
       e.y = e.baseY + Math.sin(e.t / 12) * 3;
       e.frame = Math.floor(e.t / 7) % 2;
       if (--e.timer <= 0 && dist < 90 && p.y > cy) {
+        if (world.diveBusy?.(e)) {
+          e.timer = 20;
+          return;
+        }
         // Stop, rise a little and shriek: the dive comes in half a second.
         e.mode = 3;
-        e.timer = 30;
+        e.timer = DIVE_WARNING;
         world.sfx('screech');
       }
     } else if (e.mode === 3) {
@@ -53,7 +64,7 @@ export const diver: Behavior = {
       if (e.y <= e.baseY) {
         e.y = e.baseY;
         e.mode = 0;
-        e.timer = 60;
+        e.timer = DIVE_REST;
       }
     }
   },

@@ -1,6 +1,6 @@
 {
   "packageId": "io.github.samanakbarian.dagny",
-  "host": "samanakbarian.github.io",
+  "host": "vitknut.github.io",
   "name": "Dagnys äventyr",
   "launcherName": "Dagny",
   "display": "fullscreen",
@@ -13,8 +13,8 @@
   "backgroundColor": "#2B2233",
   "enableNotifications": false,
   "startUrl": "/dagny/",
-  "iconUrl": "https://samanakbarian.github.io/dagny/icons/icon-512.png",
-  "maskableIconUrl": "https://samanakbarian.github.io/dagny/icons/icon-maskable-512.png",
+  "iconUrl": "https://vitknut.github.io/dagny/icons/icon-512.png",
+  "maskableIconUrl": "https://vitknut.github.io/dagny/icons/icon-maskable-512.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "./upload-keystore.jks",
@@ -24,7 +24,7 @@
   "appVersionCode": 1,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
-  "webManifestUrl": "https://samanakbarian.github.io/dagny/manifest.webmanifest",
+  "webManifestUrl": "https://vitknut.github.io/dagny/manifest.webmanifest",
   "fallbackType": "customtabs",
   "features": {},
   "alphaDependencies": {
@@ -33,7 +33,7 @@
   "enableSiteSettingsShortcut": false,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
-  "fullScopeUrl": "https://samanakbarian.github.io/dagny/",
+  "fullScopeUrl": "https://vitknut.github.io/dagny/",
   "minSdkVersion": 24,
   "orientation": "landscape",
   "fingerprints": [],

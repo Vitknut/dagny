@@ -1,6 +1,10 @@
-# Publishes the game to GitHub Pages on every push to master.
-# One-time setup: Settings → Pages → Build and deployment → Source: "GitHub Actions".
-name: Publicera på GitHub Pages
+# Publishes the game on every push to master: builds it and puts the built files in
+# dagny/ of the public site repo Vitknut/vitknut.github.io, which GitHub Pages serves
+# at https://vitknut.github.io/dagny/. The source (this repo) can stay private.
+#
+# One-time setup (docs/publicering.md): a fine-grained token with "Contents: Read and
+# write" on Vitknut/vitknut.github.io, stored here as the secret SITE_TOKEN.
+name: Publicera på vitknut.github.io
 
 on:
   push:
@@ -9,15 +13,13 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: publish-site
   cancel-in-progress: true
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,17 +30,30 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Hämta sajtens repo
+        uses: actions/checkout@v4
+        with:
+          repository: Vitknut/vitknut.github.io
+          ref: main
+          token: ${{ secrets.SITE_TOKEN }}
+          path: site
+
+      - name: Lägg det byggda spelet i dagny/
+        run: |
+          rm -rf site/dagny
+          mkdir -p site/dagny
+          cp -R dist/. site/dagny/
+
+      - name: Checka in och pusha
+        working-directory: site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A dagny
+          if git diff --cached --quiet; then
+            echo "Inget nytt att publicera."
+            exit 0
+          fi
+          git commit -m "Publicera Dagnys äventyr (${GITHUB_SHA::7})"
+          git push origin main

@@ -1,8 +1,8 @@
 /** All user-interface text, kept in data so the game can be translated later. */
 export const STR = {
   title: 'Dagnys äventyr',
-  studio: 'Co-Dawn Studio',
-  presents: 'Co-Dawn Studio presenterar',
+  studio: 'Vitknut Studios',
+  presents: 'Vitknut Studios presenterar',
   subtitle: 'Sommaren 1964',
   newGame: 'Nytt spel',
   continue: 'Fortsätt',
@@ -120,7 +120,7 @@ export const STR = {
   ],
   // The credits after the epilogue.
   credits: [
-    'Co-Dawn Studio presenterar\n\nDagnys äventyr\nEtt äventyr genom den svenska folktron.',
+    'Vitknut Studios presenterar\n\nDagnys äventyr\nEtt äventyr genom den svenska folktron.',
     'Idé och manus\nSaman Akbarian och Claude\n\nProgrammering, grafik och musik\nSaman Akbarian och Claude',
     'Tack till alla väsen som lät sig förlikas, och till alla som spelade ända hit.',
   ],

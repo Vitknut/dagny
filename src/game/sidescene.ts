@@ -100,6 +100,9 @@ export class SideScene implements Scene, WorldApi {
   bossOutro = 0;
   /** Steps after a hazard respawn during which hazards don't hurt again. */
   private hazardGrace = 0;
+  /** The frame Dagny arrived in this room, and whether Up has been let go since. */
+  private arrivedAt = -1000;
+  private upArmed = true;
   /** The last thing Dagny talked to or read, where she stood and when. */
   private lastTalk: { key: string; x: number; at: number } | null = null;
   /** Sealed room: 0 not sealed / cleared, 1 waiting for Dagny, 2 shut until the room is cleared, 3 a meeting with the way back shut. */
@@ -196,6 +199,10 @@ export class SideScene implements Scene, WorldApi {
 
   enter(): void {
     const a = this.area;
+    // Stepping out of a door must not lead straight back in: Up is not heard
+    // until it has been let go after arriving, and not for a moment at all.
+    this.arrivedAt = this.game.frame;
+    this.upArmed = false;
     if (a.showName) this.nameT = 150;
     if (a.kind === 'village') this.s.lastVillage = a.id;
     // Autosave on every area change (encounters save the overworld spot instead).
@@ -293,6 +300,10 @@ export class SideScene implements Scene, WorldApi {
     this.enemies.push(e);
     this.puff(px, py - 8, 'mist');
     return true;
+  }
+
+  diveBusy(self: unknown): boolean {
+    return this.enemies.some((e) => e !== self && !e.dead && e.def.behavior === 'diver' && (e.mode === 1 || e.mode === 3));
   }
 
   minions(): number {
@@ -686,8 +697,11 @@ export class SideScene implements Scene, WorldApi {
     const pc = p.x + p.w / 2;
     // Right after a dialog closes, the presses and taps that closed it (and the
     // ones mashed after) must not start a talk again at once.
-    const calm = g.frame - g.overlayClosedAt >= INTERACT_PAUSE;
-    const up = calm && g.input.pressed(Act.Up);
+    // The same goes for the moment after arriving through a door.
+    const settled = g.frame - this.arrivedAt >= INTERACT_PAUSE;
+    if (settled && !g.input.held(Act.Up)) this.upArmed = true;
+    const calm = settled && g.frame - g.overlayClosedAt >= INTERACT_PAUSE;
+    const up = calm && this.upArmed && g.input.pressed(Act.Up);
     const taps = calm ? g.input.taps : [];
     const tapped = (r: Rect): boolean =>
       taps.some((t) => t.x + this.camX >= r.x - 6 && t.x + this.camX <= r.x + r.w + 6 && t.y + this.camY >= r.y - 6 && t.y + this.camY <= r.y + r.h + 6);
