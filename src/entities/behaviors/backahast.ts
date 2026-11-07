@@ -43,7 +43,9 @@ export const backahast: Behavior = {
         e.x = poolMid;
         e.y = e.homeY + 20;
         if (--e.timer <= 0) {
-          if (e.phase === 1 && e.t % 2 === 0) {
+          // Phase two takes turns: spit from the surface, then leap out (and
+          // so stand open to the blade), never the same twice in a row.
+          if (e.phase === 1 && e.cycle++ % 2 === 0) {
             e.mode = 4;
             e.timer = 90;
             e.y = e.homeY + 8;
