@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { AREAS } from '../src/data/areas';
-import { DIALOG } from '../src/data/dialog';
 import { ENCOUNTER_TABLES, TERRAIN_TYPE, type TerrainType } from '../src/data/encounters';
 import { OVERWORLD } from '../src/data/overworld';
 import { TERRAIN } from '../src/data/terrain';
@@ -9,29 +8,22 @@ import { pickEncounter } from '../src/game/encounters';
 const tables = Object.entries(ENCOUNTER_TABLES) as Array<[TerrainType, (typeof ENCOUNTER_TABLES)[TerrainType]]>;
 
 describe('overworld encounters', () => {
-  it('every option points to a real area or dialog, and areas hold creatures', () => {
+  it('every option is a fight in a real area with a way in and out', () => {
     for (const [, options] of tables) {
       for (const o of options) {
-        if ('area' in o) {
-          const a = AREAS[o.area];
-          expect(a, o.area).toBeDefined();
-          expect(a.kind).toBe('encounter');
-          expect(a.tiles.join(''), `${o.area} has W and E`).toMatch(/W[\s\S]*E/);
-        } else {
-          expect(DIALOG[o.dialog], o.dialog).toBeDefined();
-        }
+        const a = AREAS[o.area];
+        expect(a, o.area).toBeDefined();
+        expect(a.kind).toBe('encounter');
+        expect(a.tiles.join(''), `${o.area} has W and E`).toMatch(/W[\s\S]*E/);
       }
     }
   });
 
-  it('weights add up to 1, with 10–15 % friendly meetings and at least 3 fights per terrain', () => {
+  it('weights add up to 1, with at least 3 fights per terrain', () => {
     for (const [type, options] of tables) {
       const total = options.reduce((s, o) => s + o.weight, 0);
       expect(total, type).toBeCloseTo(1, 9);
-      const friendly = options.filter((o) => 'dialog' in o).reduce((s, o) => s + o.weight, 0);
-      expect(friendly, type).toBeGreaterThanOrEqual(0.1);
-      expect(friendly, type).toBeLessThanOrEqual(0.15);
-      expect(options.filter((o) => 'area' in o).length, type).toBeGreaterThanOrEqual(3);
+      expect(options.length, type).toBeGreaterThanOrEqual(3);
       expect(new Set(options.map((o) => o.id)).size, `${type} ids unique`).toBe(options.length);
     }
   });

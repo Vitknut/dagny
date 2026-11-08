@@ -187,7 +187,7 @@ blends over a couple of tiles where two meet.
 | `fjall` | Bare fell below Trollberget | **Kalfjället** (the hardest), heath, storm |
 | `odetorp` | Round the deserted crofts | **Ödetorpet** (vättar indoors), forest path, night |
 
-About 10–15 % of each table is a friendly meeting instead of a fight. Every
+Every meeting is a fight; there are no friendly meetings on the map. Every
 region has its own creatures wandering the map, each tied to its ground, so the
 same meeting doesn't turn up everywhere.
 

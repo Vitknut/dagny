@@ -687,13 +687,6 @@ export class OverworldScene implements Scene {
         const pick = pickEncounter(table, Math.random(), lastEncounter);
         lastEncounter = pick.id;
         this.s.ow = { x: me.t < 1 ? me.fx : me.x, y: me.t < 1 ? me.fy : me.y };
-        if ('dialog' in pick) {
-          // A friendly meeting instead of a fight.
-          this.grace = 60;
-          this.game.audio.play('magic');
-          this.game.pushOverlay(new DialogOverlay(this.game, pick.dialog));
-          return;
-        }
         this.leaving = true;
         this.game.audio.play('roar');
         this.game.vibrate(30);

@@ -1,6 +1,6 @@
 import type { DialogDef } from '../types';
 
-/** The overworld: the sleeping mountain, what each border needs, friendly meetings and the caves. */
+/** The overworld: the sleeping mountain, what each border needs and the caves. */
 export const VARLDEN: Record<string, DialogDef> = {
   stollen_ras_skylt: {
     pages: ['Ett kors av två bjälkar, och en lapp i en spik:\n"HÄR GICK TAKET 1931. TRE KOM UT. LYSSNA PÅ BERGET – OCH SPRING."'],
@@ -14,46 +14,6 @@ export const VARLDEN: Record<string, DialogDef> = {
   stollen_skylt: {
     pages: ['Ett murket plank vid ortmynningen:\n"GAMLA STOLLEN. STÄNGD 1931 EFTER RASET. TRÄD EJ IN."', 'Någon har ristat under, med kniv: "Lampan visar vägen. Håll dig från taket."'],
   },
-
-  mote_vatte_liv: {
-    speaker: 'Vätten',
-    pages: ['En vätte kliver fram ur gräset med en kopp kaffe. "Du förlikade min släkt i templen. Drick nu, Väktare."', 'Dagny känner sig starkare. Livet är fyllt.'],
-    actions: [{ type: 'heal' }],
-  },
-
-  mote_vatte_magi: {
-    speaker: 'Vätten',
-    pages: ['En vätte sticker åt Dagny en näve hjortron. "Mormor sa att de är bra för läsningarna."', 'Dagny känner hur magin kommer tillbaka.'],
-    actions: [{ type: 'magic' }],
-  },
-
-  mote_vandrare_lore: {
-    speaker: 'Vandraren',
-    pages: ['En gesäll med ränsel stannar och hälsar. "Jag hörde en gammal gumma i Kyrkbyn berätta om natten då klockan ringde av sig själv. Hon såg en kvinna med kopparhår gå mot Trollberget."'],
-  },
-
-  mote_vandrare_vag: {
-    speaker: 'Vandraren',
-    pages: ['En skogsarbetare vilar på en stubbe. "Ska du ner mot kusten? Akta dig för tidvattenkärret. Det har tagit fler än en, och det släpper inte taget om skorna."'],
-  },
-
-  mote_vandrare_fyr: {
-    speaker: 'Vandraren',
-    pages: ['En fiskare med håv över axeln nickar. "Gamle Ture i Fiskeläget var fyrvaktare förr. Han skrev upp allt i en loggbok, till och med natten 1946."'],
-  },
-
-  mote_irrbloss_radio: {
-    pages: ['Ett vänligt irrbloss dansar runt Dagny och surrar som en radio mellan stationerna. Det känns som om det vill säga: i templen finns väggar som surrar på samma sätt.'],
-  },
-
-  mote_irrbloss_holmen: {
-    pages: ['Ett irrbloss svävar ut över sjön och stannar vid en liten holme mitt i vattnet. Där slocknar det, precis vid en mörk grottöppning.'],
-  },
-
-  mote_irrbloss_grottan: {
-    pages: ['Ett irrbloss leder Dagny en bit söderut över myren och lyser upp en klippa. Bakom ljungen gapar en grotta. Det fnissar och försvinner.'],
-  },
-
   tjuvgrottan_skylt: {
     pages: ['Någon har ristat i berget med en kniv:\n"HÄR GÖMDE GRÅ-PELLE SITT SILVER 1899. DET SYNS BARA I RÄTT LJUS."'],
   },

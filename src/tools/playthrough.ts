@@ -441,8 +441,7 @@ export function playthrough(opts: Options = {}): Playthrough {
         for (const ty of types) {
           for (const o of ENCOUNTER_TABLES[ty as keyof typeof ENCOUNTER_TABLES]) {
             where = 'overworld';
-            if ('area' in o) explore({ area: o.area });
-            else talk(o.dialog);
+            explore({ area: o.area });
           }
         }
       }
