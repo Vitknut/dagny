@@ -233,7 +233,7 @@ not the road's or a village's music.
 | Place | Where | How it is found | What is in it |
 |---|---|---|---|
 | **Björkhagen** | Southeast of Mormors by | Open from the start | Johannesört for Sven – nothing else, so the first errand stays clear (Murre has wandered to Kyrkbyn; the early näverdocka sits on the ledge at Gamla kyrkogården) |
-| **Tjuvgrottan** | Out in the marsh (stövlar) | On the map | Grå-Pelle's stolen silver: the silver fitting and a magic container show in the karbidlampa's light; a life container and a näverdocka |
+| **Tjuvgrottan** | Out in the marsh (stövlar) | On the map | Five rooms, one find in each of the last four: the life container in Schaktet, the näverdocka high in Droppgången, a magic container in a niche in Klyftan (karbidlampa) and, last of all, Grå-Pelle's silver fitting in Tjuvarnas kammare (karbidlampa) |
 | **Jättegrytan** | On the islet in the lake (boat) | On the map | Initials "D. och H." under a little sun (Dagmar and Hulda) in the ficklampa's light, a magic container and a näverdocka |
 | **Fallgrottan** | Behind the waterfall on the mill valley's northern cliff | Seen only from right beside it | A life container on a ledge, a näverdocka, and Dagmar's carving: "Den som gömmer sig bakom fallet hörs inte av berget" |
 | **Väktarkammaren** | A door in the cliffs below Trollberget | Only with the radio | Dagmar's notebook from midsummer eve 1946, the Väktare's names on the wall – with room for one more – and a magic container |
