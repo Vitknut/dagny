@@ -397,7 +397,7 @@ export const GROTTOR: Record<string, AreaDef> = {
     dark: true,
     darkness: 0.75,
     showName: true,
-    ambience: ['spray', 'mist'],
+    ambience: ['spray'],
     left: { to: 'overworld', ow: { x: 94, y: 69 } },
     tiles: [
       "################################################",
