@@ -7,7 +7,8 @@ import { Enemy, type HitHeight } from '../../entities/enemy';
 import { Pickup, Projectile } from '../../entities/misc';
 import { damageTaken, swordDamage } from '../progression';
 import { hasFlag, hpMax, mpMax, setFlag } from '../state';
-import { tmpA, tmpB } from './shared';
+import { nearestFreeSpot, tmpA, tmpB } from './shared';
+import { PLAYER_W, STAND_H } from '../../entities/player';
 import type { SideScene } from '../sidescene';
 
 /** Fighting: the sword, the shield, Dagny getting hurt and creatures being beaten. */
@@ -42,7 +43,22 @@ export function damagePlayer(sc: SideScene, base: number, fromX: number, ignoreI
   sc.sfx('hurt');
   sc.game.vibrate(45);
   sc.shake(8, 2);
-  if (p.state === 'bird') p.leaveBird(sc.grid);
+  if (p.state === 'bird' && s.hp > 0) {
+    // A bird takes the blow and flies on.
+    p.birdHurt(fromX);
+    return;
+  }
+  // Falling dead out of the bird: back to Dagny where there is room (she can't end up inside the ground).
+  if (p.state === 'bird' && !p.leaveBird(sc.grid)) {
+    const spot = nearestFreeSpot(sc.grid, p.x, p.y + p.h - STAND_H, PLAYER_W, STAND_H);
+    if (spot) {
+      p.x = spot.x;
+      p.y = spot.y;
+    }
+    p.w = PLAYER_W;
+    p.h = STAND_H;
+    p.state = 'normal';
+  }
   p.hurt(fromX);
   if (s.hp <= 0) {
     p.state = 'dead';

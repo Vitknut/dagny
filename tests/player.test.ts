@@ -164,3 +164,17 @@ describe('being hurt', () => {
     expect(moved).toBeLessThanOrEqual(24);
   });
 });
+
+describe('Hamn (the bird)', () => {
+  it('stays a bird when struck: it flickers and is pushed away, as in Zelda II', () => {
+    const p = new Player();
+    p.place(100, 100);
+    p.enterBird();
+    const w = p.w;
+    p.birdHurt(90);
+    expect(p.state).toBe('bird');
+    expect(p.w).toBe(w);
+    expect(p.invuln).toBeGreaterThan(0);
+    expect(p.vx).toBeGreaterThan(0);
+  });
+});

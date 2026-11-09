@@ -154,6 +154,15 @@ export class Player implements Body {
     this.setDuck(false, null);
   }
 
+  /** Struck while a bird: she stays a bird (as in Zelda II), flickers and is pushed a little. */
+  birdHurt(fromX: number): void {
+    if (this.invuln > 0 || this.state !== 'bird') return;
+    this.invuln = INVULN;
+    const dir = this.x + this.w / 2 < fromX ? -1 : 1;
+    this.vx = dir * 2.4;
+    this.vy = -1.2;
+  }
+
   /** Bounce after a successful down-thrust. */
   bounce(): void {
     this.bouncing = true;
