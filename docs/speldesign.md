@@ -97,7 +97,7 @@ Dagny starts with 8 health (four bars), so the crypt must not drain it faster th
 ## Lives and Game Over (Zelda II style)
 
 - Dagny has **3 lives** (`START_LIVES`), at most 9. Lives show in the HUD as little doll heads.
-- **Defeat with lives left:** one life is lost, and Dagny tries again at the door of the **same room** she fell in, with full health and magic. This holds everywhere: in temples, on paths, in caves and in meetings on the map. In a guardian's hall that means straight back to the guardian, at full health. She can also choose to wake in the last village she rested in.
+- **Defeat with lives left:** one life is lost, and Dagny tries again with full health and magic. Out in the world (paths, caves, meetings on the map) she starts at the door of the **same room** she fell in. In a **temple** she goes back, as in Zelda II: to the **last candle she lit** in that temple, or else to the temple's entrance – so a life in a temple is worth something. She can also choose to wake in the last village she rested in.
   - In Zelda II a lost life also sent you back to the start of the area outside palaces. Inside palaces it sent you to the palace entrance. Same-room restart in temples is a deliberate, kinder choice for a phone game.
   - Lit candles are save points: they save the game, and "Fortsätt" from the title screen starts there.
 - **The last life lost = Game Over:** she starts over at **Mormor's** with 3 lives. Unspent XP is lost; levels, items and containers are kept.

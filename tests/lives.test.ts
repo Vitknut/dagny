@@ -93,7 +93,24 @@ describe('lives', () => {
     expect(s.lives).toBe(START_LIVES);
   });
 
-  it('with lives left in a temple, the retry is in the same room – at the guardian in its hall', () => {
+  it('a retry in a temple goes back, as in Zelda II: to the last candle lit there, or else to the entrance', () => {
+    const where = (s: GameState, area: string): string => {
+      // Run the scene change only far enough to see where Dagny is sent.
+      const g = { ...fakeGame(s), transition: (fn: () => void) => { try { fn(); } catch { /* no scene in tests */ } } } as unknown as Game;
+      retryRoom(g, area, 'A');
+      return s.loc.area;
+    };
+    const s = newGame();
+    expect(where(s, 'krypta_4')).toBe(TEMPLES.find((x) => x.id === 'krypta')!.entryArea);
+    s.checkpoint = { area: 'krypta_2', x: 40, y: 100 };
+    expect(where(s, 'krypta_4')).toBe('krypta_2');
+    // A candle in another temple does not count.
+    expect(where(s, 'gruvan_3')).toBe(TEMPLES.find((x) => x.id === 'gruvan')!.entryArea);
+    // Outside the temples: the same room.
+    expect(where(s, 'bjorkhagen')).toBe('bjorkhagen');
+  });
+
+  it('with lives left in a temple, there is a retry (or waking in the village)', () => {
     const s = newGame();
     const o = new GameOverOverlay(fakeGame(s), 'krypta', { area: 'krypta_4', entry: 'A' });
     const labels = (o as unknown as { menu: { items: Array<{ label: string }> } }).menu.items.map((i) => i.label);
