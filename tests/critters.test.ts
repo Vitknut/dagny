@@ -39,4 +39,32 @@ describe('small animals', () => {
     for (let i = 0; i < 400; i++) updateCritters(list, g, near, 0);
     expect(list).not.toContain(bird);
   });
+
+  it('a squirrel only climbs a real tree; with none near it runs off along the ground', () => {
+    const area = { ...AREAS.mote_skog, props: [], critters: [{ kind: 'ekorre' as const, tx: 10, ty: AREAS.mote_skog.tiles.findIndex((r, y) => r[10] === '.' && AREAS.mote_skog.tiles[y + 1]?.[10] === '#') }] };
+    const g = grid('mote_skog');
+    const bare = spawnCritters(area, g, []);
+    const sq = bare[0];
+    const ground = sq.y;
+    for (let i = 0; i < 200 && bare.length; i++) {
+      updateCritters(bare, g, { x: sq.x - 20, y: sq.y - 10 }, -1000);
+      expect(sq.y).toBe(ground);
+    }
+
+    const tx = 14;
+    const ty = area.critters[0].ty;
+    const treed = spawnCritters({ ...area, props: [{ sprite: 'spruce', tx, ty }] }, g, []);
+    const sq2 = treed[0];
+    let climbed = false;
+    for (let i = 0; i < 200 && treed.length; i++) {
+      updateCritters(treed, g, { x: sq2.x - 20, y: sq2.y - 10 }, -1000);
+      if (sq2.y < ground - 4) {
+        climbed = true;
+        expect(sq2.x).toBe(tx * 16 + 11);
+      }
+    }
+    expect(climbed).toBe(true);
+    expect(treed).not.toContain(sq2);
+  });
 });
+

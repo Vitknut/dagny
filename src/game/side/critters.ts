@@ -1,5 +1,6 @@
 import { Kind, kindAt, TILE, type TileGrid } from '../../engine/collision';
 import { drawSprite } from '../../engine/sprites';
+import { FURNITURE } from '../../data/furniture';
 import type { AreaDef, CritterKind } from '../../data/types';
 
 /**
@@ -23,6 +24,11 @@ export interface Critter {
   ft: number;
   /** The ground (or water) it started on, in pixels. */
   gy: number;
+  /** A squirrel's tree: the trunk's x and the crown's top, once it has picked one. */
+  treeX?: number;
+  treeTop?: number;
+  /** Hidden in a crown: dropped next step. */
+  gone?: boolean;
   /** Where a duck may paddle (pixel x range). */
   x0: number;
   x1: number;
@@ -63,7 +69,32 @@ function rnd(id: string, n: number): number {
  * forests and by open water, a few set out by the ground itself. Temples,
  * dark places, storms and night stay empty.
  */
+/** Trees a squirrel can run up (trunk x, foot and top in pixels), from the room's props. */
+interface Tree {
+  x: number;
+  foot: number;
+  top: number;
+}
+const TREE_SPRITES: Readonly<Record<string, { trunk: number; h: number }>> = {
+  birch: { trunk: 12, h: 40 },
+  rowan: { trunk: 12, h: 40 },
+  spruce: { trunk: 11, h: 28 },
+};
+let trees: Tree[] = [];
+
+function roomTrees(a: AreaDef): Tree[] {
+  const out: Tree[] = [];
+  for (const pr of [...(a.props ?? []), ...(FURNITURE[a.id] ?? [])]) {
+    const tr = pr.sprite ? TREE_SPRITES[pr.sprite] : undefined;
+    if (!tr || pr.front) continue;
+    const foot = (pr.ty + 1) * TILE + (pr.dy ?? 0);
+    out.push({ x: pr.tx * TILE + (pr.dx ?? 0) + tr.trunk, foot, top: foot - tr.h });
+  }
+  return out;
+}
+
 export function spawnCritters(a: AreaDef, grid: TileGrid, avoid: Array<{ tx: number; ty: number }>): Critter[] {
+  trees = roomTrees(a);
   if (a.critters) return a.critters.map((c, i) => make(c.kind, c.tx * TILE + 8, (c.ty + 1) * TILE, c.tx + i));
   if (a.kind === 'temple' || a.dark || a.tone === 'storm' || a.tone === 'lyktsken' || a.backdrop === 'none') return [];
 
@@ -140,6 +171,17 @@ export function updateCritters(list: Critter[], grid: TileGrid, pc: { x: number;
         c.state = 1;
         c.ft = 0;
         c.facing = pc.x < c.x ? 1 : -1;
+        if (d.flee === 'climb') {
+          // The nearest tree on the far side from Dagny, standing on the same ground.
+          let best: Tree | undefined;
+          for (const tr of trees) {
+            const ahead = (tr.x - c.x) * c.facing;
+            if (ahead < -4 || ahead > 180 || Math.abs(tr.foot - c.y) > 20) continue;
+            if (!best || Math.abs(tr.x - c.x) < Math.abs(best.x - c.x)) best = tr;
+          }
+          c.treeX = best?.x;
+          c.treeTop = best?.top;
+        }
       }
       continue;
     }
@@ -187,16 +229,21 @@ export function updateCritters(list: Critter[], grid: TileGrid, pc: { x: number;
         c.y = Math.min(c.gy, c.y + c.vy);
         break;
       case 'climb':
-        // A squirrel: a dash, then straight up a trunk and gone.
-        if (c.ft < 22) c.x += c.facing * 2.2;
-        else c.y -= 1.8;
+        // A squirrel: to its tree and straight up into the crown. No tree near? Off along the ground.
+        if (c.treeX === undefined) c.x += c.facing * 2.4;
+        else if (Math.abs(c.treeX - c.x) > 2) c.x += Math.sign(c.treeX - c.x) * 2.2;
+        else {
+          c.x = c.treeX;
+          c.y -= 1.6;
+          if (c.y < (c.treeTop ?? 0) + 14) c.gone = true;
+        }
         break;
     }
   }
   const w = grid.w * TILE;
   for (let i = list.length - 1; i >= 0; i--) {
     const c = list[i];
-    if (c.y < camY - 30 || c.x < -40 || c.x > w + 40) list.splice(i, 1);
+    if (c.gone || c.y < camY - 30 || c.x < -40 || c.x > w + 40) list.splice(i, 1);
   }
 }
 
@@ -219,7 +266,7 @@ export function renderCritters(list: readonly Critter[], ctx: CanvasRenderingCon
         f = calm ? (Math.floor(c.t / 40) % 4 === 0 ? 1 : 0) : 2;
         break;
       case 'climb':
-        f = calm ? (Math.floor(c.t / 30) % 3 === 0 ? 1 : 0) : c.ft < 22 ? 2 : 3;
+        f = calm ? (Math.floor(c.t / 30) % 3 === 0 ? 1 : 0) : c.treeX !== undefined && Math.abs(c.treeX - c.x) <= 2 ? 3 : 2;
         break;
     }
     drawSprite(ctx, d.sprite, f, c.x - d.w / 2 - camX, c.y - d.h - camY, c.facing === -1);
