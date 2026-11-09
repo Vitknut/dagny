@@ -19,7 +19,7 @@ or a hidden place. At the start she has only the blade Mormor gives her.
 | Eld | Prosten | Kyrkbyn | After the crypt |
 | Skydd | Smeden Holm | Bruksorten | A **rönnkvist** from the rowan by the mill – rowan was planted by mills and water against Bäckahästen |
 | Uppåtstöt | Förman Karlsson | Bruksorten | For his pick, hidden behind the waterfall north of the mill (Fallgrottan) |
-| Hopp | Viola | Fiskeläget | A wagtail's **fjäder**, on the rocks of the lighthouse skerry |
+| Hopp | Viola | Fiskeläget | A wagtail's **fjäder**, on Ärlskäret, a skerry with a cairn north of the lighthouse (by boat, before the temple) |
 | Hamn | Gammelmor Karna | Fäboden | After the mine |
 | Åska | Telegrafisten Oskar | Stationssamhället | An **åskvigg** (a stone-age axe folk thought the thunder threw down) from the field by Milstolpen |
 

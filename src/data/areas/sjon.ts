@@ -69,6 +69,39 @@ export const SJON: Record<string, AreaDef> = {
   },
 
   /**
+   * Ärlskäret: a skerry with an old fishermen's cairn in the sound north of the
+   * lighthouse. Wagtails nest in the cracks; once Viola has asked, a feather
+   * lies on the highest rock. Reached only by boat, before the lighthouse.
+   */
+  arlskaret: {
+    id: 'arlskaret',
+    name: 'Ärlskäret',
+    kind: 'path',
+    finds: [{ item: 'fjader', tx: 21, ty: 4, after: 'fjader_uppdrag' }],
+    tone: 'gra_augusti',
+    music: 'plats',
+    backdrop: 'sea',
+    theme: 'skar',
+    showName: true,
+    ambience: ['spray'],
+    left: { to: 'overworld', ow: { x: 91, y: 61 } },
+    tiles: [
+      "................................",
+      "................................",
+      "...........................e....",
+      "............e...................",
+      "................................",
+      "....................####........",
+      "....................####........",
+      "...............###..####........",
+      "..........###..###..######......",
+      "..A.......###..###########......",
+      "#############~~###########~~~~~~",
+      "#############~~###########~~~~~~",
+    ],
+  },
+
+  /**
    * Signalstranden: the stone Dagmar stood by every evening, flashing her
    * lamp across the lake – three short, three long, three short – while
    * Hulda answered from the belfry in Kyrkbyn.

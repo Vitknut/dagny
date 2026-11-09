@@ -81,8 +81,8 @@ export const OVERWORLD: OverworldDef = {
     '^^^m......|.:....t..............ww........|.mm......NNNNNNNNNNNNNNmm......mmmmmmmmm......_~~~^^^',
     '^^^mm....mV.....................bb^....mmm|.mm......NNNNNNNNNNNNNNmm....mmmmmmmmmmm.....u__~^^^^',
     '^^^^mmmmmm|...mmm............ffwww....mmmm|..m......NNNNNNNNNNNNN.......mmmmmmmmff......._~~~^^^',
-    '^^^mmmmmmm|...mfm.......mm...ffwww....mmmm|..m.......NNNNNNNNNNNN.........mmmmmmff.mm...__~~~^^^',
-    '^^^mmm.mmm|...mmm............ffwwwm....mm.|...........NNNNNNNNNN...........mymffff....__~~~~~^^^',
+    '^^^mmmmmmm|...mfm.......mm...ffwww....mmmm|..m.......NNNNNNNNNNNN.........mmmmmmff.mm...__~U~^^^',
+    '^^^mmm.mmm|...mmm............ffwwwm....mm.|...........NNNNNNNNNN...........mymffff....__~~~_~^^^',
     '^^^.....mm|...mmm...mmm.......^wwwmmm....0P............NNNNNNNNu....mm......mmffff..._~~~~~~^^^^',
     '^^^......m|...mmm...mmm.......mwwwmmmm...00::......m..NNNNNNNNNmm...mmm....mmmfffff.._~~_0_~~^^^',
     '^^^......m|..........m.........wwwwfff.....::::f.....NNNNNNNNNNf....mm.....mmmmffffff_~~_Y_~~^^^',
@@ -145,6 +145,8 @@ export const OVERWORLD: OverworldDef = {
     { x: 19, y: 30, name: 'Kyrkbacken', view: 24, dialog: 'kyrkbacken_utsikt', doneFlag: 'kyrkbacken_sedd' },
     { x: 40, y: 30, name: 'Eremitholmen', area: 'eremitholmen', entry: 'A' },
     { x: 57, y: 46, name: 'Måsskäret', area: 'masskaret', entry: 'A' },
+    // A skerry with an old cairn in the sound north of the lighthouse: wagtails nest there (Viola's feather).
+    { x: 91, y: 60, name: 'Ärlskäret', area: 'arlskaret', entry: 'A' },
     // A sea cave in the cliff south-east of the lighthouse, seen only from a boat right beside it.
     { x: 95, y: 69, name: 'Havsgrottan', area: 'havsgrottan', entry: 'A', hidden: 'near', sprite: 'owSeaCave' },
     { x: 62, y: 37, name: 'Signalstranden', area: 'signalstranden', entry: 'A' },

@@ -6,7 +6,6 @@ export const FYREN: Record<string, AreaDef> = {
     id: 'fyren_1',
     name: 'Fyren i skären',
     kind: 'temple',
-    finds: [{ item: 'fjader', tx: 37, ty: 7, after: 'fjader_uppdrag' }],
     temple: 'fyren',
     tone: 'storm',
     music: 'tempel',
