@@ -94,11 +94,21 @@ export const STATIONSSAMHALLET: Record<string, DialogDef> = {
 
   berg_xp: {
     pages: ['Dagny fick 250 XP och känner sig utvilad.'],
+    next: 'berg_tagen',
+  },
+
+  berg_tagen: {
+    speaker: 'Stinsen Berg',
+    pages: [
+      'Nu går tågen mellan Kyrkbyn, Gruvsamhället, här och Fiskeläget. Säg bara till banvakten på perrongen, eller mig, så kör vi.',
+      'Ska fröken med redan nu?',
+    ],
+    next: 'tag_resa',
   },
 
   berg_glad: {
     speaker: 'Stinsen Berg',
-    pages: ['Tågen går igen! Kyrkbyn, Gruvsamhället och Fiskeläget. Vart ska fröken?'],
+    pages: ['Tågen går igen! Kyrkbyn, Gruvsamhället, här och Fiskeläget. Vart ska fröken?'],
     next: 'tag_resa',
   },
 
