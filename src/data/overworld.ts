@@ -99,6 +99,13 @@ export const OVERWORLD: OverworldDef = {
   tone: 'karta',
   needs: NEEDS,
   blocked: BLOCKED_CHARS,
+  // Once Folkparken is done the villagers rebuild the washed-away bridge over the rapids
+  // and clear the rocks at its far end: a short way home from the park plain.
+  mended: [
+    { x: 32, y: 58, flag: 'folkparken_klar', ch: '=' },
+    { x: 33, y: 58, flag: 'folkparken_klar', ch: '=' },
+    { x: 34, y: 58, flag: 'folkparken_klar', ch: '.' },
+  ],
   places: [
     { x: 10, y: 58, name: 'Mormors by', area: 'mormors_by', entry: 'W' },
     { x: 29, y: 37, name: 'Kyrkbyn', area: 'kyrkbyn', entry: 'W' },

@@ -223,3 +223,17 @@ describe('Bergsstigen (chapter 8)', () => {
     for (const [ch, d] of Object.entries(a.doors!)) if (ch !== a.lurGuide) expect(d.to).toBe('vattegangen');
   });
 });
+
+describe('the washed-away bridge', () => {
+  it('is rebuilt once Folkparken is done, and leads across the rapids', async () => {
+    const { owTile } = await import('../src/game/overworld');
+    const { newGame } = await import('../src/game/state');
+    const s = newGame();
+    const row = (): string => [30, 31, 32, 33, 34, 35].map((x) => owTile(s, x, 58)).join('');
+    expect(row()).toBe('..bb^.');
+    s.flags.push('folkparken_klar');
+    expect(row()).toBe('..==..');
+    const { OVERWORLD } = await import('../src/data/overworld');
+    for (const ch of row()) expect(OVERWORLD.blocked.includes(ch)).toBe(false);
+  });
+});

@@ -462,4 +462,6 @@ export interface OverworldDef {
   blocked: string;
   music: string;
   tone: string;
+  /** Tiles that change for good once a flag is set (the washed-away bridge, rebuilt after Folkparken). */
+  mended?: Array<{ x: number; y: number; flag: string; ch: string }>;
 }

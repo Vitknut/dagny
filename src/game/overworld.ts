@@ -85,6 +85,12 @@ const ROAD = '|-+=';
 let wokenMap: { key: string; canvas: HTMLCanvasElement } | null = null;
 
 /** The flag set when Dagny has found a place only the radio shows. */
+/** The tile at x, y as it stands now: a mended tile once its flag is set, otherwise the map's own. */
+export function owTile(s: GameState | null | undefined, x: number, y: number): string {
+  if (s) for (const m of OVERWORLD.mended ?? []) if (m.x === x && m.y === y && hasFlag(s, m.flag)) return m.ch;
+  return OVERWORLD.tiles[y]?.[x] ?? '^';
+}
+
 export function radioFound(pl: OverworldPlace): string {
   // A room with a door on each side (Väktarkammaren) is found once, by either door.
   return pl.area ? `radiofynd_${pl.area}` : `radiofynd_${pl.x}_${pl.y}`;
@@ -332,7 +338,7 @@ export class OverworldScene implements Scene {
       const t = regionTemple(k);
       return t && !hasFlag(this.s, `${t}_klar`) ? 1 : 0;
     };
-    const key = TEMPLES.map((t) => (hasFlag(this.s, `${t.id}_klar`) ? 1 : 0)).join('');
+    const key = TEMPLES.map((t) => (hasFlag(this.s, `${t.id}_klar`) ? 1 : 0)).join('') + (OVERWORLD.mended ?? []).map((m) => (hasFlag(this.s, m.flag) ? 1 : 0)).join('');
     if (wokenMap?.key !== key && staticMap && typeof document !== 'undefined') {
       // Drawn once here, not every frame: blending tile by tile is far too slow for phones.
       const c = document.createElement('canvas');
@@ -340,6 +346,20 @@ export class OverworldScene implements Scene {
       c.height = staticMap.height;
       const ctx = c.getContext('2d') as CanvasRenderingContext2D;
       ctx.drawImage(staticMap, 0, 0);
+      // Mended tiles (the rebuilt bridge) drawn over the old ones.
+      for (const m of OVERWORLD.mended ?? []) {
+        if (!hasFlag(this.s, m.flag)) continue;
+        if (m.ch !== '.') {
+          drawSprite(ctx, TILE_SPRITE[m.ch] ?? 'owGrass', 0, m.x * T, m.y * T);
+          continue;
+        }
+        // Cleared ground: the (tinted) ground of a neighbour that was always open.
+        const open = [[1, 0], [-1, 0], [0, 1], [0, -1]].find(([dx, dy]) => {
+          const ch = tiles[m.y + dy]?.[m.x + dx];
+          return ch && !OVERWORLD.blocked.includes(ch) && !(OVERWORLD.mended ?? []).some((o) => o.x === m.x + dx && o.y === m.y + dy);
+        });
+        if (open) ctx.drawImage(staticMap, (m.x + open[0]) * T, (m.y + open[1]) * T, T, T, m.x * T, m.y * T, T, T);
+      }
       ctx.globalCompositeOperation = 'saturation';
       ctx.fillStyle = '#808080';
       const R = 2;
@@ -416,7 +436,7 @@ export class OverworldScene implements Scene {
   }
 
   private tile(x: number, y: number): string {
-    return OVERWORLD.tiles[y]?.[x] ?? '^';
+    return owTile(this.s, x, y);
   }
 
   private placeAt(x: number, y: number): OverworldPlace | undefined {
@@ -513,7 +533,7 @@ export class OverworldScene implements Scene {
     this.updateEncounters();
     this.updateSounds();
     this.signal = this.radioSignal();
-    if (this.signal > 0 && this.frame % [0, 90, 50, 26, 12][this.signal] === 0) this.game.audio.play('static', { vol: 0.4 + this.signal * 0.15 });
+    if (this.signal > 0 && this.frame % [0, 70, 40, 22, 12][this.signal] === 0) this.game.audio.play('static', { vol: 0.55 + this.signal * 0.12 });
     this.updateCamera(false);
   }
 
