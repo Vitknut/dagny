@@ -24,6 +24,7 @@ import { beatIndex, squareActive } from './beat';
 import { LevelUpOverlay, GameOverOverlay } from './menus';
 
 import { updateCritters, type Critter } from './side/critters';
+import { Follower } from './side/follower';
 import { compact, nearestFreeSpot, tmpA, type Checkpoint, type Marker, type SpellTimers } from './side/shared';
 
 export { nearestFreeSpot } from './side/shared';
@@ -66,6 +67,8 @@ export class SideScene implements Scene, WorldApi {
   signs: Array<Marker & { dialog: string }> = [];
   /** Glints where a lamp reveals a secret. */
   lampGlints: Array<{ x: number; y: number }> = [];
+  /** Someone following Dagny out of a dark place (side/follower.ts). */
+  follower: Follower | null = null;
   /** Small harmless animals: birds, hens, a squirrel, a hare, ducks (side/critters.ts). */
   critters: Critter[] = [];
   checkpoints: Checkpoint[] = [];
@@ -206,6 +209,8 @@ export class SideScene implements Scene, WorldApi {
     // until it has been let go after arriving, and not for a moment at all.
     this.arrivedAt = this.game.frame;
     this.upArmed = false;
+    // Whoever was following waits again where they were lost (a retry, a new visit).
+    if (a.lostChild) this.s.flags = this.s.flags.filter((f) => f !== `${a.lostChild!.npc}_folger`);
     if (a.showName) this.nameT = 150;
     if (a.kind === 'village') this.s.lastVillage = a.id;
     // Autosave on every area change (encounters save the overworld spot instead).
@@ -496,6 +501,9 @@ export class SideScene implements Scene, WorldApi {
 
     // --- Interact (Up or a tap on the NPC/door) ---
     this.updateInteract();
+
+    // --- Someone following ---
+    if (this.follower) this.follower.update({ x: p.x + p.w / 2, y: p.y + p.h }, p.state !== 'bird', this.enemies);
 
     // --- Small animals ---
     if (this.critters.length) updateCritters(this.critters, this.grid, this.playerCenter(), this.camY);
@@ -802,6 +810,15 @@ export class SideScene implements Scene, WorldApi {
     const s = this.s;
     this.applySkills();
     refreshRoom(this);
+    // Someone lost asked to follow: from now on they walk where Dagny walks.
+    const lost = this.area.lostChild;
+    if (lost && !this.follower && hasFlag(s, `${lost.npc}_folger`)) {
+      const n = this.npcs.find((x) => x.def.id === lost.npc);
+      if (n) {
+        this.npcs = this.npcs.filter((x) => x !== n);
+        this.follower = new Follower(n.def.sprite, n.x + n.w / 2, n.y + n.h);
+      }
+    }
     // Spawn Murre when he is home.
     if (hasFlag(s, 'murre_hemma') && !this.npcs.some((n) => n.def.id === 'murre')) {
       const a = this.area;
@@ -867,6 +884,15 @@ export class SideScene implements Scene, WorldApi {
     if (this.area.cavein && exit === this.area.right) setFlag(this.s, this.area.cavein.flag);
     if (this.area.opens && exit === this.area.right) setFlag(this.s, this.area.opens);
     const g = this.game;
+    const lost = this.area.lostChild;
+    if (lost && this.follower) {
+      const p = this.player;
+      this.s.flags = this.s.flags.filter((f) => f !== `${lost.npc}_folger`);
+      if (this.follower.near(p.x + p.w / 2, p.y + p.h)) {
+        setFlag(this.s, lost.home);
+        g.toast(STR.followerHome, 3);
+      } else g.toast(STR.followerLeft, 3);
+    }
     if (exit.to === 'overworld') {
       if (exit.ow) this.s.ow = { ...exit.ow };
       flow.goToOverworld(g);

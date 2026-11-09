@@ -96,6 +96,7 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
   for (const pl of sc.platforms) pl.renderHub(ctx, camX, camY);
   for (const pk of sc.pickups) pk.render(ctx, camX, camY);
   for (const n of sc.npcs) n.render(ctx, camX, camY);
+  sc.follower?.render(ctx, camX, camY);
   for (const e of sc.enemies) e.render(ctx, camX, camY);
   renderPlayerAura(sc, ctx, camX, camY);
   for (const h of sc.helpers) {

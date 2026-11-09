@@ -85,12 +85,6 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
     description: 'En gammal berghacka med ett K inbränt i skaftet. Förman Karlsson i Bruksorten vill ha tillbaka den.',
     sprite: 'hacka',
   },
-  solsten: {
-    id: 'solsten',
-    name: 'Solstenen',
-    description: 'En klar, kantig sten som samlar ljuset även i dimma. Gamla Elin i Gruvsamhället väntar på den.',
-    sprite: 'solsten',
-  },
   ronnkvist: {
     id: 'ronnkvist',
     name: 'Rönnkvisten',
@@ -190,4 +184,4 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
 };
 
 /** Order shown in the items menu. */
-export const ITEM_ORDER = ['svard', 'eka', 'karbidlampa', 'stovlar', 'ficklampa', 'radio', 'naverlur', 'klingaHardad', 'klingaBlank', 'silverbeslag', 'malm', 'askstenen', 'murre', 'tang', 'hacka', 'solsten', 'ronnkvist', 'fjader', 'uvfjader', 'askvigg', 'johannesort', 'prastkragar', 'runbit', 'posthorn', 'fickur', 'psalmbok', 'medaljong', 'kompass', 'skalla', 'visselpipa'];
+export const ITEM_ORDER = ['svard', 'eka', 'karbidlampa', 'stovlar', 'ficklampa', 'radio', 'naverlur', 'klingaHardad', 'klingaBlank', 'silverbeslag', 'malm', 'askstenen', 'murre', 'tang', 'hacka', 'ronnkvist', 'fjader', 'uvfjader', 'askvigg', 'johannesort', 'prastkragar', 'runbit', 'posthorn', 'fickur', 'psalmbok', 'medaljong', 'kompass', 'skalla', 'visselpipa'];

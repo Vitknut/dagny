@@ -92,6 +92,8 @@ export const STR = {
   mapKeyRumour: 'Hört talas om',
   lightsWake: 'Åskan rinner in i ljusslingorna. Dansbanan vaknar!',
   sank: 'Den ljusa mossan ger vika. Under den finns ingen botten, och stövlarna hjälper inte. Dagny tar sig upp där marken bar.',
+  followerHome: 'Gösta springer hem till Gruvsamhället.',
+  followerLeft: 'Gösta blev kvar i mörkret.',
   mountainRumble: 'Det mullrar i Trollberget.',
   wakeHome: 'Vakna hos mormor',
   wakeIn: 'Vakna i',

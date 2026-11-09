@@ -350,6 +350,12 @@ export interface AreaDef {
    * ficklampan): a container lying there, or words to read (Up).
    */
   /**
+   * Someone lost here who follows Dagny out once she has talked to them
+   * (game/side/follower.ts). Talking sets `<npc>_folger`; leaving the room
+   * with them close sets `home`.
+   */
+  lostChild?: { npc: string; home: string };
+  /**
    * Small harmless animals placed by hand (game/side/critters.ts). Without
    * this, villages, forests and open water get a few by themselves.
    */

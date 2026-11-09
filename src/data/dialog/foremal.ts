@@ -2,7 +2,6 @@ import type { DialogDef } from '../types';
 
 /** Finds: the sword upgrades, life and magic containers and the näverdockor. */
 export const FOREMAL: Record<string, DialogDef> = {
-  hittade_solsten: { pages: ['Dagny hittade SOLSTENEN! Hon håller den mot dimman, och den lyser upp – som om solen satt inuti.'] },
   hittade_ronnkvist: { pages: ['Dagny bröt en RÖNNKVIST! Bären är röda som glöd.'] },
   hittade_uvfjader: { pages: ['Dagny hittade BERGUVENS FJÄDER! Den är stor och mjuk och knappt hörs när den faller.'] },
   hittade_fjader: { pages: ['Dagny hittade ÄRLANS FJÄDER! Den väger nästan ingenting.'] },

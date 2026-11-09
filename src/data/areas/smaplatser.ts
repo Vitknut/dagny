@@ -66,12 +66,13 @@ export const SMAPLATSER: Record<string, AreaDef> = {
     ],
   },
 
-  /** Dagmars ort: an old adit in the hill above Gruvsamhället, where Dagmar left her sun stone. */
+  /** Dagmars ort: an old adit in the hill above Gruvsamhället. Elin's grandson Gösta is lost at the far end, with Dagmar's sun stone. */
   dagmars_ort: {
     id: 'dagmars_ort',
     name: 'Dagmars ort',
     kind: 'path',
-    finds: [{ item: 'solsten', tx: 45, ty: 11 }],
+    npcs: { '1': 'gosta' },
+    lostChild: { npc: 'gosta', home: 'gosta_hemma' },
     tone: 'gruva',
     music: 'grotta',
     backdrop: 'mine',
@@ -94,7 +95,7 @@ export const SMAPLATSER: Record<string, AreaDef> = {
       "##########.=====...............................#",
       "##########.................u...................#",
       "##########......##.............................#",
-      "##########......##.......................u..I..#",
+      "##########......##.......................u..I1.#",
       "######################^^######^^######^^########",
       "################################################",
     ],

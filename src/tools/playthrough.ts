@@ -275,6 +275,8 @@ export function playthrough(opts: Options = {}): Playthrough {
         if (a.signs?.[ch]) talk(a.signs[ch]);
       }
     }
+    // Someone lost who asked to follow is taken home (side/follower.ts): they walk where Dagny walks.
+    if (a.lostChild && flags.has(`${a.lostChild.npc}_folger`) && !flags.has(a.lostChild.home)) setFlag(a.lostChild.home);
     // – then the creatures and what lies about.
     for (const [x, y, ch] of cells) {
       const pid = `${a.id}:${x},${y}`;

@@ -25,37 +25,27 @@ export const GRUVSAMHALLET: Record<string, DialogDef> = {
     speaker: 'Gamla Elin',
     pages: [
       'Så du hittade upp hit. Det gör inte många. Jag sitter helst här, nära ljuset från gluggen.',
-      'Det finns en läsning för ljus. Men ljus måste man ha något att tända den med. En sten som samlar solen, en solsten.',
-      'Dagmar hade en sådan. Hon lämnade den i en gammal ort i berget ovanför byn, långt in där ljuset aldrig når. Hämta den, så ska jag lära dig.',
+      'Mitt barnbarn Gösta är borta. Han ville hämta Dagmars solsten åt mig, den hon lämnade i den gamla orten i berget ovanför byn. Det var i går, och han har inte kommit tillbaka.',
+      'Han är rädd för mörkret, den pojken. Hitta honom och för honom hem, så ska jag lära dig något som lyser.',
     ],
-    actions: [{ type: 'flag', flag: 'solsten_uppdrag' }],
+    actions: [{ type: 'flag', flag: 'gosta_uppdrag' }],
   },
 
   elin_vantar: {
     speaker: 'Gamla Elin',
-    pages: ['Solstenen ligger i den gamla orten i berget ovanför byn. Längst in, där ljuset aldrig når.'],
-  },
-
-  elin_hittat: {
-    speaker: 'Gamla Elin',
-    pages: [
-      'Så du hittade upp hit. Det gör inte många. Jag sitter helst här, nära ljuset från gluggen.',
-      'Men vad är det som lyser i din ficka? Visa mig.',
-    ],
-    actions: [{ type: 'flag', flag: 'solsten_uppdrag' }],
-    next: 'elin_lar',
+    pages: ['Gösta är kvar i den gamla orten ovanför byn. Ensam går han inte ut, han är för rädd.'],
   },
 
   elin_lar: {
     speaker: 'Gamla Elin',
     pages: [
-      'Solstenen! Ja, det är hennes. Den lyser fortfarande, fast hon är borta.',
+      'Gösta kom springande hem, svart upp till öronen men hel. Och i näven hade han solstenen. Den lyser fortfarande, fast Dagmar är borta.',
       'Du har kommit långt för att vara så ung. Gruvan är mörk nu, mörkare än den varit på hundra år.',
       'Min mor lärde mig en läsning när jag skulle ner i schaktet första gången. Den har lyst för mig i sextio år.',
       '"Lyse i natt, lyse i berg, lyse för den som går utan färg..." Så. Nu bär du ljuset själv.',
       'Och kom ihåg: det som gömmer sig i dimma tål inte ljus.',
     ],
-    actions: [{ type: 'takeItem', item: 'solsten' }, { type: 'flag', flag: 'solsten_klar' }, { type: 'learnSpell', spell: 'lyse' }],
+    actions: [{ type: 'flag', flag: 'gosta_uppdrag' }, { type: 'flag', flag: 'solsten_klar' }, { type: 'learnSpell', spell: 'lyse' }],
     next: 'lart_lyse',
   },
 
@@ -136,5 +126,14 @@ export const GRUVSAMHALLET: Record<string, DialogDef> = {
   nils_efter: {
     speaker: 'Gruvarbetaren Nils',
     pages: ['Lavtornet får stå kvar, sa bolaget i dag. Konstigt nog var det ingen som ville riva det längre.'],
+  },
+
+  gosta_hittad: {
+    speaker: 'Gösta',
+    pages: [
+      'Är det någon där? Jag heter Gösta. Jag skulle hämta mormors solsten, men lyktan slocknade och nu hittar jag inte ut.',
+      'Får jag gå efter dig? Jag går precis där du går. Men spring inte ifrån mig, och akta fladdermössen!',
+    ],
+    actions: [{ type: 'flag', flag: 'gosta_folger' }],
   },
 };

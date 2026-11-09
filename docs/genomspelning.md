@@ -46,11 +46,11 @@ what is checked is that every door, gate, condition and dialog fits together.
 - **Eremitholmen**: meets Eremiten
 - **Måsskäret**: finds a näverdocka
 - **Signalstranden**: meets signalsten
-- **Dagmars ort**: gets Solstenen
+- **Dagmars ort**: meets Gösta
 
 ## 6
 
-- **Elins vind**: hands over Solstenen; learns Lyse
+- **Elins vind**: learns Lyse
 - **Den gamla gruvan**: unlocks a door
 - **Hisschaktet**: finds a key; gets Järnmalm
 

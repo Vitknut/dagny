@@ -15,7 +15,7 @@ or a hidden place. At the start she has only the blade Mormor gives her.
 |---|---|---|---|
 | Läkning | Gamle Sven | Mormors by | Fetch **johannesört** from the high ledges in Björkhagen (nettles, crows, jumps) |
 | Nedåtstöt | Smeden Algot | Mormors by | Fetch his **tongs** from Gamla smedjan, east of the village – before the crypt, which he warns against entering without it (Grimmen hovers high) |
-| Lyse | Gamla Elin | Gruvsamhället | Dagmar's **solsten**, at the far end of Dagmars ort, an old adit in the hill above the village |
+| Lyse | Gamla Elin | Gruvsamhället | **Rescue:** her grandson Gösta went into Dagmars ort, an old adit above the village, for Dagmar's sun stone and never came out. Dagny finds him at the far end; he follows exactly where she walks, but stops and cries if she runs ahead and cowers when bats come near. Out through the door with him close, and he runs home (`lostChild`, `side/follower.ts`) |
 | Eld | Prosten | Kyrkbyn | After the crypt |
 | Skydd | Smeden Holm | Bruksorten | A **rönnkvist** from Rönnen vid forsen, the miller's rowan on the far bank – rowan was planted by mills and water against Bäckahästen |
 | Uppåtstöt | Förman Karlsson | Bruksorten | For his pick, hidden behind the waterfall north of the mill (Fallgrottan) |
