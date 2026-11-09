@@ -21,7 +21,7 @@ or a hidden place. At the start she has only the blade Mormor gives her.
 | Uppåtstöt | Förman Karlsson | Bruksorten | For his pick, hidden behind the waterfall north of the mill (Fallgrottan) |
 | Hopp | Viola | Fiskeläget | A wagtail's **fjäder**, on Ärlskäret, a skerry with a cairn north of the lighthouse (by boat, before the temple) |
 | Hamn | Gammelmor Karna | Fäboden | A **fjäder from the eagle-owl** (berguv), at the top of Uvberget, the crag east of the summer farm |
-| Åska | Telegrafisten Oskar | Stationssamhället | An **åskvigg** (a stone-age axe folk thought the thunder threw down) from the field by Milstolpen |
+| Åska | Telegrafisten Oskar | Stationssamhället | **Trade chain:** a **porslinsknopp** to put the telegraph wire back on its pole. Kalle has a box of them but swaps one only for an **åskvigg** (a stone-age axe folk thought the thunder threw down), which lies in the field by Milstolpen |
 
 The seven readings are taught up in attics (`data/areas/vindar.ts`): each
 teacher sits under the roof of a house in the village, behind the house's own

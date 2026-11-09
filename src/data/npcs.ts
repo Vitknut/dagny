@@ -176,10 +176,10 @@ export const NPCS: Readonly<Record<string, NpcDef>> = {
   britta: { id: 'britta', sprite: 'kid3', idle: { frames: [0, 0, 1, 0, 1, 0, 0], every: 0.35 }, talk: [{ if: [{ flag: 'fabodskogen_klar' }], dialog: 'britta_efter' }, { dialog: 'britta' }] },
   // --- Stationssamhället ---
   lind: { id: 'lind', sprite: 'woman2', idle: { frames: [0, 0, 2, 0, 0, 1, 0], every: 0.8 }, talk: [{ dialog: 'lind_vila' }] },
-  oskar: { id: 'oskar', sprite: 'telegrafist', idle: { frames: [0, 0, 2, 0, 0, 1, 0], every: 0.8 }, talk: [{ if: [{ notSpell: 'aska' }, { item: 'askvigg' }, { flag: 'askvigg_uppdrag' }], dialog: 'oskar_lar' }, { if: [{ notSpell: 'aska' }, { flag: 'askvigg_uppdrag' }], dialog: 'oskar_vantar' }, { if: [{ notSpell: 'aska' }, { item: 'askvigg' }], dialog: 'oskar_hittat' }, { if: [{ notSpell: 'aska' }], dialog: 'oskar_uppdrag' }, { dialog: 'oskar_igen' }] },
+  oskar: { id: 'oskar', sprite: 'telegrafist', idle: { frames: [0, 0, 2, 0, 0, 1, 0], every: 0.8 }, talk: [{ if: [{ notSpell: 'aska' }, { item: 'porslinsknopp' }, { flag: 'knopp_uppdrag' }], dialog: 'oskar_lar' }, { if: [{ notSpell: 'aska' }, { flag: 'knopp_uppdrag' }], dialog: 'oskar_vantar' }, { if: [{ notSpell: 'aska' }, { item: 'porslinsknopp' }], dialog: 'oskar_hittat' }, { if: [{ notSpell: 'aska' }], dialog: 'oskar_uppdrag' }, { dialog: 'oskar_igen' }] },
   berg: { id: 'berg', sprite: 'stins', idle: { frames: [0, 0, 2, 0, 0, 1, 0], every: 0.8 }, talk: [{ if: [{ item: 'visselpipa' }, { notFlag: 'visselpipa_klar' }], dialog: 'berg_tack' }, { if: [{ flag: 'visselpipa_klar' }], dialog: 'berg_glad' }, { if: [{ flag: 'visselpipa_uppdrag' }], dialog: 'berg_vantar' }, { dialog: 'berg_uppdrag' }] },
   resenaren: { id: 'resenaren', sprite: 'woman', idle: { frames: [0, 0, 2, 0, 0, 1, 0], every: 0.8 }, talk: [{ dialog: 'resenaren' }] },
-  kalle: { id: 'kalle', sprite: 'kid', idle: { frames: [0, 0, 1, 0, 1, 0, 0], every: 0.35 }, talk: [{ if: [{ flag: 'folkparken_klar' }], dialog: 'kalle_efter' }, { dialog: 'kalle' }] },
+  kalle: { id: 'kalle', sprite: 'kid', idle: { frames: [0, 0, 1, 0, 1, 0, 0], every: 0.35 }, talk: [{ if: [{ item: 'askvigg' }, { notFlag: 'knopp_bytt' }], dialog: 'kalle_byte' }, { if: [{ flag: 'knopp_uppdrag' }, { notFlag: 'knopp_bytt' }, { notSpell: 'aska' }], dialog: 'kalle_vill' }, { if: [{ flag: 'folkparken_klar' }], dialog: 'kalle_efter' }, { dialog: 'kalle' }] },
   // --- Trollberget ---
   dagmar: {
     id: 'dagmar',

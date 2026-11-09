@@ -25,37 +25,36 @@ export const STATIONSSAMHALLET: Record<string, DialogDef> = {
     speaker: 'Telegrafisten Oskar',
     pages: [
       'Här uppe har jag kvar en mottagare. Den knastrar fortfarande, fast tråden är död.',
-      'Åskan kan man inte bara be om. Man måste ha något som åskan själv har rört vid. En åskvigg.',
-      'Folk plöjde upp sådana i åkrarna förr och murade in dem mot blixten. Vid milstolpen västerut ska det ligga en.',
+      'Åskan bor i trådarna, men den här tråden ligger i gräset. En porslinsknopp har gått sönder på stolpen vid stationen.',
+      'Pojkarna här skjuter sönder dem med slangbåge och sparar bitarna. Kalle har säkert en hel. Fråga honom.',
     ],
-    actions: [{ type: 'flag', flag: 'askvigg_uppdrag' }],
+    actions: [{ type: 'flag', flag: 'knopp_uppdrag' }],
   },
 
   oskar_hittat: {
     speaker: 'Telegrafisten Oskar',
     pages: [
       'Här uppe har jag kvar en mottagare. Den knastrar fortfarande, fast tråden är död.',
-      'Men vad bär du på? Den där stenen har varit med om något. Visa mig.',
+      'Men vad har du där? En porslinsknopp, hel! Då kan tråden komma upp på stolpen igen.',
     ],
-    actions: [{ type: 'flag', flag: 'askvigg_uppdrag' }],
+    actions: [{ type: 'flag', flag: 'knopp_uppdrag' }],
     next: 'oskar_lar',
   },
 
   oskar_vantar: {
     speaker: 'Telegrafisten Oskar',
-    pages: ['Åskviggen ska ligga i åkern vid milstolpen, västerut. På en av stenarna.'],
+    pages: ['Kalle sparar på porslinsknoppar. Han ger nog inte bort en för inget, den pojken.'],
   },
 
   oskar_lar: {
     speaker: 'Telegrafisten Oskar',
     pages: [
-      'En åskvigg! Den har varit i åskan, det känner man på den.',
-      'Telegrafen tystnade i maj, men trådarna sjunger fortfarande. Hör du? Det är åskan som bor i dem.',
+      'Upp med den på stolpen... Hör du? Tråden sjunger igen. Det är åskan som bor i den.',
       'Min farfar var rallare. Han lärde mig en läsning som han fick av en gammal man vid Torsåsen. Tors vrede.',
       '"Åska i tråd och åska i sten, slå alla onda, skona var en." Så. Använd den sparsamt. Den tar mycket kraft.',
       'Ljusslingorna i folkparken dog samtidigt som telegrafen. Åskan bor i trådar, kom ihåg det.',
     ],
-    actions: [{ type: 'takeItem', item: 'askvigg' }, { type: 'flag', flag: 'askvigg_klar' }, { type: 'learnSpell', spell: 'aska' }],
+    actions: [{ type: 'takeItem', item: 'porslinsknopp' }, { type: 'flag', flag: 'askvigg_klar' }, { type: 'learnSpell', spell: 'aska' }],
     next: 'lart_aska',
   },
 
@@ -147,6 +146,29 @@ export const STATIONSSAMHALLET: Record<string, DialogDef> = {
   kalle: {
     speaker: 'Kalle',
     pages: ['Jag lånade stinsens visselpipa och tappade den. Säg inget till honom. Snälla.'],
+  },
+
+  kalle_vill: {
+    speaker: 'Kalle',
+    pages: [
+      'Porslinsknoppar? Jag har en hel låda. Men de är mina.',
+      'Fast... om du hittar en åskvigg åt mig så byter jag. En riktig, som åskan har kastat ner. Morfar säger att det ligger en vid milstolpen.',
+    ],
+    actions: [{ type: 'flag', flag: 'knopp_kalle' }],
+  },
+
+  kalle_byte: {
+    speaker: 'Kalle',
+    pages: [
+      'Är det en åskvigg? En riktig? Den är ju alldeles slät!',
+      'Här, ta en knopp. Ta den finaste. Och säg inget om visselpipan.',
+    ],
+    actions: [{ type: 'takeItem', item: 'askvigg' }, { type: 'giveItem', item: 'porslinsknopp' }, { type: 'flag', flag: 'knopp_bytt' }],
+    next: 'fick_porslinsknopp',
+  },
+
+  fick_porslinsknopp: {
+    pages: ['Dagny fick en PORSLINSKNOPP!'],
   },
 
   kalle_efter: {

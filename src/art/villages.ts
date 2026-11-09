@@ -273,6 +273,7 @@ export const villageSprites: Record<string, SpriteDef> = {
   ronnkvist: item(['......M.', '..M..MM.', '.MMb.M..', '..Mb.R..', '...bRRR.', '..RbRR..', '.RRb....', '...b....']),
   fjader: item(['......kW', '.....kWW', '....kWW.', '...kWk..', '..kWk...', '.kWk....', '.Wk.....', 'W.......']),
   uvfjader: item(['......bB', '.....bBt', '....bBt.', '...bBb..', '..bBb...', '.bBt....', '.Bt.....', 'B.......']),
+  porslinsknopp: item(['..WWWW..', '.WWWWWW.', 'WWwWWwWW', '.WWWWWW.', '..WwwW..', '..wWWw..', '...gg...', '...gg...']),
   askvigg: item(['..gggg..', '.gGGGGg.', 'gGGwGGGg', 'gGGGGGgk', '.gGGGgk.', '..gGgk..', '...gk...', '........']),
   visselpipa: item(['........', '........', '..gggggg', '.gGGGGGg', 'gGGkGGGg', 'gGGGGGg.', '.ggggg..', '........']),
 };

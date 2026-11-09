@@ -147,8 +147,8 @@ what is checked is that every door, gate, condition and dialog fits together.
 
 - **Folkparken om natten**: unlocks a door
 - **Karusellen**: gets Visselpipan; finds a key
-- **Stationssamhället**: hands over Visselpipan
-- **Telegrafens vind**: hands over Åskviggen; learns Åska
+- **Stationssamhället**: hands over Åskviggen; gets Porslinsknoppen; hands over Visselpipan
+- **Telegrafens vind**: hands over Porslinsknoppen; learns Åska
 - **Milstolpen**: hands over Posthornet; finds a container
 
 ## 20
