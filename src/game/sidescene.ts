@@ -700,7 +700,9 @@ export class SideScene implements Scene, WorldApi {
     const p = this.player;
     const g = this.game;
     this.prompt = null;
-    if (p.state !== 'normal' || !p.onGround) return;
+    // A bird can fly out through a door (but not talk or read).
+    const bird = p.state === 'bird';
+    if (!bird && (p.state !== 'normal' || !p.onGround)) return;
     const pc = p.x + p.w / 2;
     // Right after a dialog closes, the presses and taps that closed it (and the
     // ones mashed after) must not start a talk again at once.
@@ -724,7 +726,7 @@ export class SideScene implements Scene, WorldApi {
     // NPCs
     let best: Npc | null = null;
     let bestD = 26;
-    for (const n of this.npcs) {
+    for (const n of bird ? [] : this.npcs) {
       // Things with nothing to say (a glowing charcoal stack) give no prompt.
       if (!n.def.talk.some((t) => g.check(t.if))) continue;
       const d = Math.abs(n.x + n.box.w / 2 - pc);
@@ -763,6 +765,7 @@ export class SideScene implements Scene, WorldApi {
       }
       return;
     }
+    if (bird) return;
     for (const sgn of this.signs) {
       const r = { x: sgn.tx * TILE - 4, y: sgn.ty * TILE - 16, w: TILE + 8, h: 32 };
       if (!overlaps(r, p)) continue;
