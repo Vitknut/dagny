@@ -78,7 +78,7 @@ export const SJON: Record<string, AreaDef> = {
     name: 'Ärlskäret',
     kind: 'path',
     finds: [{ item: 'fjader', tx: 21, ty: 4 }],
-    perchers: [{ tx: 11, ty: 7 }, { tx: 16, ty: 6 }, { tx: 22, ty: 4 }, { tx: 24, ty: 7 }],
+    critters: [{ kind: 'arla', tx: 11, ty: 7 }, { kind: 'arla', tx: 16, ty: 6 }, { kind: 'arla', tx: 22, ty: 4 }, { kind: 'arla', tx: 24, ty: 7 }],
     tone: 'gra_augusti',
     music: 'plats',
     backdrop: 'sea',

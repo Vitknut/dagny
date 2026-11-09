@@ -3,6 +3,7 @@ import { drawSprite, frameCount, spriteSize } from '../../engine/sprites';
 import { BOSSES, ENEMIES } from '../../data/enemies';
 import { ENEMY_CHARS, PICKUP_CHARS, THEMES, DECO, FRONT, kindOf } from '../../data/legend';
 import { NPCS } from '../../data/npcs';
+import { spawnCritters } from './critters';
 import { ITEMS } from '../../data/items';
 import { templeById } from '../../data/temples';
 import { Enemy } from '../../entities/enemy';
@@ -170,10 +171,9 @@ export function build(sc: SideScene): void {
   if (a.afterBoss && a.temple && hasFlag(s, `${a.temple}_boss`)) spawnAfterBoss(sc);
   // A thing someone asked for shows only once they have asked (`after`).
   for (const fd of a.finds ?? []) if (!fd.after || hasFlag(s, fd.after)) placeFind(sc, fd.item, fd.tx, fd.ty);
+  // Small animals: by hand, or set out by the ground.
+  sc.critters = spawnCritters(a, sc.grid, [...sc.entries.values(), ...sc.npcs.map((n) => ({ tx: Math.floor(n.x / TILE), ty: Math.floor(n.y / TILE) })), ...sc.doors]);
   // Secrets only the lamps reveal.
-  for (const pr of a.perchers ?? []) {
-    sc.perchers.push({ x: pr.tx * TILE + 8, y: (pr.ty + 1) * TILE - 4, vx: 0, vy: 0, t: pr.tx * 17, flying: false, facing: pr.tx % 2 ? 1 : -1 });
-  }
   for (const ls of a.lampSecrets ?? []) {
     if (!hasItem(s, ls.item)) continue;
     const px = ls.tx * TILE + TILE / 2;

@@ -252,6 +252,8 @@ export interface Prop {
 }
 
 export type AreaKind = 'village' | 'path' | 'temple' | 'encounter';
+/** Small harmless animals (game/side/critters.ts). */
+export type CritterKind = 'arla' | 'sparv' | 'hona' | 'ekorre' | 'hare' | 'anka';
 export type Backdrop = 'outdoor' | 'forest' | 'crypt' | 'mine' | 'mill' | 'sea' | 'park' | 'none';
 
 /**
@@ -347,8 +349,11 @@ export interface AreaDef {
    * Things only seen in the light of a lamp Dagny carries (karbidlampan,
    * ficklampan): a container lying there, or words to read (Up).
    */
-  /** Small birds (sädesärlor) sitting on these tiles; they fly off when Dagny comes near. */
-  perchers?: Array<{ tx: number; ty: number }>;
+  /**
+   * Small harmless animals placed by hand (game/side/critters.ts). Without
+   * this, villages, forests and open water get a few by themselves.
+   */
+  critters?: Array<{ kind: CritterKind; tx: number; ty: number }>;
   lampSecrets?: Array<{ item: 'karbidlampa' | 'ficklampa'; tx: number; ty: number; container?: 'liv' | 'magi'; dialog?: string; gives?: string }>;
   /**
    * Containers that appear in the room once a task here is done (the flag is
