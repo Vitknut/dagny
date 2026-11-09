@@ -51,6 +51,11 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
     if (a.x + TILE < camX || a.x > camX + VIEW_W || a.y + TILE < camY || a.y > camY + VIEW_H) continue;
     drawSprite(ctx, a.sprite, Math.floor((f + a.offset * 7) / 20), a.x - camX, a.y - camY);
   }
+  // Wagtails: bob the tail now and then, beat the wings in flight.
+  for (const b of sc.perchers) {
+    const fr = b.flying ? 2 + (Math.floor(b.t / 4) % 2) : Math.floor(b.t / 20) % 4 === 0 ? 1 : 0;
+    drawSprite(ctx, 'arla', fr, b.x - 5 - camX, b.y - 4 - camY, b.facing === -1);
+  }
   // Dance-floor squares.
   if (sc.beatCells.length && sc.area.beat) {
     const period = sc.area.beat.period;

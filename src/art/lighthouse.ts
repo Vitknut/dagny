@@ -149,6 +149,53 @@ export const lighthouseSprites: Record<string, SpriteDef> = {
     'wwwwwwwGwwwwwwwG',
   ]),
   /** Mås – a herring gull (reuses the crow's diving). */
+  /** Sädesärla – a wagtail: black cap and bib, white face, grey back, a long tail it bobs. Sit, bob, fly up, fly down. */
+  arla: {
+    w: 10,
+    h: 8,
+    frames: [
+      [
+        '..........',
+        '......kk..',
+        '.....kWWk.',
+        '.....kkkkk',
+        'kkGGGGGk..',
+        '...GWWWG..',
+        '....k..k..',
+        '..........',
+      ],
+      [
+        '..........',
+        '......kk..',
+        '.....kWWk.',
+        'kk...kkkkk',
+        '.kGGGGGk..',
+        '...GWWWG..',
+        '....k..k..',
+        '..........',
+      ],
+      [
+        '...G......',
+        '...GG..kk.',
+        '....GGkWWk',
+        'kkGGGGGkkk',
+        '...GWWG...',
+        '..........',
+        '..........',
+        '..........',
+      ],
+      [
+        '..........',
+        '.......kk.',
+        '......kWWk',
+        'kkGGGGGkkk',
+        '...GWWG...',
+        '....GG....',
+        '.....G....',
+        '..........',
+      ],
+    ],
+  },
   mas: { base: 'kraka', w: 16, h: 12, frames: [], recolor: { K: 'W', y: 'o', Y: 'k' }, outline: 'G' },
   /**
    * Havsfrun – the storm's daughter: sea-green hair, a dress of foam, she hovers

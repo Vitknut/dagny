@@ -347,6 +347,8 @@ export interface AreaDef {
    * Things only seen in the light of a lamp Dagny carries (karbidlampan,
    * ficklampan): a container lying there, or words to read (Up).
    */
+  /** Small birds (sädesärlor) sitting on these tiles; they fly off when Dagny comes near. */
+  perchers?: Array<{ tx: number; ty: number }>;
   lampSecrets?: Array<{ item: 'karbidlampa' | 'ficklampa'; tx: number; ty: number; container?: 'liv' | 'magi'; dialog?: string; gives?: string }>;
   /**
    * Containers that appear in the room once a task here is done (the flag is

@@ -65,6 +65,8 @@ export class SideScene implements Scene, WorldApi {
   signs: Array<Marker & { dialog: string }> = [];
   /** Glints where a lamp reveals a secret. */
   lampGlints: Array<{ x: number; y: number }> = [];
+  /** Wagtails on the rocks: they sit and bob until Dagny comes close, then fly off. */
+  perchers: Array<{ x: number; y: number; vx: number; vy: number; t: number; flying: boolean; facing: 1 | -1 }> = [];
   checkpoints: Checkpoint[] = [];
   altar: Marker | null = null;
   readonly player = new Player();
@@ -493,6 +495,9 @@ export class SideScene implements Scene, WorldApi {
     // --- Interact (Up or a tap on the NPC/door) ---
     this.updateInteract();
 
+    // --- Little birds ---
+    this.updatePerchers();
+
     // --- Enemies ---
     for (const e of this.enemies) e.update(this);
     combat(this);
@@ -687,6 +692,27 @@ export class SideScene implements Scene, WorldApi {
       this.lockMsgT = 120;
       this.game.toast(DialogOverlay.get('nyckel_saknas').pages[0]);
     }
+  }
+
+  private updatePerchers(): void {
+    if (!this.perchers.length) return;
+    const pc = this.playerCenter();
+    for (const b of this.perchers) {
+      b.t++;
+      if (!b.flying) {
+        if (Math.abs(pc.x - b.x) < 44 && Math.abs(pc.y - b.y) < 40) {
+          b.flying = true;
+          b.facing = pc.x < b.x ? 1 : -1;
+          b.vx = b.facing * (1.2 + (b.t % 5) * 0.1);
+          b.vy = -1.4;
+        } else if (b.t % 90 === 0) b.facing = b.facing === 1 ? -1 : 1;
+      } else {
+        b.x += b.vx;
+        b.y += b.vy + Math.sin(b.t / 3) * 0.4;
+        b.vy = Math.max(-2.2, b.vy - 0.02);
+      }
+    }
+    compact(this.perchers, (b) => b.y > this.camY - 30);
   }
 
   private updateInteract(): void {
