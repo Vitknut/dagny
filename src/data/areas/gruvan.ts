@@ -54,7 +54,7 @@ export const GRUVAN: Record<string, AreaDef> = {
     name: 'Hisschaktet',
     kind: 'temple',
     temple: 'gruvan',
-    finds: [{ item: 'solsten', tx: 21, ty: 21, after: 'solsten_uppdrag' }, { item: 'malm', tx: 14, ty: 13 }],
+    finds: [{ item: 'malm', tx: 14, ty: 13 }],
     tone: 'gruva',
     music: 'tempel',
     backdrop: 'mine',

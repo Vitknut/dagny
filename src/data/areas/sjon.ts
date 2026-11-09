@@ -70,14 +70,14 @@ export const SJON: Record<string, AreaDef> = {
 
   /**
    * Ärlskäret: a skerry with an old fishermen's cairn in the sound north of the
-   * lighthouse. Wagtails nest in the cracks; once Viola has asked, a feather
-   * lies on the highest rock. Reached only by boat, before the lighthouse.
+   * lighthouse. Wagtails nest in the cracks, and a feather lies on the highest
+   * rock. Reached only by boat, before the lighthouse.
    */
   arlskaret: {
     id: 'arlskaret',
     name: 'Ärlskäret',
     kind: 'path',
-    finds: [{ item: 'fjader', tx: 21, ty: 4, after: 'fjader_uppdrag' }],
+    finds: [{ item: 'fjader', tx: 21, ty: 4 }],
     perchers: [{ tx: 11, ty: 7 }, { tx: 16, ty: 6 }, { tx: 22, ty: 4 }, { tx: 24, ty: 7 }],
     tone: 'gra_augusti',
     music: 'plats',

@@ -8,8 +8,10 @@ what is checked is that every door, gate, condition and dialog fits together.
 
 ## 1
 
-- **Mormors by**: meets Mormor Hulda, Telefonist-Greta, Handlarn, Karin, Olle, Gamle Sven, Smeden Algot; gets Klingan
-- **Kyrkbyn**: meets Signe i prästgården, Prosten, Ingrid, Bosse, Gamla Tyra, Banvakten; gets Murre
+- **Mormors by**: meets Mormor Hulda, Telefonist-Greta, Handlarn, Karin, Olle, Smeden Algot; gets Klingan
+- **Svens vind**: meets Gamle Sven
+- **Kyrkbyn**: meets Signe i prästgården, Ingrid, Bosse, Gamla Tyra, Banvakten; gets Murre
+- **Prästgårdens vind**: meets Prosten
 - **Stenkyrkans krypta**: finds a key
 - **Björkhagen**: gets Johannesört
 - **Gamla kyrkogården**: meets sten_anna, sten_per, sten_karin, sten_karin_rubbad, sten_johan; finds a näverdocka; finds a container
@@ -17,7 +19,8 @@ what is checked is that every door, gate, condition and dialog fits together.
 
 ## 2
 
-- **Mormors by**: meets murre; hands over Murre; hands over Johannesört; learns Läkning; hands over Smedtången; learns Nedåtstöt
+- **Mormors by**: meets murre; hands over Murre; hands over Smedtången; learns Nedåtstöt
+- **Svens vind**: hands over Johannesört; learns Läkning
 - **Stenkyrkans krypta**: unlocks a door
 - **Valvgången**: finds a key
 
@@ -34,17 +37,20 @@ what is checked is that every door, gate, condition and dialog fits together.
 
 ## 5
 
-- **Kyrkbyn**: learns Eld
-- **Gruvsamhället**: meets Maj på pensionatet, Gamla Elin, Lisa, Gruvarbetaren Nils, Gruvarbetaren Anders; learns Lyse
+- **Prästgårdens vind**: learns Eld
+- **Gruvsamhället**: meets Maj på pensionatet, Lisa, Gruvarbetaren Nils, Gruvarbetaren Anders
+- **Elins vind**: meets Gamla Elin
 - **Den gamla gruvan**: finds a key
 - **Jättegrytan**: finds a näverdocka
 - **Kolartorpet**: meets kolmila; sets fire to kolmila; finds a container
 - **Eremitholmen**: meets Eremiten
 - **Måsskäret**: finds a näverdocka
 - **Signalstranden**: meets signalsten
+- **Dagmars ort**: gets Solstenen
 
 ## 6
 
+- **Elins vind**: hands over Solstenen; learns Lyse
 - **Den gamla gruvan**: unlocks a door
 - **Hisschaktet**: finds a key; gets Järnmalm
 
@@ -61,91 +67,110 @@ what is checked is that every door, gate, condition and dialog fits together.
 
 ## 9
 
-- **Bruksorten**: meets Smeden Holm, Förman Karlsson, Rosa, Sigge, Rut på värdshuset; learns Skydd; Karlsson asks for his pick (behind the waterfall, Fallgrottan), and gives Uppåtstöt for it
-- **Kvarnen vid forsen**: finds a key
-- **Fallgrottan**: finds a container; finds a näverdocka
+- **Bruksorten**: meets Förman Karlsson, Rosa, Sigge, Rut på värdshuset
+- **Smedjans loft**: meets Smeden Holm
+- **Kvarnen vid forsen**
+- **Fallgrottan**: finds a container; finds a näverdocka; gets Berghackan
 - **Pestkorset**: meets Den grå frun; gets Prästkragar
 - **Gamla stollen**
 - **Rasgången**
 - **Sidoorten**
+- **Rönnen vid forsen**: gets Rönnkvisten
 
 ## 10
 
-- **Bruksorten**: hands over Järnmalm; gets Härdad klinga
-- **Kvarnen vid forsen**: unlocks a door
-- **Kvarnstugan**: finds a key
+- **Bruksorten**: hands over Berghackan; learns Uppåtstöt
+- **Smedjans loft**: hands over Rönnkvisten; learns Skydd
+- **Kvarnen vid forsen**: finds a key
 - **Pestkorset**: hands over Prästkragar; finds a näverdocka
 
 ## 11
 
+- **Smedjans loft**: hands over Järnmalm; gets Härdad klinga
+- **Kvarnen vid forsen**: unlocks a door
+- **Kvarnstugan**: finds a key
+
+## 12
+
 - **Kvarnstugan**: unlocks a door
 - **Forsen**: finds a näverdocka; finds a key; gets Medaljongen
 
-## 12
+## 13
 
 - **Bruksorten**: hands over Medaljongen
 - **Forsen**: unlocks a door
 - **Kvarndammen**: reconciles Bäckahästen; gets Gummistövlarna
 
-## 13
-
-- **Tjuvgrottan** (three rooms): the shaft's life container; in the den a container, a näverdocka and, at the very end, Silverbeslaget
-- **Fiskeläget**: meets Hilma i sjöboden, Nätlagerskan Viola, Stina, Gamle Ture, Fiskaren Johan; learns Hopp
-- **Fyren i skären**: finds a key
-- **Skeppssättningen**: meets runsten; gets Runstensbit
-
 ## 14
 
+- **Tjuvgrottan**
+- **Schaktet**: finds a container
+- **Droppgången**: finds a näverdocka
+- **Klyftan**: finds a container
+- **Tjuvarnas kammare**: gets Silverbeslaget
+- **Fiskeläget**: meets Hilma i sjöboden, Stina, Gamle Ture, Fiskaren Johan
+- **Violas vind**: meets Nätlagerskan Viola
+- **Fyren i skären**: finds a key
+- **Skeppssättningen**: meets runsten; gets Runstensbit
+- **Ärlskäret**: gets Ärlans fjäder
+- **Havsgrottan**: finds a container
+
+## 15
+
+- **Violas vind**: hands over Ärlans fjäder; learns Hopp
 - **Fyren i skären**: unlocks a door
 - **Fyrtornet**: finds a key; gets Åskstenen
 - **Skeppssättningen**: meets runsten_hel; hands over Runstensbit; finds a näverdocka
 
-## 15
+## 16
 
-- **Bruksorten**: hands over Åskstenen; gets Åskslipad klinga
+- **Smedjans loft**: hands over Åskstenen; gets Åskslipad klinga
 - **Fyrtornet**: unlocks a door
 - **Linsrummet**: finds a key; gets Kompassen
 
-## 16
+## 17
 
 - **Fiskeläget**: hands over Kompassen; finds a container
 - **Linsrummet**: unlocks a door
 - **Fyrgalleriet**: reconciles Havsfrun; gets Ficklampan
 - **Signalstranden**: finds a näverdocka
 
-## 17
+## 18
 
 - **Jättegrytan**: finds a container
 - **Folkparken om natten**: finds a key
-- **Stationssamhället**: meets Fru Lind på järnvägshotellet, Kalle, Telegrafisten Oskar, Stinsen Berg, Resenären; learns Åska
-- **Milstolpen**: meets Postiljonen; gets Posthornet
+- **Stationssamhället**: meets Fru Lind på järnvägshotellet, Kalle, Stinsen Berg, Resenären
+- **Telegrafens vind**: meets Telegrafisten Oskar
+- **Milstolpen**: meets Postiljonen; gets Posthornet; gets Åskviggen
 
-## 18
+## 19
 
 - **Folkparken om natten**: unlocks a door
 - **Karusellen**: gets Visselpipan; finds a key
 - **Stationssamhället**: hands over Visselpipan
+- **Telegrafens vind**: hands over Åskviggen; learns Åska
 - **Milstolpen**: hands over Posthornet; finds a container
 
-## 19
+## 20
 
 - **Karusellen**: unlocks a door
 - **Dansbanan**: finds a key
 
-## 20
+## 21
 
 - **Dansbanan**: unlocks a door
 - **Scenen**: reconciles Spelmannen; gets Transistorradion
 - **Gamla stollen**: finds a näverdocka
 - **Rasgången**: finds a näverdocka
 
-## 21
+## 22
 
 - **Stenkyrkans krypta**: finds a container; finds a näverdocka
 - **Den gamla gruvan**: finds a container
 - **Kvarnen vid forsen**: finds a container
 - **Linsrummet**: finds a näverdocka; finds a container
-- **Fäboden**: meets Budejan Anna, stjarna, rosen, Gammelmor Karna, Lill-Per, Britta; learns Hamn
+- **Fäboden**: meets Budejan Anna, stjarna, rosen, Lill-Per, Britta
+- **Fäbodens loft**: meets Gammelmor Karna; learns Hamn
 - **Fäbodskogen**: finds a key
 - **Väktarkammaren**: finds a container
 - **Klyftan**
@@ -154,38 +179,38 @@ what is checked is that every door, gate, condition and dialog fits together.
 - **Rasbranten**
 - **Fäbodtorpet**: meets kalla, kalla_ren; finds a container
 
-## 22
+## 23
 
 - **Fäbodskogen**: unlocks a door
 - **Villvägarna**: finds a näverdocka; gets Koskällan
 - **Djupskogen**: finds a key
 
-## 23
+## 24
 
 - **Fäboden**: hands over Koskällan
 - **Djupskogen**: unlocks a door
 - **Fäbodvallen**: reconciles Skogsrået; gets Näverluren
 - **Trollberget**: finds a key
 
-## 24
+## 25
 
 - **Trollberget**: unlocks a door
 - **Trollgrottan**: finds a näverdocka; finds a key
 
-## 25
+## 26
 
 - **Trollgrottan**: unlocks a door
 - **Trollgångarna**
 - **Djupa gångarna**
 - **Bergshjärtat**: finds a key
 
-## 26
+## 27
 
 - **Bergshjärtat**: unlocks a door
 - **Skuggsalen**
 - **Bergakungens sal**: meets Dagmar; reconciles Bergakungen; scene: ending
 
-## 27
+## 28
 
 - **Midsommarafton**: meets Karin, Greta, Anders, Maj, murre_ep, Olle, Mormor Hulda, Sven, Vätten; scene: credits
 

@@ -322,7 +322,7 @@ export const GROTTOR: Record<string, AreaDef> = {
     id: 'fallgrottan',
     name: 'Fallgrottan',
     kind: 'path',
-    finds: [{ item: 'hacka', tx: 27, ty: 6, after: 'hacka_uppdrag' }],
+    finds: [{ item: 'hacka', tx: 27, ty: 6 }],
     tone: 'storm',
     music: 'grotta',
     backdrop: 'mine',

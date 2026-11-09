@@ -343,6 +343,8 @@ export const itemSprites: Record<string, SpriteDef> = {
       '.........WWWWW..................',
     ]],
   },
+  /** Rowan (decor): the birch's shape with grey bark, darker leaves and red berry clusters. */
+  rowan: { base: 'birch', w: 32, h: 40, frames: [], recolor: { W: 'G', l: 'M', M: 'R' } },
   /** Spruce (decor). 24×40 */
   spruce: {
     w: 24, h: 28,

@@ -31,6 +31,16 @@ export const STATIONSSAMHALLET: Record<string, DialogDef> = {
     actions: [{ type: 'flag', flag: 'askvigg_uppdrag' }],
   },
 
+  oskar_hittat: {
+    speaker: 'Telegrafisten Oskar',
+    pages: [
+      'Här uppe har jag kvar en mottagare. Den knastrar fortfarande, fast tråden är död.',
+      'Men vad bär du på? Den där stenen har varit med om något. Visa mig.',
+    ],
+    actions: [{ type: 'flag', flag: 'askvigg_uppdrag' }],
+    next: 'oskar_lar',
+  },
+
   oskar_vantar: {
     speaker: 'Telegrafisten Oskar',
     pages: ['Åskviggen ska ligga i åkern vid milstolpen, västerut. På en av stenarna.'],

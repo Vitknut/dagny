@@ -32,6 +32,16 @@ export const FISKELAGET: Record<string, DialogDef> = {
     actions: [{ type: 'flag', flag: 'fjader_uppdrag' }],
   },
 
+  viola_hittat: {
+    speaker: 'Nätlagerskan Viola',
+    pages: [
+      'Kom in, kom in. Akta näten. Jag lagar dem här uppe när det blåser för hårt nere vid sjöbodarna.',
+      'Vad har du där? En fjäder från en sädesärla! Vet du vad man kan göra med en sådan?',
+    ],
+    actions: [{ type: 'flag', flag: 'fjader_uppdrag' }],
+    next: 'viola_lar',
+  },
+
   viola_vantar: {
     speaker: 'Nätlagerskan Viola',
     pages: ['Ärlorna håller till på skäret norr om fyren, där fiskarna byggde ett röse en gång.'],

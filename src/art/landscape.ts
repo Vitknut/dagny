@@ -216,6 +216,27 @@ export const landscapeSprites: Record<string, SpriteDef> = {
     ],
   ),
   /** Offerkälla: a spring ringed with stones, a ribbon on the post. */
+  /** Rönnen: a lone rowan by the rapids, heavy with red berries. */
+  owRowan: t(
+    [
+      'MMMMMMMMMMMMMMMM',
+      'MMMMMmmmmmMMMMMM',
+      'MMMmmlmmlmmmMMMM',
+      'MMmlmmRmmlmRmMMM',
+      'MmmmRrmmlmmrmmMM',
+      'MmlmmmmlmmRrmmMM',
+      'MmmRrmlmmmmmlmMM',
+      'MMmmmmmmRrmmmMMM',
+      'MMMmmlmmmmmmMMMM',
+      'MMMMmmmbbmmMMMMM',
+      'MMMMMMMbbMMMMMMM',
+      'MMMMMMMbbMMMMMMM',
+      'MMMMMMMbBMMMMMMM',
+      'MMMMMMkbBkMMMMMM',
+      'MMMMMkkbbkkMMlMM',
+      'MMMMMMMMMMMMMMMM',
+    ],
+  ),
   owSpring: t(
     [
       'MMMMMMMMMMMMMMMM',

@@ -15,9 +15,9 @@ or a hidden place. At the start she has only the blade Mormor gives her.
 |---|---|---|---|
 | Läkning | Gamle Sven | Mormors by | Fetch **johannesört** from the high ledges in Björkhagen (nettles, crows, jumps) |
 | Nedåtstöt | Smeden Algot | Mormors by | Fetch his **tongs** from Gamla smedjan, east of the village – before the crypt, which he warns against entering without it (Grimmen hovers high) |
-| Lyse | Gamla Elin | Gruvsamhället | Dagmar's **solsten**, deep in the old mine (the next temple) |
+| Lyse | Gamla Elin | Gruvsamhället | Dagmar's **solsten**, at the far end of Dagmars ort, an old adit in the hill above the village |
 | Eld | Prosten | Kyrkbyn | After the crypt |
-| Skydd | Smeden Holm | Bruksorten | A **rönnkvist** from the rowan by the mill – rowan was planted by mills and water against Bäckahästen |
+| Skydd | Smeden Holm | Bruksorten | A **rönnkvist** from Rönnen vid forsen, the miller's rowan on the far bank – rowan was planted by mills and water against Bäckahästen |
 | Uppåtstöt | Förman Karlsson | Bruksorten | For his pick, hidden behind the waterfall north of the mill (Fallgrottan) |
 | Hopp | Viola | Fiskeläget | A wagtail's **fjäder**, on Ärlskäret, a skerry with a cairn north of the lighthouse (by boat, before the temple) |
 | Hamn | Gammelmor Karna | Fäboden | After the mine |
@@ -36,7 +36,7 @@ Like Zelda II, a reading cast in a room lasts until Dagny leaves it (Skydd,
 Hopp, Lyse, Eld and Hamn); casting one that is already burning costs nothing
 and does nothing. A bird that casts again comes down where there is room.
 
-Each thing a teacher asks for lies further on, past their village and before the temple that needs the reading, and only once they have asked (`finds` with `after`).
+Each thing a teacher asks for lies out in the world, never inside a temple, and is always there (as in Zelda II): geography decides when Dagny can reach it, not the quest. If she finds it before she is asked, the teacher simply takes it and teaches the reading (`*_hittat` dialogs).
 
 The NPC dialog conditions are in `src/data/npcs.ts`; `tests/start.test.ts`
 checks that Läkning and Nedåtstöt cannot be had for free.

@@ -26,14 +26,24 @@ export const GRUVSAMHALLET: Record<string, DialogDef> = {
     pages: [
       'Så du hittade upp hit. Det gör inte många. Jag sitter helst här, nära ljuset från gluggen.',
       'Det finns en läsning för ljus. Men ljus måste man ha något att tända den med. En sten som samlar solen, en solsten.',
-      'Dagmar hade en sådan. Hon lämnade den i den gamla gruvan, långt ner i en ort där ljuset aldrig når. Hämta den, så ska jag lära dig.',
+      'Dagmar hade en sådan. Hon lämnade den i en gammal ort i berget ovanför byn, långt in där ljuset aldrig når. Hämta den, så ska jag lära dig.',
     ],
     actions: [{ type: 'flag', flag: 'solsten_uppdrag' }],
   },
 
   elin_vantar: {
     speaker: 'Gamla Elin',
-    pages: ['Solstenen ligger djupt ner i den gamla gruvan. Där ljuset aldrig når.'],
+    pages: ['Solstenen ligger i den gamla orten i berget ovanför byn. Längst in, där ljuset aldrig når.'],
+  },
+
+  elin_hittat: {
+    speaker: 'Gamla Elin',
+    pages: [
+      'Så du hittade upp hit. Det gör inte många. Jag sitter helst här, nära ljuset från gluggen.',
+      'Men vad är det som lyser i din ficka? Visa mig.',
+    ],
+    actions: [{ type: 'flag', flag: 'solsten_uppdrag' }],
+    next: 'elin_lar',
   },
 
   elin_lar: {
