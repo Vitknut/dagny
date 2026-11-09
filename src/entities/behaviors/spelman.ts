@@ -28,7 +28,7 @@ export const spelman: Behavior = {
     const floorY = (world.grid.h - 2) * 16;
     const stageX = e.baseY;
     const note = (x: number, y: number, vx: number, vy: number, gravity = 0): void =>
-      world.spawnProjectile({ x, y, vx, vy, w: 8, h: 8, sprite: 'noteShot', damage: 2, fromPlayer: false, life: 220, gravity, ghost: true });
+      world.spawnProjectile({ x, y, vx, vy, w: 8, h: 8, sprite: 'noteShot', damage: 2 + e.bonusDamage, fromPlayer: false, life: 220, gravity, ghost: true });
     switch (e.mode) {
       case 0: { // play on the stage
         e.facing = -1;
@@ -44,7 +44,7 @@ export const spelman: Behavior = {
               const high = i % 2 === 0;
               world.spawnProjectile({
                 x: sx + i * 18, y: high ? hi : lo, vx: -1.7, vy: 0, w: 8, h: 8,
-                sprite: 'noteShot', damage: 2, fromPlayer: false, life: 260, ghost: true, delay: i * 14,
+                sprite: 'noteShot', damage: 2 + e.bonusDamage, fromPlayer: false, life: 260, ghost: true, delay: i * 14,
               });
             }
           } else if (e.cycle % 3 === 2) {

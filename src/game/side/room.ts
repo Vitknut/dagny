@@ -4,6 +4,7 @@ import { BOSSES, ENEMIES } from '../../data/enemies';
 import { ENEMY_CHARS, PICKUP_CHARS, THEMES, DECO, FRONT, kindOf } from '../../data/legend';
 import { NPCS } from '../../data/npcs';
 import { spawnCritters } from './critters';
+import { TEMPLE_BOSS_DAMAGE, TEMPLE_ENEMY_BONUS } from '../../data/progression';
 import { ITEMS } from '../../data/items';
 import { templeById } from '../../data/temples';
 import { Enemy } from '../../entities/enemy';
@@ -122,6 +123,7 @@ export function build(sc: SideScene): void {
             const def = BOSSES[bossId];
             if (def) {
               sc.boss = new Enemy(def, px, py);
+              sc.boss.bonusDamage = bossBonus(a.temple, def.damage);
               sc.enemies.push(sc.boss);
             }
           }
@@ -134,6 +136,7 @@ export function build(sc: SideScene): void {
             if (def && !(a.sealed && hasFlag(s, `${a.id}_rensad`))) {
               const e = new Enemy(def, px, py);
               if (a.hard) e.harden();
+              e.bonusDamage = templeBonus(a.temple);
               sc.enemies.push(e);
               // A meeting on the map shuts the way back (game/sidescene.ts, updateSeal).
               if (a.sealed || a.kind === 'encounter') sc.seal = 1;
@@ -343,4 +346,16 @@ export function refreshRoom(sc: SideScene): void {
     const py = (r.ty + 1) * TILE;
     sc.pickups.push(new Pickup('container', px - 6, py - 13, r.kind === 'liv' ? 'livbehallare' : 'magibehallare', false, key));
   }
+}
+
+/** Extra damage for the creatures of a temple: the deeper in the game, the harder they hit. */
+export function templeBonus(temple: string | undefined): number {
+  const n = temple ? templeById(temple)?.number : undefined;
+  return n ? TEMPLE_ENEMY_BONUS[n - 1] ?? 0 : 0;
+}
+
+/** What a temple's guardian adds to its own damage to hit as hard as TEMPLE_BOSS_DAMAGE says. */
+export function bossBonus(temple: string | undefined, base: number): number {
+  const n = temple ? templeById(temple)?.number : undefined;
+  return n ? Math.max(0, (TEMPLE_BOSS_DAMAGE[n - 1] ?? base) - base) : 0;
 }

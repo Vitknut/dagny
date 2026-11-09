@@ -74,7 +74,7 @@ export const skogsra: Behavior = {
             const x = Math.max(8, Math.min(gw - 18, p.x - 5 + (i - (n - 1) / 2) * 30));
             world.spawnProjectile({
               x, y: floorY - 24, vx: 0, vy: 0, w: 10, h: 24, sprite: 'root',
-              damage: 2, fromPlayer: false, life: 36, ghost: true, delay: 40 + i * 8,
+              damage: 2 + e.bonusDamage, fromPlayer: false, life: 36, ghost: true, delay: 40 + i * 8,
             });
           }
           world.sfx('magic');
@@ -93,7 +93,7 @@ export const skogsra: Behavior = {
             const flight = 50;
             world.spawnProjectile({
               x: e.x + e.w / 2, y: e.y + 6, vx: (tx - e.x - e.w / 2) / flight, vy: -3.6 - i * 0.3,
-              w: 6, h: 8, sprite: 'kotte', damage: 2, fromPlayer: false, life: 150, gravity: 0.14,
+              w: 6, h: 8, sprite: 'kotte', damage: 2 + e.bonusDamage, fromPlayer: false, life: 150, gravity: 0.14,
             });
           }
           world.sfx('sword');

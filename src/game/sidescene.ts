@@ -27,7 +27,7 @@ import { updateCritters, type Critter } from './side/critters';
 import { compact, nearestFreeSpot, tmpA, type Checkpoint, type Marker, type SpellTimers } from './side/shared';
 
 export { nearestFreeSpot } from './side/shared';
-import { build, refreshRoom, spawnAfterBoss, spawnTreasure, renderStatic, renderFront } from './side/room';
+import { build, refreshRoom, spawnAfterBoss, spawnTreasure, renderStatic, renderFront, templeBonus } from './side/room';
 import { shieldBlocks, damagePlayer, combat, killEnemy } from './side/combat';
 import { collect } from './side/pickups';
 import { renderScene } from './side/render';
@@ -299,6 +299,7 @@ export class SideScene implements Scene, WorldApi {
     const def = ENEMIES[id];
     if (!def || this.minions() >= 2) return false;
     const e = new Enemy(def, px, py);
+    e.bonusDamage = templeBonus(this.area.temple);
     e.facing = px < this.player.x ? 1 : -1;
     this.enemies.push(e);
     this.puff(px, py - 8, 'mist');

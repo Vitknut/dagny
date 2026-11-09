@@ -17,6 +17,14 @@ export const COSTS: Readonly<Record<StatId, readonly number[]>> = {
   liv: [60, 140, 260, 420, 620, 880, 1200, 1600, 2100, 2700, 3400],
 };
 
+/**
+ * Each temple hits harder than the one before, as in Zelda II: extra damage
+ * for the ordinary creatures in temple 1–7 (index = temple number − 1), and
+ * what each temple's guardian does with a touch.
+ */
+export const TEMPLE_ENEMY_BONUS = [0, 0, 1, 1, 2, 2, 3];
+export const TEMPLE_BOSS_DAMAGE = [3, 3, 4, 4, 5, 5, 6];
+
 /** Sword damage per Styrka level. */
 export const SWORD_DAMAGE = [2, 2, 3, 4, 4, 5, 6, 7, 8, 10, 11, 12];
 /** Max health per Liv level (one point = half a heart segment on the HUD). */

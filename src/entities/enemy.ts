@@ -68,7 +68,7 @@ export class Enemy implements Body {
   pool: [number, number] | null = null;
   sprite: string;
   frame = 0;
-  /** Extra damage per blow (tougher creatures in the last temple). */
+  /** Extra damage per blow: the deeper the temple, the harder it hits (data/progression.ts). */
   bonusDamage = 0;
   readonly boss: BossDef | null;
 
@@ -94,10 +94,9 @@ export class Enemy implements Body {
     return this.def.damage + this.bonusDamage;
   }
 
-  /** Makes this creature tougher (the last temple). */
+  /** Makes this creature tougher (the last temple). Its extra damage comes from the temple (TEMPLE_ENEMY_BONUS). */
   harden(): void {
     this.hp = this.maxHp = Math.ceil(this.def.hp * 1.5);
-    this.bonusDamage = 1;
   }
 
 
