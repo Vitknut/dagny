@@ -2,6 +2,40 @@ import type { AreaDef } from '../types';
 
 /** The small places on the map, each with a little task. */
 export const SMAPLATSER: Record<string, AreaDef> = {
+  /** Uvberget: the eagle-owl's crag east of Fäboden. A climb up the cliff face; the owl drops its feathers at the very top. */
+  uvberget: {
+    id: 'uvberget',
+    name: 'Uvberget',
+    kind: 'path',
+    finds: [{ item: 'uvfjader', tx: 28, ty: 3 }],
+    tone: 'sommarkvall',
+    music: 'plats',
+    backdrop: 'outdoor',
+    theme: 'berg',
+    showName: true,
+    ambience: ['leaves'],
+    left: { to: 'overworld', ow: { x: 28, y: 9 } },
+    props: [{ sprite: 'spruce', tx: 24, ty: 3 }, { sprite: 'spruce', tx: 4, ty: 13 }],
+    tiles: [
+      "................................",
+      "..........................r.....",
+      "................................",
+      "..........r......===............",
+      ".....................###########",
+      ".....................###########",
+      ".............===.....###########",
+      ".....................###########",
+      ".....................###########",
+      "................################",
+      "................################",
+      "................################",
+      ".............###################",
+      "..A.....o....###################",
+      "################################",
+      "################################",
+    ],
+  },
+
   /** Rönnen vid forsen: the miller's old rowan on the far bank, mitt emot kvarnen. A sprig lies under it. */
   ronnen: {
     id: 'ronnen',

@@ -91,6 +91,13 @@ export const SFX: Record<string, SfxStep[]> = {
     { wave: 'triangle', from: 587, dur: 0.15, vol: 0.4, at: 0.12 },
     { wave: 'triangle', from: 784, dur: 0.3, vol: 0.4, at: 0.24 },
   ],
+  /** Trollberget rumbling far off: a long, deep roll that swells and dies away. */
+  rumble: [
+    { wave: 'noise', from: 180, to: 50, dur: 1.8, vol: 0.9 },
+    { wave: 'sawtooth', from: 55, to: 32, dur: 2.0, vol: 0.5 },
+    { wave: 'noise', from: 260, to: 70, dur: 1.0, vol: 0.6, at: 0.7 },
+    { wave: 'sine', from: 40, to: 28, dur: 1.6, vol: 0.6, at: 0.3 },
+  ],
   roar: [
     { wave: 'sawtooth', from: 140, to: 60, dur: 0.8, vol: 0.5 },
     { wave: 'noise', from: 500, to: 120, dur: 0.8, vol: 0.4 },

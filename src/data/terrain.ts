@@ -105,6 +105,7 @@ export const TERRAIN: Readonly<Record<string, TerrainDef>> = {
   // --- Landmarks: forgotten things along the way --------------------------------------
   u: { name: 'riven gärdsgård', sprite: 'owWallBroken', map: 'M', encounter: 'ang', landmark: true },
   '5': { name: 'rönnen', sprite: 'owRowan', map: 'M', encounter: 'skog', landmark: true, visitable: true },
+  '7': { name: 'uvberget', sprite: 'owCliff', map: 'g', encounter: 'fjall', landmark: true, visitable: true },
   '6': { name: 'gammal ort', sprite: 'owAdit', map: 'M', encounter: 'skog', landmark: true, visitable: true },
   o: { name: 'offerkälla', sprite: 'owSpring', map: 'M', encounter: 'ang', landmark: true, visitable: true },
   t: { name: 'ödetorp', sprite: 'owCroft', map: 'M', encounter: 'odetorp', landmark: true, visitable: true },

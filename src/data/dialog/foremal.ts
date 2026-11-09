@@ -4,6 +4,7 @@ import type { DialogDef } from '../types';
 export const FOREMAL: Record<string, DialogDef> = {
   hittade_solsten: { pages: ['Dagny hittade SOLSTENEN! Hon håller den mot dimman, och den lyser upp – som om solen satt inuti.'] },
   hittade_ronnkvist: { pages: ['Dagny bröt en RÖNNKVIST! Bären är röda som glöd.'] },
+  hittade_uvfjader: { pages: ['Dagny hittade BERGUVENS FJÄDER! Den är stor och mjuk och knappt hörs när den faller.'] },
   hittade_fjader: { pages: ['Dagny hittade ÄRLANS FJÄDER! Den väger nästan ingenting.'] },
   hittade_askvigg: { pages: ['Dagny hittade ÅSKVIGGEN! Stenen är sval och slät, och det pirrar i fingrarna.'] },
 

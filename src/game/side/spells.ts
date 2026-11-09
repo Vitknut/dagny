@@ -46,8 +46,8 @@ export function castSpell(sc: SideScene): void {
   }
   const cost = spellCost(s, id);
   if (s.mp < cost) {
+    // Just the dull click: the empty magic bar says the rest.
     sc.sfx('cancel');
-    g.toast(STR.notEnoughMp);
     return;
   }
   const p = sc.player;

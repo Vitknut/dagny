@@ -170,7 +170,7 @@ what is checked is that every door, gate, condition and dialog fits together.
 - **Kvarnen vid forsen**: finds a container
 - **Linsrummet**: finds a näverdocka; finds a container
 - **Fäboden**: meets Budejan Anna, stjarna, rosen, Lill-Per, Britta
-- **Fäbodens loft**: meets Gammelmor Karna; learns Hamn
+- **Fäbodens loft**: meets Gammelmor Karna
 - **Fäbodskogen**: finds a key
 - **Väktarkammaren**: finds a container
 - **Klyftan**
@@ -178,9 +178,11 @@ what is checked is that every door, gate, condition and dialog fits together.
 - **Vättegången**
 - **Rasbranten**
 - **Fäbodtorpet**: meets kalla, kalla_ren; finds a container
+- **Uvberget**: gets Berguvens fjäder
 
 ## 23
 
+- **Fäbodens loft**: hands over Berguvens fjäder; learns Hamn
 - **Fäbodskogen**: unlocks a door
 - **Villvägarna**: finds a näverdocka; gets Koskällan
 - **Djupskogen**: finds a key

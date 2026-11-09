@@ -97,6 +97,12 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
     description: 'En kvist rönn från kvarnen vid forsen, med bären kvar. Smeden Holm i Bruksorten väntar på den.',
     sprite: 'ronnkvist',
   },
+  uvfjader: {
+    id: 'uvfjader',
+    name: 'Berguvens fjäder',
+    description: 'En stor, brunspräcklig fjäder från en berguv. Gammelmor Karna på Fäboden väntar på den.',
+    sprite: 'uvfjader',
+  },
   fjader: {
     id: 'fjader',
     name: 'Ärlans fjäder',
@@ -184,4 +190,4 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
 };
 
 /** Order shown in the items menu. */
-export const ITEM_ORDER = ['svard', 'eka', 'karbidlampa', 'stovlar', 'ficklampa', 'radio', 'naverlur', 'klingaHardad', 'klingaBlank', 'silverbeslag', 'malm', 'askstenen', 'murre', 'tang', 'hacka', 'solsten', 'ronnkvist', 'fjader', 'askvigg', 'johannesort', 'prastkragar', 'runbit', 'posthorn', 'fickur', 'psalmbok', 'medaljong', 'kompass', 'skalla', 'visselpipa'];
+export const ITEM_ORDER = ['svard', 'eka', 'karbidlampa', 'stovlar', 'ficklampa', 'radio', 'naverlur', 'klingaHardad', 'klingaBlank', 'silverbeslag', 'malm', 'askstenen', 'murre', 'tang', 'hacka', 'solsten', 'ronnkvist', 'fjader', 'uvfjader', 'askvigg', 'johannesort', 'prastkragar', 'runbit', 'posthorn', 'fickur', 'psalmbok', 'medaljong', 'kompass', 'skalla', 'visselpipa'];

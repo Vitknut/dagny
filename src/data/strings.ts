@@ -67,7 +67,6 @@ export const STR = {
   levelUpLater: 'Spara till senare',
   levelMax: 'MAX',
   needXp: 'XP',
-  notEnoughMp: 'Inte nog med magi',
   checkpoint: 'Ljusstaken brinner',
   saved: 'Sparat',
   autosaved: 'Sparat',

@@ -21,14 +21,39 @@ export const FABODEN: Record<string, DialogDef> = {
     pages: ['Gå inte för långt in i skogen. Det är lätt att gå vilse i Fäbodskogen, även för oss som bor här.'],
   },
 
-  karna_lar: {
+  karna_uppdrag: {
     speaker: 'Gammelmor Karna',
     pages: [
       'Jaså, det är du. Skogen har viskat om dig ett tag nu. Om flickan som förlikar.',
-      'Jag kan en läsning som få kan. Man byter hamn, blir en liten fågel som kommer in där ingen annan kommer in.',
+      'Jag kan en läsning som få kan. Man byter hamn och blir en liten fågel som kommer in där ingen annan kommer in.',
+      'Men hamnen måste ha något att byta till. Hämta mig en fjäder från berguven. Den bor i branten öster om fäbodarna, där kalfjället börjar.',
+    ],
+    actions: [{ type: 'flag', flag: 'uvfjader_uppdrag' }],
+  },
+
+  karna_vantar: {
+    speaker: 'Gammelmor Karna',
+    pages: ['Berguven bor i branten öster om fäbodarna. Den tappar sina fjädrar högst upp, dit ingen vill klättra.'],
+  },
+
+  karna_hittat: {
+    speaker: 'Gammelmor Karna',
+    pages: [
+      'Jaså, det är du. Skogen har viskat om dig ett tag nu. Om flickan som förlikar.',
+      'Och vad har du där? En fjäder från berguven! Då vet jag vad du ska ha den till.',
+    ],
+    actions: [{ type: 'flag', flag: 'uvfjader_uppdrag' }],
+    next: 'karna_lar',
+  },
+
+  karna_lar: {
+    speaker: 'Gammelmor Karna',
+    pages: [
+      'Uvens fjäder. Den har sett mer av natten än vi andra, och den flyger utan ett ljud.',
+      'Man byter hamn och blir en liten fågel som kommer in där ingen annan kommer in.',
       '"Hamn av fjäder, hamn av vind, byt mig om och ta mig in." Så. Men flyg inte för länge, då glömmer du vem du är.',
     ],
-    actions: [{ type: 'learnSpell', spell: 'hamn' }],
+    actions: [{ type: 'takeItem', item: 'uvfjader' }, { type: 'flag', flag: 'uvfjader_klar' }, { type: 'learnSpell', spell: 'hamn' }],
     next: 'lart_hamn',
   },
 
@@ -39,14 +64,6 @@ export const FABODEN: Record<string, DialogDef> = {
   karna_igen: {
     speaker: 'Gammelmor Karna',
     pages: ['En fågel ser världen uppifrån. Det är nyttigt för en Väktare. Man ser vad som hänger ihop.'],
-  },
-
-  karna_vanta: {
-    speaker: 'Gammelmor Karna',
-    pages: [
-      'Du är inte redo än, lilla vän. Att byta hamn är farligt för den som inte vet vem hon är.',
-      'Gå ner i gruvan först. Den som har varit i mörkret vet var ljuset finns. Kom tillbaka sedan.',
-    ],
   },
 
   lillper_uppdrag: {

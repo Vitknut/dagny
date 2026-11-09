@@ -402,8 +402,8 @@ export class OverworldScene implements Scene {
     const woken = TEMPLES.filter((t) => t.id !== 'trollberget' && hasFlag(s, `${t.id}_klar`)).length;
     if (woken > 0 && !hasFlag(s, `berg_mullrar_${woken}`) && !hasFlag(s, 'trollberget_klar')) {
       s.flags.push(`berg_mullrar_${woken}`);
-      this.shakeT = 60;
-      this.game.audio.play('roar');
+      this.shakeT = 90;
+      this.game.audio.play('rumble');
       this.game.toast(STR.mountainRumble, 3.5);
       this.game.vibrate([60, 40, 90]);
     }

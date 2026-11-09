@@ -30,7 +30,7 @@ export const OVERWORLD: OverworldDef = {
     '^^l.ll0Zlll.llllllllllkkff^^^kkkk^kkkk^^XXXXX%%0T%%XXXXXXXX^^^^^^^^h........hfffffffffffwfffff^^',
     '^^lllll----+llllllllllkkkkkkkkkkkkkkkkkEEkkXXXXXXXXXXXXXXXX^^^^^^^hh.........fffffffff0wfffff.^^',
     '^^llllllllf++lllllllllkkkkkkkk^kkkkkkkkXXkkkXXXXXXXXXXXXXXX^^^^^^^.........h.ffffff+--Qwffff..^^',
-    '^^llllllssff|lllllllllkkkkkkk^^^kkkkkkkXXkkkkXXXXXXXXCk%%XX^^^^^^^.........h..fff+-+...=.fff..^^',
+    '^^llllllssff|lllllllllkkkkkkk7^^kkkkkkkXXkkkkXXXXXXXXCk%%XX^^^^^^^.........h..fff+-+...=.fff..^^',
     '^^lllllssssf|llllullllkkkkkkk^^^kkkkkkkXXkkkkCXXXXXXXX%%%XX^^^^^^^^..u.......yf+-+h....w..f.5.^^',
     '^^llllsssssf++llllll...lllllll.^kkkkkkkkXkkkkXXXXXXXCk%%%XX^^^^^^^....+--------+hhh.....w.....^^',
     '^^llllssssfff|llllll....lllllu.^^kkkkkkkXXkkXXXXXXXXXk%%%XX^^^^^^^....|.h....hhhhh......w....^^^',
@@ -164,6 +164,7 @@ export const OVERWORLD: OverworldDef = {
     // Where the teachers' things lie: out in the world, never inside a temple (as in Zelda II).
     { x: 92, y: 10, name: 'Rönnen vid forsen', area: 'ronnen', entry: 'A' },
     { x: 42, y: 17, name: 'Dagmars ort', area: 'dagmars_ort', entry: 'A' },
+    { x: 29, y: 9, name: 'Uvberget', area: 'uvberget', entry: 'A' },
     { x: 59, y: 15, name: 'Sidoorten', area: 'stollen_gomd', entry: 'E', requires: ['sidoorten_oppen'], dialog: 'sidoorten_stangd' },
   ],
   encounters: [
