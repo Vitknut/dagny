@@ -275,6 +275,11 @@ export function playthrough(opts: Options = {}): Playthrough {
         if (a.signs?.[ch]) talk(a.signs[ch]);
       }
     }
+    // A trial of candles is lit once its teacher has asked (side/trial.ts); then the teacher speaks.
+    if (a.candleTrial && flags.has(a.candleTrial.requires) && !flags.has(a.candleTrial.flag)) {
+      setFlag(a.candleTrial.flag);
+      talk(a.candleTrial.dialog);
+    }
     // Someone lost who asked to follow is taken home (side/follower.ts): they walk where Dagny walks.
     if (a.lostChild && flags.has(`${a.lostChild.npc}_folger`) && !flags.has(a.lostChild.home)) setFlag(a.lostChild.home);
     // – then the creatures and what lies about.

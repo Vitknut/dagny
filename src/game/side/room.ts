@@ -4,6 +4,7 @@ import { BOSSES, ENEMIES } from '../../data/enemies';
 import { ENEMY_CHARS, PICKUP_CHARS, THEMES, DECO, FRONT, kindOf } from '../../data/legend';
 import { NPCS } from '../../data/npcs';
 import { spawnCritters } from './critters';
+import { makeTrial } from './trial';
 import { TEMPLE_BOSS_DAMAGE, TEMPLE_ENEMY_BONUS } from '../../data/progression';
 import { ITEMS } from '../../data/items';
 import { templeById } from '../../data/temples';
@@ -174,6 +175,7 @@ export function build(sc: SideScene): void {
   if (a.afterBoss && a.temple && hasFlag(s, `${a.temple}_boss`)) spawnAfterBoss(sc);
   // A thing someone asked for shows only once they have asked (`after`).
   for (const fd of a.finds ?? []) if (!fd.after || hasFlag(s, fd.after)) placeFind(sc, fd.item, fd.tx, fd.ty);
+  sc.trial = makeTrial(a, s);
   // Small animals: by hand, or set out by the ground.
   sc.critters = spawnCritters(a, sc.grid, [...sc.entries.values(), ...sc.npcs.map((n) => ({ tx: Math.floor(n.x / TILE), ty: Math.floor(n.y / TILE) })), ...sc.doors]);
   // Secrets only the lamps reveal.

@@ -134,7 +134,7 @@ export const NPCS: Readonly<Record<string, NpcDef>> = {
   },
   // --- Kyrkbyn ---
   signe: { id: 'signe', sprite: 'signe', idle: { frames: [0, 0, 2, 0, 0, 1, 0], every: 0.8 }, talk: [{ dialog: 'signe_vila' }] },
-  prosten: { id: 'prosten', sprite: 'prost', idle: { frames: [0, 0, 2, 0, 0, 1, 0], every: 0.8 }, talk: [{ if: [{ notSpell: 'eld' }, { flag: 'krypta_klar' }], dialog: 'prosten_lar' }, { if: [{ notSpell: 'eld' }], dialog: 'prosten_vanta' }, { if: [{ flag: 'trollberget_klar' }], dialog: 'prosten_efter' }, { dialog: 'prosten_igen' }] },
+  prosten: { id: 'prosten', sprite: 'prost', idle: { frames: [0, 0, 2, 0, 0, 1, 0], every: 0.8 }, talk: [{ if: [{ notSpell: 'eld' }, { flag: 'ljusprov_klart' }], dialog: 'prosten_lar' }, { if: [{ notSpell: 'eld' }, { flag: 'eld_prov' }], dialog: 'prosten_versen' }, { if: [{ notSpell: 'eld' }, { flag: 'krypta_klar' }], dialog: 'prosten_prov' }, { if: [{ notSpell: 'eld' }], dialog: 'prosten_vanta' }, { if: [{ flag: 'trollberget_klar' }], dialog: 'prosten_efter' }, { dialog: 'prosten_igen' }] },
   ingrid: { id: 'ingrid', sprite: 'woman2', idle: { frames: [0, 0, 2, 0, 0, 1, 0], every: 0.8 }, talk: [{ if: [{ item: 'psalmbok' }, { notFlag: 'psalmbok_klar' }], dialog: 'ingrid_tack' }, { if: [{ flag: 'psalmbok_klar' }], dialog: 'ingrid_glad' }, { if: [{ flag: 'psalmbok_uppdrag' }], dialog: 'ingrid_vantar' }, { dialog: 'ingrid_uppdrag' }] },
   bosse: { id: 'bosse', sprite: 'kid3', idle: { frames: [0, 0, 1, 0, 1, 0, 0], every: 0.35 }, talk: [{ if: [{ flag: 'krypta_klar' }], dialog: 'bosse_efter' }, { dialog: 'bosse' }] },
   tyra: { id: 'tyra', sprite: 'tyra', idle: { frames: [0, 0, 0, 2, 0, 1, 1, 0], every: 0.7 }, talk: [{ if: [{ flag: 'trollberget_klar' }], dialog: 'tyra_efter' }, { dialog: 'tyra' }] },

@@ -1,4 +1,5 @@
 import { renderCritters } from './critters';
+import { renderTrial } from './trial';
 import { TILE } from '../../engine/collision';
 import { VIEW_W, VIEW_H } from '../../engine/screen';
 import { drawSprite, spriteSize } from '../../engine/sprites';
@@ -90,6 +91,7 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
   for (const cp of sc.checkpoints) {
     drawSprite(ctx, cp.lit ? 'candle' : 'candleOff', Math.floor((f + cp.tx * 5) / 18), cp.tx * TILE - camX, cp.ty * TILE - camY);
   }
+  if (sc.trial) renderTrial(sc.trial, ctx, camX, camY, f);
 
   renderProps(sc, ctx, camX, camY, false);
   for (const pl of sc.platforms) pl.render(ctx, camX, camY);
@@ -232,6 +234,7 @@ export function renderDarkness(sc: SideScene, ctx: CanvasRenderingContext2D, cam
   if (hasItem(sc.s, 'ficklampa')) light(pc.x + sc.player.facing * 70 - camX, pc.y - camY, 46);
   for (const pr of sc.projectiles) if (pr.sprite === 'bolt' && pr.delay === 0) light(pr.x + 4 - camX, pr.y + pr.h - 10 - camY, 70);
   for (const cp of sc.checkpoints) if (cp.lit) light(cp.tx * TILE + 8 - camX, cp.ty * TILE + 4 - camY, 40 + flicker);
+  for (const c of sc.trial?.candles ?? []) if (c.lit) light(c.tx * TILE + 8 - camX, c.ty * TILE + 4 - camY, 34 + flicker);
   for (const a of sc.anim) {
     if (a.x + TILE + 80 < camX || a.x - 80 > camX + VIEW_W || a.y + TILE + 80 < camY || a.y - 80 > camY + VIEW_H) continue;
     if (a.sprite === 'bulbs') light(a.x + 8 - camX, a.y + 5 - camY, 36);

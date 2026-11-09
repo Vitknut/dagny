@@ -356,6 +356,18 @@ export interface AreaDef {
    */
   lostChild?: { npc: string; home: string };
   /**
+   * A trial of candles (game/side/trial.ts): once `requires` is set, the
+   * candles must be lit in `order` (by the signs above them). Done, it sets
+   * `flag` and shows `dialog`.
+   */
+  candleTrial?: {
+    requires: string;
+    flag: string;
+    dialog: string;
+    order: string[];
+    candles: Array<{ tx: number; ty: number; sign: string }>;
+  };
+  /**
    * Small harmless animals placed by hand (game/side/critters.ts). Without
    * this, villages, forests and open water get a few by themselves.
    */

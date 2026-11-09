@@ -25,6 +25,7 @@ import { LevelUpOverlay, GameOverOverlay } from './menus';
 
 import { updateCritters, type Critter } from './side/critters';
 import { Follower } from './side/follower';
+import { updateTrial, type Trial } from './side/trial';
 import { compact, nearestFreeSpot, tmpA, type Checkpoint, type Marker, type SpellTimers } from './side/shared';
 
 export { nearestFreeSpot } from './side/shared';
@@ -67,6 +68,8 @@ export class SideScene implements Scene, WorldApi {
   signs: Array<Marker & { dialog: string }> = [];
   /** Glints where a lamp reveals a secret. */
   lampGlints: Array<{ x: number; y: number }> = [];
+  /** A trial of candles (side/trial.ts), in rooms that have one. */
+  trial: Trial | null = null;
   /** Someone following Dagny out of a dark place (side/follower.ts). */
   follower: Follower | null = null;
   /** Small harmless animals: birds, hens, a squirrel, a hare, ducks (side/critters.ts). */
@@ -501,6 +504,20 @@ export class SideScene implements Scene, WorldApi {
 
     // --- Interact (Up or a tap on the NPC/door) ---
     this.updateInteract();
+
+    // --- A trial of candles ---
+    if (this.trial) {
+      const ev = updateTrial(this.trial, this.area, s, p, p.state !== 'bird');
+      if (ev === 'lit') this.sfx('checkpoint');
+      else if (ev === 'wrong') {
+        this.sfx('puff');
+        for (const c of this.trial.candles) this.puff(c.tx * TILE + 8, c.ty * TILE + 4, 'mist');
+      } else if (ev === 'done') {
+        this.sfx('select');
+        g.pushOverlay(new DialogOverlay(g, this.area.candleTrial!.dialog, () => this.afterDialog()));
+        this.game.save();
+      }
+    }
 
     // --- Someone following ---
     if (this.follower) this.follower.update({ x: p.x + p.w / 2, y: p.y + p.h }, p.state !== 'bird', this.enemies);
