@@ -6,6 +6,10 @@ repliker, alla 93 rum, fiendetabellerna, storydokumentet, designdokumentet och
 den genererade genomspelningen. Jag har inte spelat igenom spelet för hand;
 där något bara går att bedöma med fingrarna står det.*
 
+*Planen slår ihop två genomgångar: den från 9 november (svårighet, variation,
+läraruppdragen och templen med "handsken") och den här. Avsnittet "Hur de två
+genomgångarna hänger ihop" längst ner visar vad som kommer varifrån.*
+
 ## Sammanfattning
 
 Spelet har en stark grund: storyn håller ihop, replikerna är bra, världen är
@@ -220,6 +224,24 @@ starkast borta vid Björkhagen. Som om någon pratade."
 - *Test:* `tests/fencer.test.ts` körs för varje ny fäktare: den parerar där
   Dagny slår, står öppen efter sitt utfall, och går att besegra.
 
+**2.4 Fiender med ett eget svar (från genomgången 9 november).**
+- *Vad:* några fiender går bara att besegra på ett visst sätt: ett väsen som
+  bara tål eld, ett som måste slås uppifrån (Nedåtstöt) eller underifrån
+  (Uppåtstöt), och ett som bara syns i Lyse. Ett slag per tempel, inte fler.
+- *Varför:* det ger magierna och teknikerna en plats i striden, inte bara vid
+  dörrar. I Zelda II är det så man lär sig att Eld och Nedåtstöt är verktyg.
+- *Hur:* fält på `EnemyDef` (`onlyFire`, `onlyFrom: 'above' | 'below'`,
+  `hiddenUnlessLit`), prövade i `Enemy.takeHit` där `backOnly` prövas i dag.
+- *Test:* per fält: fel sorts slag ger "blocked", rätt sorts slag skadar.
+  Lösaren kräver att förmågan finns innan en sådan fiende står i vägen för en
+  nyckel.
+
+**2.5 Liven räknas om efter provspel.**
+- *Vad:* med den nya dödsregeln och trapporna i 2.1 kan tre liv från början
+  och åtta näverdockor bli antingen för mycket eller för lite. Antalet dockor
+  och var de ligger ses över när 2.1–2.4 har provspelats.
+- *Test:* `tests/secrets.test.ts` håller redan antalet; siffran ändras där.
+
 ### Fas 3 – Varje förmåga används flera gånger
 
 **3.1 Regeln om tre (V1).**
@@ -251,16 +273,35 @@ starkast borta vid Björkhagen. Som om någon pratade."
 Planen från 9 november gäller: varje tempel blir 6–7 rum med en hall och två
 eller tre vägar, och ett eget föremål som hittas halvvägs och öppnar resten.
 
-| Tempel | Föremål | Verkan |
-|---|---|---|
-| Kryptan | Järnspettet | Bryter upp gravhällar och galler |
-| Gruvan | Hissveven | Startar döda hissar |
-| Kvarnen | Dammluckans ratt | Höjer och sänker vattnet |
-| Fyren | Båtshaken | Svinga sig i järnringar |
-| Folkparken | Karusellnyckeln | Startar karusellen och skjutbanan |
-| Fäbodskogen | Vallkoskällan | Korna ställer sig som plattformar |
+| Tempel | Föremål | Verkan i templet | Senare ute i världen |
+|---|---|---|---|
+| Kryptan | Järnspettet | Bryter upp gravhällar och galler | Gravhällar på kartan med dolda trappor och en livbehållare |
+| Gruvan | Hissveven | Startar döda hissar | En gammal hiss i Gamla stollen |
+| Kvarnen | Dammluckans ratt | Höjer och sänker vattnet | Tappa ur en damm vid forsen |
+| Fyren | Båtshaken | Svinga sig i järnringar | Över en ravin på fjället |
+| Folkparken | Karusellnyckeln | Startar karusellen och skjutbanan | – |
+| Fäbodskogen | Vallkoskällan | Korna ställer sig som plattformar | – |
 
-- *Ordning:* Gruvan som pilot, sedan provspel, sedan resten.
+Så ser ett tempel ut efter ombyggnaden:
+
+```
+            [Gren A: föremålet, vaktat av en mindre väktare]
+                    |
+[Ingång] — [Hall med 2–3 vägar] — [Gren B: hinder som kräver föremålet] — [Väktaren]
+                    |
+            [Gren C: nyckel / livbehållare / återvändsgränd]
+```
+
+- Hinder som kräver föremålet syns redan när man kommer in, så att man vet
+  att något saknas.
+- Färre nycklar: föremålet är det som öppnar vägen fram.
+- Ett ljus i hallen är startpunkten med den nya dödsregeln.
+- Föremålen används också ute i världen (tabellen), vilket är samma tanke som
+  "regeln om tre" i fas 3, fast för föremål.
+
+- *Ordning:* Gruvan som pilot (hissarna finns redan, så minst ny teknik),
+  sedan provspel. Därefter Kvarnen, Kryptan och Fyren, sedan Folkparken och
+  Fäbodskogen, och sist Trollberget, som kräver flera av föremålen igen.
 - *Test per tempel:*
   1. Lösaren lär sig mekaniken (hiss av eller på, vattennivå, brutet block)
      och bevisar att föremålet går att nå innan det behövs och att väktaren
@@ -272,6 +313,13 @@ eller tre vägar, och ett eget föremål som hittas halvvägs och öppnar resten
      efter den.
 
 ### Fas 5 – Sidouppdrag och byar med egen prägel (V3, V4)
+
+Läraruppdragen följer planen från 9 november och är byggda: hämta (Sven,
+Algot, Holm), hitta en dold plats (Karlsson, Viola), klätterprov (Karna), prov
+(Prosten), rädda (Elin) och bytesskedja (Oskar). En idé därifrån är inte
+använd än: **en lärare som är gömd** och bara hittas med en tidigare magi, som
+Kasuto i Zelda II. Den passar Karna: fäbodens loft står tomt, och hon bor i en
+stuga i skogen som bara syns i Lyse (hänger ihop med 3.2).
 
 **5.1 Tre av sex sidouppdrag byts ut.** Behåll psalmboken, fickuret och
 koskällan. Byt de andra:
@@ -348,3 +396,22 @@ innan nästa fas börjar.
 Fas 0–2 och testsäkringen går att göra före en första Android-release.
 Fas 3–6 är det som gör spelet till mer än en trogen hyllning, och kan komma
 som uppdateringar.
+
+## Hur de två genomgångarna hänger ihop
+
+| Fråga | Genomgången 9 november | Den här genomgången | I planen |
+|---|---|---|---|
+| Varför är spelet för lätt? | Att dö kostar nästan inget: omstart i samma rum, mild Game Over, många liv | Fienderna växer inte: liv och XP står still, templen är glesa | Dödsregeln är byggd. Fas 2 lägger till liv- och XP-trappan, tätare tempel och ser över liven (2.5) |
+| Varför känns det upprepat? | Mönstret lärare → sak → magi → tempel, sex gånger | Samma sak mätt i data: varje förmåga krävs på ett enda ställe | Läraruppdragen är varierade (byggt). Fas 3 gör varje förmåga till något man använder ofta |
+| Templen | Nät av 6–7 rum med ett föremål som öppnar resten, och som används ute i världen | Samma slutsats; lägger till att Trollberget inte prövar något | Fas 4 (den planen, oförändrad) och fas 6 |
+| Magi i världen | Eld bränner snår, Lyse avslöjar en plats, Åska väcker något | Samma | 3.2 |
+| Fiender | Fiender som kräver ett visst svar | Fäktarna försvinner efter tempel 3 | 2.3 och 2.4 |
+| Storyn | Inte granskad | Går att missa, spelas baklänges, namnet läcker | Fas 0 och 1 (nytt) |
+| Sidouppdrag och byar | Inte granskat | Samma mall i alla sex byar | Fas 5 (nytt) |
+| Tempo och texter | Inte granskat | Lång start, långa vägar, knapptexter för tangentbord | Fas 0 och 7 (nytt) |
+| Tester | Per mekanik: lösaren, fastnar-test i alla lägen, hopp-test, gamla sparfiler | Tre nya slag för fel över tid | Båda, under fas 4 och "Testsäkring" |
+
+De två genomgångarna säger inte emot varandra någonstans. Den första gick på
+djupet i svårighet och tempel; den här breddar till story, balans i siffror,
+byar och tester.
+
