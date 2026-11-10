@@ -10,6 +10,9 @@ där något bara går att bedöma med fingrarna står det.*
 läraruppdragen och templen med "handsken") och den här. Avsnittet "Hur de två
 genomgångarna hänger ihop" längst ner visar vad som kommer varifrån.*
 
+*Steg för steg, med filer, kod och tester: se
+[forbattringsplan-steg.md](forbattringsplan-steg.md).*
+
 ## Sammanfattning
 
 Spelet har en stark grund: storyn håller ihop, replikerna är bra, världen är
