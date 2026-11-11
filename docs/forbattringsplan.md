@@ -119,6 +119,14 @@ Kvaliteten är hög och jämn. Tre mindre saker:
 
 ## Planen
 
+### Grundregel: en ny spelare vet inte ordningen (11 november)
+
+Allt som byggs prövas mot en spelare som aldrig sett spelet:
+- **Inget går att hoppa över.** Det en by eller ett tempel ger ska behövas för att komma vidare, och stoppet kommer tidigt (vid templets dörr eller i början av en ny del av världen), inte djupt inne.
+- **Varje ny del av världen öppnas av något logiskt.** Man ska kunna förstå efteråt varför det var just den saken eller förmågan som öppnade vägen.
+- **Allt hänger ihop.** Det någon säger ska stämma med hur spelet fungerar: säger smeden att Grimmen kräver Nedåtstöt, så gör han det.
+- **Testerna bevisar det.** Lösaren körs utan var och en av förmågorna och skatterna, och spelet ska då inte gå att klara; varje tempel ska vara stängt utan det som byn före det ger.
+
 Varje åtgärd har fyra delar: vad, varför det blir bättre, hur, och vilket test
 som håller fast det.
 
@@ -174,7 +182,7 @@ starkast borta vid Björkhagen. Som om någon pratade."
 
 ### Fas 1 – Storyn går inte att missa
 
-**1.1 Hulda ringer (S2).**
+**1.1 Hulda ringer (S2).** *Inte byggd än (11 november).*
 - *Vad:* efter varje tempel, första gången Dagny vilar på ett värdshus,
   säger värden: "Det är telefon till dig. Från Mormors by." Biten spelas som
   ett telefonsamtal ("Beskriv lampan för mig. … H.D. Jag har inte sett de
