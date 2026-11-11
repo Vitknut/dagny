@@ -51,7 +51,7 @@ export const HEM: Record<string, DialogDef> = {
     pages: [
       'Dagny! Såg du? Solen bröt igenom molnen över Stenkyrkan i morse. Hela byn stod ute och tittade.',
       'Den gamla grimmen har slutit fred... Då är det sant. Du är den vi väntat på.',
-      'Sex platser återstår. Vila nu, så pratar vi mer i morgon.',
+      'Fler platser väntar på dig. Vila nu, så pratar vi mer i morgon.',
     ],
     actions: [{ type: 'flag', flag: 'hulda_efter_krypta' }, { type: 'rest' }],
   },
@@ -241,7 +241,7 @@ export const HEM: Record<string, DialogDef> = {
     pages: [
       'Stövlar... gröna stövlar, storlek trettioåtta. Jag köpte dem på lanthandeln i Kyrkbyn 1945.',
       'Ja, Dagny. Jag kände henne. Bättre än någon. Mer än så säger jag inte förrän du har sett alla platserna.',
-      'Sov nu. Tre platser har vaknat i godo. Det känns i luften.',
+      'Sov nu. Det känns i luften att platserna vaknar.',
     ],
     actions: [{ type: 'flag', flag: 'hulda_efter_kvarnen' }, { type: 'rest' }],
   },
@@ -251,7 +251,7 @@ export const HEM: Record<string, DialogDef> = {
     pages: [
       'Den där lampan... Tre korta, tre långa, tre korta. Varje kväll i åtta år.',
       'Det var jag som svarade, Dagny. Från vinden i klockstapeln, med fotogenlyktan.',
-      'Nu vet du lite till. Fyra platser har vaknat. Vila nu.',
+      'Nu vet du lite till. Vila nu.',
     ],
     actions: [{ type: 'flag', flag: 'hulda_efter_fyren' }, { type: 'rest' }],
   },
@@ -260,7 +260,7 @@ export const HEM: Record<string, DialogDef> = {
     speaker: 'Mormor Hulda',
     pages: [
       'Fotografiet från dansbanan... Jag tog det själv, midsommar 1945. Det var sista gången jag såg henne skratta.',
-      'Hon hette Dagmar. Mer säger jag inte än. Två platser kvar, och sedan Trollberget.',
+      'Hon hette Dagmar. Mer säger jag inte än. Inte förrän du har sett alla platserna.',
       'Vila nu, vännen.',
     ],
     actions: [{ type: 'flag', flag: 'hulda_efter_folkparken' }, { type: 'rest' }],

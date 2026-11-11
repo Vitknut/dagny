@@ -7,12 +7,13 @@ export const NPCS: Readonly<Record<string, NpcDef>> = {
     sprite: 'hulda',
     idle: { frames: [0, 0, 0, 2, 0, 1, 1, 0], every: 0.7 },
     talk: [
-      { if: [{ flag: 'fabodskogen_klar' }, { notFlag: 'hulda_efter_fabodskogen' }], dialog: 'hulda_efter_fabodskogen' },
-      { if: [{ flag: 'folkparken_klar' }, { notFlag: 'hulda_efter_folkparken' }], dialog: 'hulda_efter_folkparken' },
-      { if: [{ flag: 'fyren_klar' }, { notFlag: 'hulda_efter_fyren' }], dialog: 'hulda_efter_fyren' },
-      { if: [{ flag: 'kvarnen_klar' }, { notFlag: 'hulda_efter_kvarnen' }], dialog: 'hulda_efter_kvarnen' },
-      { if: [{ flag: 'gruvan_klar' }, { notFlag: 'hulda_efter_gruvan' }], dialog: 'hulda_efter_gruvan' },
+      // Her story is a staircase: what Dagny missed comes oldest first, one piece each time she comes home.
       { if: [{ flag: 'krypta_klar' }, { notFlag: 'hulda_efter_krypta' }], dialog: 'hulda_efter_krypta' },
+      { if: [{ flag: 'gruvan_klar' }, { notFlag: 'hulda_efter_gruvan' }], dialog: 'hulda_efter_gruvan' },
+      { if: [{ flag: 'kvarnen_klar' }, { notFlag: 'hulda_efter_kvarnen' }], dialog: 'hulda_efter_kvarnen' },
+      { if: [{ flag: 'fyren_klar' }, { notFlag: 'hulda_efter_fyren' }], dialog: 'hulda_efter_fyren' },
+      { if: [{ flag: 'folkparken_klar' }, { notFlag: 'hulda_efter_folkparken' }], dialog: 'hulda_efter_folkparken' },
+      { if: [{ flag: 'fabodskogen_klar' }, { notFlag: 'hulda_efter_fabodskogen' }], dialog: 'hulda_efter_fabodskogen' },
       { if: [{ flag: 'signalen_besvarad' }, { notFlag: 'hulda_signal' }], dialog: 'hulda_signal' },
       { if: [{ notFlag: 'intro_done' }], dialog: 'intro_hulda' },
       { dialog: 'hulda_vila' },

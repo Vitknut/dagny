@@ -14,7 +14,7 @@ import { DialogOverlay } from './dialog';
 import type { Condition, DialogAction } from '../data/types';
 import { loadSettings, saveSettings, PLACEMENT_OFFSETS, type Settings } from './settings';
 import { readSave, writeSave } from './save';
-import { MAX_LIVES, addContainer, hasFlag, hasItem, hpMax, mpMax, setFlag, type GameState } from './state';
+import { MAX_LIVES, addContainer, checkConditions, hasFlag, hpMax, mpMax, setFlag, type GameState } from './state';
 
 export interface Scene {
   /** Music id to play while this scene is active. */
@@ -242,18 +242,7 @@ export class Game {
   // --- Conditions & actions used by dialog ---------------------------------------------
 
   check(conds: Condition[] | undefined): boolean {
-    const s = this.state;
-    if (!conds || !conds.length) return true;
-    if (!s) return false;
-    return conds.every((c) => {
-      if ('flag' in c) return hasFlag(s, c.flag);
-      if ('notFlag' in c) return !hasFlag(s, c.notFlag);
-      if ('item' in c) return hasItem(s, c.item);
-      if ('notItem' in c) return !hasItem(s, c.notItem);
-      if ('spell' in c) return s.spells.includes(c.spell);
-      if ('notSpell' in c) return !s.spells.includes(c.notSpell);
-      return true;
-    });
+    return checkConditions(conds, this.state);
   }
 
   /** Hook for scenes that need to react to actions (e.g. resting heals visually). */
