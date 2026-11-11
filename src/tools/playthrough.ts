@@ -452,7 +452,19 @@ export function playthrough(opts: Options = {}): Playthrough {
     if (ending) outside = explore({ area: 'epilog', entry: 'W' }) || outside;
     if (outside) {
       where = 'overworld';
-      const tiles = reachableTiles([...items]);
+      // A reading cast beside what it answers to on the map opens it (game/overworld.ts, castOnMap).
+      for (let open = true; open; ) {
+        open = false;
+        const near = reachableTiles([...items], undefined, flags);
+        for (const m of OVERWORLD.mended ?? []) {
+          if (!m.spell || flags.has(m.flag) || !spells.has(m.spell) || (opts.withholdFlags ?? []).includes(m.flag)) continue;
+          if ([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => near.has(`${m.x + dx},${m.y + dy}`))) {
+            setFlag(m.flag);
+            open = true;
+          }
+        }
+      }
+      const tiles = reachableTiles([...items], undefined, flags);
       for (const p of OVERWORLD.places) {
         if (!tiles.has(`${p.x},${p.y}`)) continue;
         if ((p.hidden === 'radio' || p.radio) && !items.has('radio')) continue;

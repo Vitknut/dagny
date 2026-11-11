@@ -118,8 +118,8 @@ describe('the overworld as landscape', () => {
       const here = small.filter((p) => [[p.x + 1, p.y], [p.x - 1, p.y], [p.x, p.y + 1], [p.x, p.y - 1]].some(([a, b]) => regionOf.get(`${a},${b}`) === r));
       expect(here.some((p) => rewardsOf(p.area!) > 0), REGIONS[r]).toBe(true);
     }
-    // Every visitable spot is a place to go into or a viewpoint.
-    for (const p of OVERWORLD.places.filter((pl) => TERRAIN[at(pl.x, pl.y)]?.visitable)) expect(!!p.area || !!p.view, p.name).toBe(true);
+    // Every visitable spot is a place to go into, a viewpoint, or something found there once.
+    for (const p of OVERWORLD.places.filter((pl) => TERRAIN[at(pl.x, pl.y)]?.visitable)) expect(!!p.area || !!p.view || !!(p.dialog && p.doneFlag), p.name).toBe(true);
   });
 
   it('never leaves a phone screen (20 × 11 tiles) without something new in sight', () => {

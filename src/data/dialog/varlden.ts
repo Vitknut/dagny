@@ -59,6 +59,44 @@ export const VARLDEN: Record<string, DialogDef> = {
     pages: ['Inristat i berget bakom vattenridån:\n"DEN SOM GÖMMER SIG BAKOM FALLET HÖRS INTE AV BERGET. – D."'],
   },
   // --- Bruset: Dagmar's voice in the radio's static (chapter 7) ---
+  // --- What a reading opens on the map (fas 3.2) ---------------------------------------
+  snaret_brinner: {
+    pages: ['Det torra snåret fattar eld med ett fräsande, och brinner ner till svart aska. Bakom det går en stig in i granarna.'],
+  },
+  klyftan_lyses: {
+    pages: ['Ljuset faller in i klyftan. Den är inte så djup som den såg ut – och längst in står det något och väntar.'],
+  },
+  bumlingen_klyvs: {
+    pages: ['Blixten slår ner i bumlingen. Den spricker mitt itu med en knall som ekar mellan fjällen.'],
+  },
+  offerkallan: {
+    pages: [
+      'En källa, inne bland granarna där ingen har gått på länge. På botten ligger mynt, ett bredvid ett annat, gröna av ärg.',
+      'Och på en sten vid kanten sitter en liten näverdocka, torr och hel, som om någon nyss har lagt den där.',
+    ],
+    actions: [{ type: 'flag', flag: 'offerkallan_sedd' }, { type: 'life', id: 'offerkallan' }, { type: 'xp', amount: 150 }],
+  },
+  jordkallaren: {
+    pages: [
+      'En jordkällare, igenvuxen sedan många somrar. Dörren hänger på ett gångjärn.',
+      'Därinne står burkar med sylt, och en har någon skrivit på med blyerts: "Till den som kommer sist."',
+    ],
+    actions: [{ type: 'flag', flag: 'jordkallaren_sedd' }, { type: 'heal' }, { type: 'magic' }, { type: 'xp', amount: 150 }],
+  },
+  morka_orten: {
+    pages: [
+      'En gammal ort, huggen för hand. På väggen står namn inristade, ett under ett annat, med årtal från förra seklet.',
+      'Längst ner, nyare än de andra: ett D. Ingenting mer.',
+    ],
+    actions: [{ type: 'flag', flag: 'morka_orten_sedd' }, { type: 'life', id: 'morka_orten' }, { type: 'xp', amount: 200 }],
+  },
+  kluvna_stenen: {
+    pages: [
+      'Inne i den kluvna stenen är det ihåligt, som ett skrin. Där ligger en sölja av silver, svart av ålder.',
+      'Den är kall i handen, och ändå känns den bekant.',
+    ],
+    actions: [{ type: 'flag', flag: 'kluvna_stenen_sedd' }, { type: 'life', id: 'kluvna_stenen' }, { type: 'xp', amount: 250 }],
+  },
   bruset_1: {
     pages: [
       'Radion sprakar till. Mellan bruset, mycket svagt, en kvinnoröst:',

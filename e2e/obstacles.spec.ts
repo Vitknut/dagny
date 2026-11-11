@@ -98,3 +98,44 @@ test('the light path is there only in the light (kvarnen_2)', async ({ page }) =
   // Kind.OneWay is 2.
   expect(lit).toEqual([2, 2]);
 });
+
+test('on the map, Eld burns the dry thicket beside Dagny, and nothing else does', async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const { OverworldScene } = await import('/src/game/overworld.ts');
+    const { newGame } = await import('/src/game/state.ts');
+    const g = (window as unknown as { dagny: Record<string, unknown> }).dagny as unknown as {
+      state: ReturnType<typeof newGame>;
+      overlays: unknown[];
+      input: { keyboard: boolean[] };
+      setScene(s: unknown): void;
+      update(): void;
+    };
+    const s = newGame();
+    s.flags.push('intro_done');
+    s.spells = ['eld', 'lyse'];
+    s.mp = 20;
+    // Beside the thicket at (18, 28), standing below it.
+    s.ow = { x: 18, y: 29 };
+    s.loc = { area: 'overworld', x: 18, y: 29 };
+    g.state = s;
+    g.overlays.length = 0;
+    g.setScene(new OverworldScene(g as never));
+    const press = (): void => {
+      g.input.keyboard[6] = true;
+      g.update();
+      g.input.keyboard[6] = false;
+      for (let i = 0; i < 10; i++) g.update();
+    };
+    for (let i = 0; i < 30; i++) g.update();
+    s.selectedSpell = 'lyse';
+    press();
+    const wrong = s.flags.includes('snar_1_brant');
+    s.selectedSpell = 'eld';
+    press();
+    return { wrong, right: s.flags.includes('snar_1_brant'), mp: s.mp, dialog: g.overlays.length };
+  });
+  expect(r.wrong).toBe(false);
+  expect(r.right).toBe(true);
+  expect(r.mp).toBeLessThan(20);
+  expect(r.dialog).toBe(1);
+});

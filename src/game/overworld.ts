@@ -11,7 +11,7 @@ import type { EncounterDef, OverworldPlace } from '../data/types';
 import { DialogOverlay } from './dialog';
 import type { Game, Scene } from './game';
 import { drawHud } from './hud';
-import { hasFlag, hasItem, setFlag, shownName, type GameState } from './state';
+import { hasFlag, hasItem, setFlag, shownName, spellCost, type GameState } from './state';
 import * as flow from './flow';
 import { ENCOUNTER_TABLES, TERRAIN_TYPE } from '../data/encounters';
 import { pickEncounter } from './encounters';
@@ -439,6 +439,29 @@ export class OverworldScene implements Scene {
     return owTile(this.s, x, y);
   }
 
+  /**
+   * A reading cast beside what it answers to opens it for good (OverworldDef.mended
+   * with `spell`): a dry thicket burns, a dark cleft is lit, a boulder splits.
+   * Anything else cast on the map does nothing, as before. Costs magic as usual.
+   */
+  private castOnMap(): boolean {
+    const s = this.s;
+    const m = (OVERWORLD.mended ?? []).find((o) => o.spell && !hasFlag(s, o.flag) && Math.abs(o.x - this.me.x) + Math.abs(o.y - this.me.y) === 1);
+    if (!m) return false;
+    const id = s.selectedSpell;
+    if (id !== m.spell || s.mp < spellCost(s, id)) {
+      this.game.audio.play('cancel');
+      return true;
+    }
+    s.mp -= spellCost(s, id);
+    setFlag(s, m.flag);
+    this.game.audio.play(id === 'eld' ? 'fire' : id === 'aska' ? 'thunder' : 'magic');
+    this.game.vibrate(id === 'aska' ? [80, 40, 80] : 40);
+    this.game.pushOverlay(new DialogOverlay(this.game, id === 'eld' ? 'snaret_brinner' : id === 'aska' ? 'bumlingen_klyvs' : 'klyftan_lyses'));
+    this.game.save();
+    return true;
+  }
+
   private placeAt(x: number, y: number): OverworldPlace | undefined {
     return OVERWORLD.places.find((p) => p.x === x && p.y === y);
   }
@@ -468,6 +491,7 @@ export class OverworldScene implements Scene {
       me.t = Math.min(1, me.t + 1 / STEP_FRAMES);
       if (me.t >= 1) this.arrive();
     } else {
+      if (input.pressed(Act.Magic) && this.castOnMap()) return;
       let dx = 0;
       let dy = 0;
       if (input.held(Act.Left)) dx = -1;

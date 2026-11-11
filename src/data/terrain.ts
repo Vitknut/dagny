@@ -97,6 +97,10 @@ export const TERRAIN: Readonly<Record<string, TerrainDef>> = {
   // Ground a temple's landmark stands on (it is drawn over two by two tiles): never walked.
   '0': { name: 'under ett tempel', sprite: 'owGrass', map: 'M', blocked: true },
   w: { name: 'fors', sprite: 'owRapids', map: 'c', blocked: true },
+  // Shut until a reading opens them for good (OverworldDef.mended with `spell`): fas 3.2.
+  '{': { name: 'torrt snår', sprite: 'owThicket', map: 'B', blocked: true },
+  '[': { name: 'mörk klyfta', sprite: 'owDarkCleft', map: 'g', blocked: true },
+  ']': { name: 'bumling', sprite: 'owBoulder', map: 'G', blocked: true },
   b: { name: 'bortspolad bro', sprite: 'owBrokenBridge', map: 'B', blocked: true },
   X: { name: 'stup', sprite: 'owCliff', map: 'g', blocked: true },
   a: { name: 'igenrasad gruvort', sprite: 'owAdit', map: 'g', blocked: true },

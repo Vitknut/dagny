@@ -44,8 +44,9 @@ describe('the overworld', () => {
     expect(troll.requires).toHaveLength(7);
   });
 
-  it('every place is reachable with all treasures, and every gate has a hint', () => {
-    const all = reach(TEMPLES.flatMap((x) => (x.treasure ? [x.treasure] : [])));
+  it('every place is reachable with all treasures (and what readings open on the map), and every gate has a hint', () => {
+    const opened = (OVERWORLD.mended ?? []).map((m) => m.flag);
+    const all = reachableTiles(TEMPLES.flatMap((x) => (x.treasure ? [x.treasure] : [])), undefined, opened);
     for (const p of OVERWORLD.places) {
       expect(all.has(`${p.x},${p.y}`), p.name).toBe(true);
       if (p.area) expect(AREAS[p.area], p.area).toBeDefined();
@@ -235,5 +236,38 @@ describe('the washed-away bridge', () => {
     expect(row()).toBe('..==..');
     const { OVERWORLD } = await import('../src/data/overworld');
     for (const ch of row()) expect(OVERWORLD.blocked.includes(ch)).toBe(false);
+  });
+});
+
+describe('what a reading opens on the map (fas 3.2)', () => {
+  const opened = (OVERWORLD.mended ?? []).filter((m) => m.spell);
+
+  it('a dry thicket twice (Eld), a dark cleft (Lyse) and a boulder (Åska)', () => {
+    expect(opened.filter((m) => m.spell === 'eld')).toHaveLength(2);
+    expect(opened.filter((m) => m.spell === 'lyse')).toHaveLength(1);
+    expect(opened.filter((m) => m.spell === 'aska')).toHaveLength(1);
+  });
+
+  it('each is shut before, open after, and the place behind it is reached only that way', async () => {
+    const { owTile } = await import('../src/game/overworld');
+    const { newGame } = await import('../src/game/state');
+    const { playthrough } = await import('../src/tools/playthrough');
+    const s = newGame();
+    for (const m of opened) {
+      expect(OVERWORLD.blocked.includes(owTile(s, m.x, m.y)), `${m.flag} before`).toBe(true);
+    }
+    s.flags.push(...opened.map((m) => m.flag));
+    for (const m of opened) expect(OVERWORLD.blocked.includes(owTile(s, m.x, m.y)), `${m.flag} after`).toBe(false);
+    const behind = (m: (typeof opened)[number]) =>
+      OVERWORLD.places.find((p) => p.dialog && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => p.x === m.x + dx && p.y === m.y + dy))!;
+    const all = playthrough();
+    for (const m of opened) {
+      const p = behind(m);
+      expect(p, m.flag).toBeDefined();
+      expect(all.dialogs.has(p.dialog!), `${p.name} with every reading`).toBe(true);
+      const without = playthrough({ withholdSpells: [m.spell!] });
+      expect(without.dialogs.has(p.dialog!), `${p.name} without ${m.spell}`).toBe(false);
+      expect(without.flags.has(m.flag), `${m.flag} without ${m.spell}`).toBe(false);
+    }
   });
 });

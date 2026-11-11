@@ -6,10 +6,15 @@ import type { GameState } from './state';
 
 const PASSAGES = new Map<string, { x: number; y: number }>(OVERWORLD.places.flatMap((p) => (p.leadsTo ? [[`${p.x},${p.y}`, p.leadsTo]] : [])));
 
-/** Overworld tiles Dagny can walk to from the start with these items (never onto `closed`). */
-export function reachableTiles(items: readonly string[], closed?: ReadonlySet<string>): Set<string> {
+/**
+ * Overworld tiles Dagny can walk to from the start with these items (never
+ * onto `closed`). With `flags`, tiles mended by them count as they now stand
+ * (the rebuilt bridge, a thicket burnt with Eld).
+ */
+export function reachableTiles(items: readonly string[], closed?: ReadonlySet<string>, flags?: readonly string[] | ReadonlySet<string>): Set<string> {
   const have = new Set(items);
-  const t = OVERWORLD.tiles;
+  const set = new Set(flags ?? []);
+  const t = (OVERWORLD.mended ?? []).some((m) => set.has(m.flag)) ? mendedTiles(set) : OVERWORLD.tiles;
   const seen = new Set<string>();
   const stack: Array<[number, number]> = [[OVERWORLD.start.x, OVERWORLD.start.y]];
   while (stack.length) {
@@ -29,6 +34,15 @@ export function reachableTiles(items: readonly string[], closed?: ReadonlySet<st
   return seen;
 }
 
+/** The map's rows with these flags' mended tiles in place. */
+function mendedTiles(flags: ReadonlySet<string>): string[] {
+  const rows = [...OVERWORLD.tiles];
+  for (const m of OVERWORLD.mended ?? []) {
+    if (flags.has(m.flag)) rows[m.y] = rows[m.y].slice(0, m.x) + m.ch + rows[m.y].slice(m.x + 1);
+  }
+  return rows;
+}
+
 /** The overworld place a side-view area belongs to (temples by their entrance). */
 export function placeOfArea(areaId: string): { x: number; y: number } | null {
   const direct = OVERWORLD.places.find((p) => p.area === areaId);
@@ -46,7 +60,7 @@ export function placeOfArea(areaId: string): { x: number; y: number } | null {
  * goes back home to Mormors by. Returns true if something was moved.
  */
 export function repairReach(s: GameState): boolean {
-  const ok = reachableTiles(s.items);
+  const ok = reachableTiles(s.items, undefined, s.flags);
   const reachable = (p: { x: number; y: number } | null): boolean => !!p && ok.has(`${p.x},${p.y}`);
   let moved = false;
   if (!reachable(placeOfArea(s.lastVillage))) {

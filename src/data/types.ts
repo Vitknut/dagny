@@ -493,6 +493,10 @@ export interface OverworldDef {
   blocked: string;
   music: string;
   tone: string;
-  /** Tiles that change for good once a flag is set (the washed-away bridge, rebuilt after Folkparken). */
-  mended?: Array<{ x: number; y: number; flag: string; ch: string }>;
+  /**
+   * Tiles that change for good once a flag is set (the washed-away bridge,
+   * rebuilt after Folkparken). With `spell`, Dagny sets the flag herself by
+   * casting that reading beside the tile (a dry thicket burnt with Eld).
+   */
+  mended?: Array<{ x: number; y: number; flag: string; ch: string; spell?: SpellId }>;
 }

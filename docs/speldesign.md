@@ -97,6 +97,16 @@ Every ability that opens the world is wanted in at least three rooms, one of the
 - The rewards are small (bullar, termosar, lingon) and lie off the main path. Boxes stand two tiles high at the walls with a roof over the nook, so they are climbed in two short steps from either side.
 - Measured jumps (`Player`): an ordinary jump rises 50 px, Hopp 90 px; the placements keep clear of both.
 
+## Readings that change the map
+
+Four things on the map open for good when Dagny casts the right reading standing beside them (`OverworldDef.mended` with `spell`; `castOnMap` in `game/overworld.ts`). It costs magic as usual; any other reading does nothing there.
+
+- **Two dry thickets** (`{`), burnt with Eld: Offerkällan in the spruce north of Kyrkbacken, and Jordkällaren on the highland side of the same forest.
+- **A dark cleft** (`[`) by Gruvsamhället, lit with Lyse: Den mörka orten, with names cut in the rock.
+- **A great boulder** (`]`) above Stationssamhället, split by Åska: Den kluvna stenen.
+- Each place behind gives XP and an extra life (Jordkällaren fills health and magic instead), and is found once.
+- The solver opens them when it has the reading and reaches a tile beside them; `tests/world.test.ts` checks that the places behind are reached only that way.
+
 ## The first temple's creatures
 
 Dagny starts with 8 health (four bars), so the crypt must not drain it faster than skill can keep up:

@@ -280,7 +280,7 @@ den skada Dagny väntas ha, från tempel 3. Tempel 1–2 är orörda.*
   befintliga kontroll ("utan den här magin, vad går inte att nå?") visar att
   varje nytt hinder verkligen kräver sin förmåga.
 
-**3.2 Magi som förändrar världen.**
+**3.2 Magi som förändrar världen.** *Klar 11 november: två torra snår (Eld), en mörk klyfta (Lyse) och en bumling (Åska) på kartan, med en plats bakom var.*
 - *Vad:* Eld bränner bort torra snår på kartan (två ställen: en genväg och en
   livbehållare). Lyse avslöjar en dold stuga i nattskogen. Åska startar en
   kraftstation vid forsen.
