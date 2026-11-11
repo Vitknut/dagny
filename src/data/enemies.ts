@@ -117,6 +117,32 @@ export const ENEMIES: Readonly<Record<string, EnemyDef>> = {
     box: { x: 2, y: 3, w: 12, h: 21 }, puff: 'moss', heavy: true,
     drops: { lingon: 0.4, termos: 0.3 },
   },
+  // --- Fencers for the later temples: the tomtenisse's way of fighting, quicker each time ---
+  gast: {
+    id: 'gast', name: 'Gasten', sprite: 'gast', behavior: 'parrier',
+    hp: 9, damage: 2, xp: 26, speed: 0.6, guardDelay: 18, thrustRest: 60,
+    box: { x: 3, y: 4, w: 10, h: 20 }, puff: 'mist',
+    drops: { termos: 0.3 },
+  },
+  kavaljer: {
+    id: 'kavaljer', name: 'Kavaljeren', sprite: 'kavaljer', behavior: 'parrier',
+    hp: 10, damage: 2, xp: 30, speed: 0.65, guardDelay: 15, thrustRest: 52,
+    box: { x: 3, y: 4, w: 10, h: 20 }, puff: 'mist',
+    drops: { termos: 0.3, bulle: 0.2 },
+  },
+  vittra: {
+    id: 'vittra', name: 'Vittran', sprite: 'vittra', behavior: 'parrier',
+    hp: 11, damage: 2, xp: 34, speed: 0.7, guardDelay: 13, thrustRest: 46,
+    box: { x: 3, y: 4, w: 10, h: 20 }, puff: 'leaf',
+    drops: { lingon: 0.3, bulle: 0.2 },
+    befriend: 'Vittran lyfter på huvudet, lockar på sina kor och försvinner in under en sten.',
+  },
+  drabant: {
+    id: 'drabant', name: 'Drabanten', sprite: 'drabant', behavior: 'parrier',
+    hp: 14, damage: 3, xp: 40, speed: 0.8, guardDelay: 11, thrustRest: 40,
+    box: { x: 3, y: 4, w: 10, h: 20 }, puff: 'moss',
+    drops: { lingon: 0.35, termos: 0.25 },
+  },
   /** Skuggan – Dagny's own shadow, torn loose in the mountain. Mirrors her guard. */
   skuggan: {
     id: 'skuggan', name: 'Skuggan', sprite: 'skuggan', behavior: 'shadow',

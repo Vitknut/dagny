@@ -88,6 +88,10 @@ export interface EnemyDef {
   backOnly?: boolean;
   /** Eld's fireballs bite less: damage is multiplied by this (Gruvrået carries her own flame). */
   fireResist?: number;
+  /** Fencers (behaviour 'parrier'): steps before it follows Dagny's change of height (default 22). */
+  guardDelay?: number;
+  /** Fencers: steps of rest between thrusts, at the least (default 70). */
+  thrustRest?: number;
   /** Projectile sprite for shooters (default: a water droplet). */
   shot?: string;
   /** Becomes friendly after being defeated (flavour text shown). */

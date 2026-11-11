@@ -81,6 +81,30 @@ export const VASEN: Readonly<Record<string, VasenEntry>> = {
     berattelse:
       'Tomtenissarna i kryptan har ingen gård kvar att vakta och har tagit till svärd i stället. De fäktas, men rusar inte – de vill bara bli lämnade i fred.',
   },
+  gast: {
+    folktro:
+      'En gast var den oroliga anden efter någon som drunknat och aldrig fått en grav i vigd jord. Längs kusten hördes gastar ropa i stormen, och det sades att de ville ha sällskap ner i djupet.',
+    berattelse:
+      'Gastarna i fyren går vakt med båtshakar, som fyrfolket en gång. De fäktas som tomtenissarna, men snabbare. Stormen har gjort dem otåliga.',
+  },
+  kavaljer: {
+    folktro:
+      'Det berättades om en främling som kom till dansen, fint klädd och den bästa dansaren av alla. Den som dansade med honom kunde inte sluta. Under byxbenet stack en hästhov fram, och då var det för sent.',
+    berattelse:
+      'Kavaljererna i folkparken bjuder upp med svärd i stället för en hand. De följer varje steg Dagny tar, högt och lågt, och slutar aldrig dansa.',
+  },
+  vittra: {
+    folktro:
+      'Vittrorna var underjordsfolket i norr. De levde som människor under marken, vallade sina egna kor i skogen och flyttade till fäbodarna om somrarna. Den som hällde ut hett vatten på deras tak eller byggde på deras stig fick deras vrede över sig.',
+    berattelse:
+      'Vittrorna vallar sina kor genom Fäbodskogen som de alltid gjort, men ingen har frågat om lov på länge. De fäktas snabbt och tyst.',
+  },
+  drabant: {
+    folktro:
+      'Bergakungen hade ett helt hov inne i berget: guld, tjänare och livvakter av troll. Den som blev bergtagen kunde se dem stå på rad vid hans tron.',
+    berattelse:
+      'Drabanterna vaktar vägen till Bergakungens sal. De är de snabbaste fäktarna i berget och slår hårdast. Byt höjd fortare än de hinner följa.',
+  },
   myrkatt: {
     folktro:
       'Myrkatt kallar folket i Hemdalen katten som hoppar på myrarna. De gamla säger att den är släkt med trollkatten, eller bjäran: ett djur som trollkunniga kvinnor sades skapa av ullgarn och blod för att stjäla mjölk från grannarnas kor och spy upp den i matmors kärna.',

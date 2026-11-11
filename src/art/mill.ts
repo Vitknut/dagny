@@ -179,6 +179,11 @@ export const millSprites: Record<string, SpriteDef> = {
     ]],
   },
   /** Kvarnnisse – a tomte of the mill, dusted in flour. */
+  // The later fencers: the tomtenisse's shape in their own colours.
+  gast: { base: 'nisse', w: 16, h: 24, frames: [], recolor: { r: 'c', G: 'C', g: 'c', n: 'u' } },
+  kavaljer: { base: 'nisse', w: 16, h: 24, frames: [], recolor: { r: 'k', G: 'K', g: 'K', n: 'k' } },
+  vittra: { base: 'nisse', w: 16, h: 24, frames: [], recolor: { r: 'u', G: 'U', g: 'u', n: 'n' } },
+  drabant: { base: 'nisse', w: 16, h: 24, frames: [], recolor: { r: 'M', G: 'm', g: 'm', n: 'b' } },
   kvarnnisse: { base: 'nisse', w: 16, h: 24, frames: [], recolor: { r: 'w', G: 'W', g: 'w', n: 'B' } },
   /**
    * Bäckahästen – the white horse of the stream that lures riders into the water.

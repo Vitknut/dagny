@@ -43,6 +43,11 @@ export const ENEMY_CHARS: Readonly<Record<string, string>> = {
   o: 'stubbtroll',
   a: 'bergtroll',
   '*': 'skuggan',
+  // The later fencers (all letters are taken)
+  $: 'gast',
+  ';': 'kavaljer',
+  ',': 'vittra',
+  ':': 'drabant',
 };
 
 export const PICKUP_CHARS: Readonly<Record<string, 'bulle' | 'termos' | 'lingon'>> = {
