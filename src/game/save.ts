@@ -10,7 +10,7 @@ import { markExplored } from './explored';
 import { TEMPLES } from '../data/temples';
 
 /** Bump when the format changes, and add a migration below. */
-export const SAVE_VERSION = 6;
+export const SAVE_VERSION = 7;
 export const SAVE_KEY = 'dagny.save';
 
 export interface SaveFile {
@@ -83,6 +83,19 @@ function migrate(file: Record<string, unknown>): Record<string, unknown> {
     const items = Array.isArray(st.items) ? st.items : (st.items = []);
     const at = isObj(st.loc) && typeof st.loc.area === 'string' ? st.loc.area : '';
     if (['krypta_2', 'krypta_3', 'krypta_4'].includes(at) && !items.includes('spett')) items.push('spett');
+  }
+  // Version 7 (3.1b): dry roots now close the way into the mine, and only Eld
+  // burns them. A save inside without Eld would be shut in: it is put outside
+  // the mine's entrance on the map, and a candle lit in there is forgotten.
+  if (v < 7 && isObj(file.state)) {
+    const st = file.state;
+    const spells = Array.isArray(st.spells) ? st.spells : [];
+    const at = isObj(st.loc) && typeof st.loc.area === 'string' ? st.loc.area : '';
+    if (at.startsWith('gruvan') && !spells.includes('eld')) {
+      st.loc = { area: 'overworld', x: 55, y: 18 };
+      st.ow = { x: 55, y: 18 };
+      if (isObj(st.checkpoint) && typeof st.checkpoint.area === 'string' && st.checkpoint.area.startsWith('gruvan')) st.checkpoint = null;
+    }
   }
   return file;
 }

@@ -101,3 +101,16 @@ describe('the lesser guardians', () => {
     for (const id of ['krypta_sakristia', 'gruvan_verkstad']) expect(AREAS[id].sealed?.music, id).toBe('mellanboss');
   });
 });
+
+describe('the readings are needed on the way (3.1b)', () => {
+  it('the mine is not entered without Eld, and not crossed without Lyse', () => {
+    const noFire = playthrough({ withholdSpells: ['eld'] });
+    expect(noFire.areas.has('gruvan_1')).toBe(true);
+    expect(noFire.areas.has('gruvan_hall')).toBe(false);
+    expect(noFire.finished).toBe(false);
+    const noLight = playthrough({ withholdSpells: ['lyse'] });
+    expect(noLight.areas.has('gruvan_3')).toBe(true);
+    expect(noLight.areas.has('gruvan_4')).toBe(false);
+    expect(noLight.finished).toBe(false);
+  }, 60_000);
+});

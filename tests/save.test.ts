@@ -220,3 +220,19 @@ describe('keys that moved when the temples became nets', () => {
     }
   });
 });
+
+describe('version 7 (the ways that need a reading, 3.1b)', () => {
+  it('a save inside the mine without Eld is put outside its entrance, not shut in behind the roots', () => {
+    const old = { ...newGame(), items: ['svard', 'eka'], spells: ['lakning'], loc: { area: 'gruvan_hall', x: 40, y: 140 }, checkpoint: { area: 'gruvan_hall', x: 120, y: 140 } };
+    const f = deserialize(JSON.stringify({ v: 6, savedAt: 0, state: old }))!;
+    expect(f.state.loc.area).toBe('overworld');
+    expect(f.state.ow).toEqual({ x: 55, y: 18 });
+    expect(f.state.checkpoint).toBeNull();
+  });
+
+  it('with Eld she stays where she was', () => {
+    const old = { ...newGame(), items: ['svard', 'eka'], spells: ['eld'], loc: { area: 'gruvan_hall', x: 40, y: 140 } };
+    const f = deserialize(JSON.stringify({ v: 6, savedAt: 0, state: old }))!;
+    expect(f.state.loc.area).toBe('gruvan_hall');
+  });
+});
