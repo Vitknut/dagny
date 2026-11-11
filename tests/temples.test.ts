@@ -114,3 +114,17 @@ describe('the readings are needed on the way (3.1b)', () => {
     expect(noLight.finished).toBe(false);
   }, 60_000);
 });
+
+describe('extra lives are earned (3.1b)', () => {
+  it('Måsskäret\'s doll is reached only with Hopp, and Jättegrytan is a deep kettle, not a short walk', () => {
+    const all = playthrough();
+    const noHopp = playthrough({ withholdSpells: ['hopp'] });
+    const doll = [...all.lives].find((l) => l.includes('masskaret'))!;
+    expect(doll).toBeDefined();
+    expect(noHopp.lives.has(doll)).toBe(false);
+    const jg = AREAS.jattegrytan;
+    expect(jg.tiles.length).toBeGreaterThanOrEqual(16);
+    expect(jg.tiles[0].length).toBeGreaterThanOrEqual(48);
+    expect(jg.tiles.join('').split('j').length - 1, 'sjörå shooters').toBeGreaterThanOrEqual(2);
+  }, 60_000);
+});

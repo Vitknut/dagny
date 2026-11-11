@@ -29,6 +29,8 @@ const MOVED_CONTAINERS: Readonly<Record<string, string>> = {
   'liv:kyrkogarden': 'liv:kyrkogarden:21,9',
   'magi:kolartorpet': 'magi:kolartorpet:17,9',
   'liv:fabodtorpet': 'liv:fabodtorpet:17,9',
+  // Jättegrytan was rebuilt deeper (3.1b): its hidden magic container moved.
+  'magi:jattegrytan:26,5': 'magi:jattegrytan:44,3',
 };
 
 const isObj = (x: unknown): x is Record<string, unknown> => typeof x === 'object' && x !== null && !Array.isArray(x);

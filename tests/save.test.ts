@@ -236,3 +236,10 @@ describe('version 7 (the ways that need a reading, 3.1b)', () => {
     expect(f.state.loc.area).toBe('gruvan_hall');
   });
 });
+
+describe('Jättegrytan rebuilt (3.1b)', () => {
+  it('its magic container, taken where it used to lie, still counts once where it lies now', () => {
+    const f = deserialize(JSON.stringify({ v: 7, savedAt: 0, state: { ...newGame(), containers: ['magi:jattegrytan:26,5'] } }))!;
+    expect(f.state.containers).toEqual(['magi:jattegrytan:44,3']);
+  });
+});
