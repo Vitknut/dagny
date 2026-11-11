@@ -18,7 +18,8 @@ permissions:
 
 jobs:
   monkey:
-    runs-on: ubuntu-latest
+    # Pinned: Playwright 1.56 has no browser for Ubuntu 26.04 (ubuntu-latest).
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
