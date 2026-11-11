@@ -107,6 +107,12 @@ Four things on the map open for good when Dagny casts the right reading standing
 - Each place behind gives XP and an extra life (Jordkällaren fills health and magic instead), and is found once.
 - The solver opens them when it has the reading and reaches a tile beside them; `tests/world.test.ts` checks that the places behind are reached only that way.
 
+## The hush before a guardian (as in Zelda II)
+
+Every guardian's room begins with a long quiet way in (`AreaDef.hush`, 16 tiles): no creatures, the temple's tune gone, only **Väntan** – a slow heartbeat and a low tone that never lands. Ahead, **drapes** hang from the roof over the arena (`AreaDef.drapes`), the same sign in every temple in its own material: mourning crape (Kryptan), sacking (Gruvan), flour sacks (Kvarnen), fishing nets (Fyren), stage curtains (Folkparken), birch bark (Fäbodskogen), roots (Trollberget). The guardian is not seen until it wakes, five tiles into the arena: it steps out of mist, the way back shuts where the quiet way ends, and the guardian music starts – now with a chugging sixteenth-note bass and busier drums (168 bpm).
+
+The lesser guardians (Klockaren, Malmjätten) have their own tune, **Vakten vid dörren**.
+
 ## The crypt as a net (fas 4)
 
 Stenkyrkan's crypt is built the same way as the mine. From **Gravkoret** (a candle, three ways) Dagny goes to **Sakristian**, where the way back shuts and **Klockaren**, the dead bell-ringer (a fencer, `guard: true`), keeps the **järnspett**; to **Benhuset**, a dark dead end with the key to the vaults; and – once the crowbar is hers – through a wall of **loose stones** (`}`, struck with the crowbar in the pack) on to Valvgången, Gravkammaren and Grimmen.

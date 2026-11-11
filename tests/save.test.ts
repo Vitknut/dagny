@@ -202,3 +202,21 @@ describe('version 6 (the crypt as a net, fas 4)', () => {
     expect(before.state.items).not.toContain('spett');
   });
 });
+
+describe('keys that moved when the temples became nets', () => {
+  it('a key taken where it used to lie is not had a second time where it lies now', () => {
+    for (const [was, now] of [['krypta_2:39,3', 'krypta_benhus:34,9'], ['gruvan_2:20,11', 'gruvan_malm:33,9']]) {
+      const f = deserialize(JSON.stringify({ v: 6, savedAt: 0, state: { ...newGame(), opened: [was] } }))!;
+      expect(f.state.opened, was).toContain(now);
+    }
+  });
+
+  it('the new places are where the keys really lie', async () => {
+    const { AREAS } = await import('../src/data/areas');
+    for (const pid of ['krypta_benhus:34,9', 'gruvan_malm:33,9']) {
+      const [area, xy] = pid.split(':');
+      const [x, y] = xy.split(',').map(Number);
+      expect(AREAS[area].tiles[y][x], pid).toBe('k');
+    }
+  });
+});

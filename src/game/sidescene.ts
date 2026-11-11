@@ -211,6 +211,8 @@ export class SideScene implements Scene, WorldApi {
     if (this.boss && this.boss.awake && !this.boss.dead) {
       return templeById(this.area.temple ?? '')?.bossMusic ?? 'boss';
     }
+    // Before the guardian wakes: no temple tune, only the waiting.
+    if (this.boss && !this.boss.dead && this.area.hush) return 'vantan';
     if (this.seal === 2 && this.area.sealed?.music) return this.area.sealed.music;
     // A village whose place has woken plays its tune brighter.
     const village = VILLAGES.find((v) => v.area === this.area.id);
@@ -1001,11 +1003,15 @@ export class SideScene implements Scene, WorldApi {
     const b = this.boss;
     if (!b) return;
     const g = this.game;
-    if (!b.awake && !b.dead && this.player.x > 5 * TILE) {
+    const gate = this.area.hush ?? 0;
+    if (!b.awake && !b.dead && this.player.x > (gate + 5) * TILE) {
       b.awake = true;
       this.grid.wallLeft = true;
-      // Block the passage back while the fight lasts.
-      for (let y = 0; y < this.grid.h; y++) if (this.grid.kinds[y * this.grid.w] === Kind.Empty) this.grid.kinds[y * this.grid.w] = Kind.Solid;
+      // Block the passage back while the fight lasts (where the quiet way in meets the arena).
+      for (let y = 0; y < this.grid.h; y++) if (this.grid.kinds[y * this.grid.w + gate] === Kind.Empty) this.grid.kinds[y * this.grid.w + gate] = Kind.Solid;
+      // The guardian steps out of nothing: mist where it will stand.
+      for (let i = 0; i < 10; i++) this.puff(b.x + Math.random() * b.w, b.y + Math.random() * b.h, 'mist');
+      this.flashT = 12;
       this.sfx('roar');
       this.shake(20, 2);
       g.pushOverlay(new DialogOverlay(g, b.boss?.introDialog ?? 'boss_vaknar', () => g.audio.playMusic(this.music())));

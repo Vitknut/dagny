@@ -167,7 +167,7 @@ export const SONGS: Record<string, SongDef> = {
    * fifth, and then the motif itself an octave up over the same descent.
    */
   boss: {
-    bpm: 160,
+    bpm: 168,
     loop: true,
     tracks: [
       {
@@ -177,8 +177,22 @@ export const SONGS: Record<string, SongDef> = {
       },
       { inst: 'pulse2', vol: 0.55, shift: -5, notes: `a4:2 c5:2 e5:2 f5:2 e5:2 r:2 c5:1 b4:1 a4:2 | a4:2 c5:2 e5:2 g#5:2 a5:2 g#5:2 e5:2 r:2 | g4:2 a#4:2 d5:2 d#5:2 d5:2 r:2 a#4:1 a4:1 g4:2 | g4:2 a#4:2 d5:2 f#5:2 g5:2 f#5:2 d5:2 r:2 | f4:2 g#4:2 c5:2 c#5:2 c5:2 r:2 g#4:1 g4:1 f4:2 | f4:2 g#4:2 c5:2 e5:2 f5:2 e5:2 c5:2 r:2 | e4:2 g#4:2 b4:2 c5:2 b4:2 r:2 g#4:1 f#4:1 e4:2 | e4:2 g#4:2 b4:2 d5:2 e5:2 f5:2 g#5:2 b5:2 |
                 a5:3 e5:1 a5:3 e5:1 c6:2 b5:4 g#5:1 a5:1 | e6:4 d6:2 c6:2 b5:4 a5:4 | g5:3 d5:1 g5:3 d5:1 a#5:2 a5:4 f#5:1 g5:1 | d6:4 c6:2 a#5:2 a5:4 g5:4 | f5:3 c5:1 f5:3 c5:1 g#5:2 g5:4 e5:1 f5:1 | c6:4 a#5:2 g#5:2 g5:4 f5:4 | e5:2 f5:2 g#5:2 a5:2 b5:2 c6:2 d6:2 e6:2 | f6:4 e6:4 d#6:2 e6:2 r:4` },
-      { inst: 'bass', vol: 1, notes: 'a1:2 a2:2 a1:2 a2:2 e2:2 a2:2 a1:2 e2:2 | a1:2 a2:2 a1:2 a2:2 e2:2 a2:2 a1:2 e2:2 | g1:2 g2:2 g1:2 g2:2 d2:2 g2:2 g1:2 d2:2 | g1:2 g2:2 g1:2 g2:2 d2:2 g2:2 g1:2 d2:2 | f1:2 f2:2 f1:2 f2:2 c2:2 f2:2 f1:2 c2:2 | f1:2 f2:2 f1:2 f2:2 c2:2 f2:2 f1:2 c2:2 | e1:2 e2:2 e1:2 e2:2 b1:2 e2:2 e1:2 b1:2 | e1:2 e2:2 e1:2 e2:2 b1:2 e2:2 e1:2 b1:2 | a1:2 a2:2 a1:2 a2:2 e2:2 a2:2 a1:2 e2:2 | a1:2 a2:2 a1:2 a2:2 e2:2 a2:2 a1:2 e2:2 | g1:2 g2:2 g1:2 g2:2 d2:2 g2:2 g1:2 d2:2 | g1:2 g2:2 g1:2 g2:2 d2:2 g2:2 g1:2 d2:2 | f1:2 f2:2 f1:2 f2:2 c2:2 f2:2 f1:2 c2:2 | f1:2 f2:2 f1:2 f2:2 c2:2 f2:2 f1:2 c2:2 | e1:2 e2:2 e1:2 e2:2 b1:2 e2:2 e1:2 b1:2 | e1:2 e2:2 e1:2 e2:2 b1:2 e2:2 e1:2 b1:2' },
-      { inst: 'drum', vol: 0.55, notes: 'k:2 h:1 h:1 s:2 k:1 h:1 '.repeat(32) },
+      { inst: 'bass', vol: 1, notes: 'a1:1 a1:1 a2:1 a2:1 a1:1 a1:1 a2:1 a2:1 e2:1 e2:1 a2:1 a2:1 a1:1 a1:1 e2:1 e2:1 | a1:1 a1:1 a2:1 a2:1 a1:1 a1:1 a2:1 a2:1 e2:1 e2:1 a2:1 a2:1 a1:1 a1:1 e2:1 e2:1 | g1:1 g1:1 g2:1 g2:1 g1:1 g1:1 g2:1 g2:1 d2:1 d2:1 g2:1 g2:1 g1:1 g1:1 d2:1 d2:1 | g1:1 g1:1 g2:1 g2:1 g1:1 g1:1 g2:1 g2:1 d2:1 d2:1 g2:1 g2:1 g1:1 g1:1 d2:1 d2:1 | f1:1 f1:1 f2:1 f2:1 f1:1 f1:1 f2:1 f2:1 c2:1 c2:1 f2:1 f2:1 f1:1 f1:1 c2:1 c2:1 | f1:1 f1:1 f2:1 f2:1 f1:1 f1:1 f2:1 f2:1 c2:1 c2:1 f2:1 f2:1 f1:1 f1:1 c2:1 c2:1 | e1:1 e1:1 e2:1 e2:1 e1:1 e1:1 e2:1 e2:1 b1:1 b1:1 e2:1 e2:1 e1:1 e1:1 b1:1 b1:1 | e1:1 e1:1 e2:1 e2:1 e1:1 e1:1 e2:1 e2:1 b1:1 b1:1 e2:1 e2:1 e1:1 e1:1 b1:1 b1:1 | a1:1 a1:1 a2:1 a2:1 a1:1 a1:1 a2:1 a2:1 e2:1 e2:1 a2:1 a2:1 a1:1 a1:1 e2:1 e2:1 | a1:1 a1:1 a2:1 a2:1 a1:1 a1:1 a2:1 a2:1 e2:1 e2:1 a2:1 a2:1 a1:1 a1:1 e2:1 e2:1 | g1:1 g1:1 g2:1 g2:1 g1:1 g1:1 g2:1 g2:1 d2:1 d2:1 g2:1 g2:1 g1:1 g1:1 d2:1 d2:1 | g1:1 g1:1 g2:1 g2:1 g1:1 g1:1 g2:1 g2:1 d2:1 d2:1 g2:1 g2:1 g1:1 g1:1 d2:1 d2:1 | f1:1 f1:1 f2:1 f2:1 f1:1 f1:1 f2:1 f2:1 c2:1 c2:1 f2:1 f2:1 f1:1 f1:1 c2:1 c2:1 | f1:1 f1:1 f2:1 f2:1 f1:1 f1:1 f2:1 f2:1 c2:1 c2:1 f2:1 f2:1 f1:1 f1:1 c2:1 c2:1 | e1:1 e1:1 e2:1 e2:1 e1:1 e1:1 e2:1 e2:1 b1:1 b1:1 e2:1 e2:1 e1:1 e1:1 b1:1 b1:1 | e1:1 e1:1 e2:1 e2:1 e1:1 e1:1 e2:1 e2:1 b1:1 b1:1 e2:1 e2:1 e1:1 e1:1 b1:1 b1:1' },
+      { inst: 'drum', vol: 0.65, notes: 'k:1 h:1 h:1 k:1 s:2 h:1 k:1 k:1 h:1 h:1 k:1 s:2 h:1 h:1 '.repeat(16) },
+    ],
+  },
+
+  /**
+   * "Väntan" – the quiet way in to a guardian: no tune, a slow heartbeat in
+   * the bass and a low tone that creeps up a semitone and back, never landing.
+   */
+  vantan: {
+    bpm: 72,
+    loop: true,
+    tracks: [
+      { inst: 'bass', vol: 0.9, notes: 'a1:1 r:1 a1:1 r:13 '.repeat(4) },
+      { inst: 'drum', vol: 0.35, notes: 'k:1 r:1 k:1 r:13 '.repeat(4) },
+      { inst: 'pulse2', vol: 0.18, notes: 'e3:16 | f3:16 | e3:16 | d#3:16' },
     ],
   },
 

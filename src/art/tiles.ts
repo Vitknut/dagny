@@ -3,6 +3,18 @@ import type { SpriteDef } from '../engine/sprites';
 /** 16×16 tiles for side views. Multi-frame tiles animate. */
 const t = (...frames: string[][]): SpriteDef => ({ w: 16, h: 16, frames });
 
+/** A pleated drape two tiles long with a scalloped hem (the sign of a guardian ahead), in light/dark/hem colours; two frames, the lobes shifted. */
+function drape(light: string, dark: string, hem: string): SpriteDef {
+  const fold = 'aabbbaaabbbaaabb';
+  const lit = 'aaabbaaaabbaaaab';
+  const body = Array.from({ length: 24 }, (_, i) => (i % 6 < 3 ? fold : lit));
+  const tail = ['aabbbaaabbbaaabb', '.abbbaa..bbaaab.', '.abbba....bbaa..', '..ebb......ee...', '..ee............', '................'];
+  const rows = ['kkkkkkkkkkkkkkkk', 'eeeeeeeeeeeeeeee', ...body, ...tail];
+  const paint = (r: string): string => r.replace(/a/g, light).replace(/b/g, dark).replace(/e/g, hem);
+  const roll = (r: string): string => r.slice(8) + r.slice(0, 8);
+  return { w: 16, h: 32, frames: [rows.map(paint), rows.map((r, i) => paint(i >= 26 ? roll(r) : r))] };
+}
+
 export const tileSprites: Record<string, SpriteDef> = {
   // --- Outdoors ---
   grass: t([
@@ -688,6 +700,14 @@ export const tileSprites: Record<string, SpriteDef> = {
     'kBBBBBBkBBBBBBBk',
     'kkkkkkkkkkkkkkkk',
   ]),
+  // Drapes before each guardian: one sign, seven materials.
+  drapeSorg: drape('P', 'p', 'G'),
+  drapeSack: drape('t', 'B', 'b'),
+  drapeMjol: drape('W', 'w', 't'),
+  drapeNat: drape('c', 'u', 'U'),
+  drapeRida: drape('R', 'r', 'Y'),
+  drapeNaver: drape('W', 'g', 'k'),
+  drapeRot: drape('B', 'b', 'm'),
   /** Rotten boards over a drop: a thrust from above (Nedåtstöt) breaks them. */
   skortGolv: t([
     'kbbbbbbkbbbbbbbk',

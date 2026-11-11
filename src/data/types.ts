@@ -409,6 +409,14 @@ export interface AreaDef {
    */
   sealed?: { dialog: string; music?: string };
   /**
+   * A guardian's room: tile columns of quiet way in before the arena (no
+   * creatures, the waiting music). The guardian wakes once Dagny is five
+   * tiles past it, and the way back shuts there.
+   */
+  hush?: number;
+  /** Drapes along the arena's roof, the sign of a guardian ahead (sprite id; side/render.ts). */
+  drapes?: string;
+  /**
    * The door (its character) a vätte called with the näverlur runs to and waits
    * by when there is nothing to fight: the one way on among several (Vättegången).
    */

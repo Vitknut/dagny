@@ -48,6 +48,7 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
   // Static tiles and decor.
   ctx.drawImage(sc.staticLayer, camX, camY, VIEW_W, VIEW_H, 0, 0, VIEW_W, VIEW_H);
   renderGrass(sc, ctx, camX, camY);
+  renderDrapes(sc, ctx, camX, camY);
 
   // Animated tiles.
   for (const a of sc.anim) {
@@ -101,7 +102,8 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
   for (const pk of sc.pickups) pk.render(ctx, camX, camY);
   for (const n of sc.npcs) n.render(ctx, camX, camY);
   sc.follower?.render(ctx, camX, camY);
-  for (const e of sc.enemies) e.render(ctx, camX, camY);
+  // A guardian is not seen before it wakes (the hush before it).
+  for (const e of sc.enemies) if (!(e.boss && !e.awake && sc.area.hush)) e.render(ctx, camX, camY);
   renderPlayerAura(sc, ctx, camX, camY);
   for (const h of sc.helpers) {
     if (h.life > 90 || Math.floor(h.life / 4) % 2 === 0) drawSprite(ctx, 'vatte', Math.floor(f / 10) % 2, h.x - 3 - camX, h.y - 4 - camY, h.facing === -1);
@@ -246,7 +248,7 @@ export function renderDarkness(sc: SideScene, ctx: CanvasRenderingContext2D, cam
     else if (a.sprite === 'lens') light(a.x + 8 - camX, a.y + 8 - camY, 64 + flicker * 2);
   }
   for (const e of sc.enemies) {
-    if (e.dead) continue;
+    if (e.dead || (e.boss && !e.awake && sc.area.hush)) continue;
     if (e.def.id === 'lyktgubbe') light(e.x + e.w / 2 - camX, e.y + e.h / 2 - camY, 26);
     // Gruvrået carries her own carbide lantern.
     else if (e.def.behavior === 'boss_bergakung' && e.phase === 1) light(e.x + e.w / 2 - camX, e.y + 8 - camY, 50);
@@ -331,4 +333,23 @@ export function renderName(sc: SideScene, ctx: CanvasRenderingContext2D): void {
   ctx.fillRect(x + 2, y + 14, w - 4, 1);
   drawText(ctx, name, VIEW_W / 2, y + 4, 'W', { align: 'center' });
   ctx.globalAlpha = 1;
+}
+
+/**
+ * Drapes along the roof of a guardian's arena (AreaDef.drapes): the sign,
+ * as in Zelda II, that the guardian waits ahead. They hang from the first
+ * open row from the top, over the arena only (past the quiet way in).
+ */
+function renderDrapes(sc: SideScene, ctx: CanvasRenderingContext2D, camX: number, camY: number): void {
+  const id = sc.area.drapes;
+  if (!id) return;
+  const tiles = sc.area.tiles;
+  for (let x = sc.area.hush ?? 0; x < sc.grid.w; x++) {
+    let y = 0;
+    while (y < tiles.length && tiles[y][x] === '#') y++;
+    if (y > 6) continue;
+    const px = x * TILE - camX;
+    if (px < -TILE || px > VIEW_W) continue;
+    drawSprite(ctx, id, x % 2, px, y * TILE - camY);
+  }
 }

@@ -40,6 +40,12 @@ function loc(x: unknown, d: Location): Location {
   return { area: x.area, x: num(x.x, d.x), y: num(x.y, d.y) };
 }
 
+/** Temple keys moved by fas 4 (old place → new place, as "area:x,y"). */
+const MOVED_KEYS: Readonly<Record<string, string>> = {
+  'krypta_2:39,3': 'krypta_benhus:34,9',
+  'gruvan_2:20,11': 'gruvan_malm:33,9',
+};
+
 /** Old formats → current. Version 0 = before versioning (never released). */
 function migrate(file: Record<string, unknown>): Record<string, unknown> {
   const v = num(file.v, 0);
@@ -138,6 +144,9 @@ export function deserialize(text: string | null): SaveFile | null {
   };
   state.hp = Math.max(1, Math.min(hpMax(state), num(s.hp, d.hp)));
   state.mp = Math.max(0, Math.min(mpMax(state), num(s.mp, d.mp)));
+  // Keys that moved when a temple became a net (fas 4): one already taken where
+  // it used to lie counts as taken where it lies now, or it would be had twice.
+  for (const [was, now] of Object.entries(MOVED_KEYS)) if (state.opened.includes(was) && !state.opened.includes(now)) state.opened.push(now);
   // A temple done before it got its tool (fas 4): the tool is hers, as if found.
   for (const t of TEMPLES) if (t.tool && state.flags.includes(`${t.id}_klar`) && !state.items.includes(t.tool)) state.items.push(t.tool);
   // Never leave Dagny where she can't get out with what she carries.

@@ -272,3 +272,45 @@ test('the sacristy opens when the bell-ringer falls, and the crowbar lies there 
   });
   expect(r).toEqual({ shut: true, crank: true, cleared: true });
 });
+
+test('the hush before a guardian: quiet way in, the waiting tune, then it steps out and the way back shuts (krypta_4)', async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const { SideScene } = await import('/src/game/sidescene.ts');
+    const { newGame } = await import('/src/game/state.ts');
+    const g = (window as unknown as { dagny: Record<string, unknown> }).dagny as unknown as {
+      state: ReturnType<typeof newGame>;
+      overlays: unknown[];
+      input: { keyboard: boolean[] };
+      setScene(s: unknown): void;
+      update(): void;
+    };
+    const s = newGame();
+    s.flags.push('intro_done');
+    s.skills = ['nedatstot'];
+    g.state = s;
+    g.overlays.length = 0;
+    const sc = new SideScene(g as never, 'krypta_4', { entry: 'A' });
+    g.setScene(sc);
+    const before = { music: sc.music(), awake: !!sc.boss?.awake, creatures: sc.enemies.filter((e) => !e.boss).length };
+    // Walk right until the guardian wakes (or give up).
+    let steps = 0;
+    for (; steps < 900 && !sc.boss?.awake; steps++) {
+      g.input.keyboard[1] = true;
+      g.update();
+      g.overlays.length = 0;
+    }
+    g.input.keyboard.fill(false);
+    const hush = sc.area.hush ?? 0;
+    return {
+      before,
+      wokeAt: Math.floor(sc.player.x / 16),
+      hush,
+      after: sc.music(),
+      shut: sc.grid.kinds[8 * sc.grid.w + hush] === 1,
+    };
+  });
+  expect(r.before).toEqual({ music: 'vantan', awake: false, creatures: 0 });
+  expect(r.wokeAt).toBeGreaterThanOrEqual(r.hush + 5);
+  expect(r.after).toBe('boss');
+  expect(r.shut).toBe(true);
+});

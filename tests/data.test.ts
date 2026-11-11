@@ -405,7 +405,8 @@ describe('music and sound', () => {
 
   it('every song is used somewhere', () => {
     const used = new Set([...Object.values(AREAS).flatMap((a) => [a.music, a.sealed?.music]), ...TEMPLES.flatMap((t) => [t.music, t.bossMusic])]);
-    const elsewhere = ['titel', 'karta', 'seger', 'somnar', 'soluppgang', 'midsommar', 'fynd', 'lara'];
+    // 'vantan' plays in a guardian's room until it wakes (SideScene.music).
+    const elsewhere = ['titel', 'karta', 'seger', 'somnar', 'soluppgang', 'midsommar', 'fynd', 'lara', 'vantan'];
     // A village's brighter tune plays once its place has woken (SideScene.music).
     const bright = (id: string): boolean => id.endsWith('_ljus') && used.has(id.slice(0, -5));
     // An intro's loop plays when the intro ends.
