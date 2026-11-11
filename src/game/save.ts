@@ -10,7 +10,7 @@ import { markExplored } from './explored';
 import { TEMPLES } from '../data/temples';
 
 /** Bump when the format changes, and add a migration below. */
-export const SAVE_VERSION = 5;
+export const SAVE_VERSION = 6;
 export const SAVE_KEY = 'dagny.save';
 
 export interface SaveFile {
@@ -69,6 +69,14 @@ function migrate(file: Record<string, unknown>): Record<string, unknown> {
     const items = Array.isArray(st.items) ? st.items : (st.items = []);
     const at = isObj(st.loc) && typeof st.loc.area === 'string' ? st.loc.area : '';
     if (['gruvan_2', 'gruvan_3', 'gruvan_4'].includes(at) && !items.includes('hissvev')) items.push('hissvev');
+  }
+  // Version 6 (fas 4): the crypt became a net, with a wall of loose stones
+  // that only the crowbar from the sacristy brings down. Likewise.
+  if (v < 6 && isObj(file.state)) {
+    const st = file.state;
+    const items = Array.isArray(st.items) ? st.items : (st.items = []);
+    const at = isObj(st.loc) && typeof st.loc.area === 'string' ? st.loc.area : '';
+    if (['krypta_2', 'krypta_3', 'krypta_4'].includes(at) && !items.includes('spett')) items.push('spett');
   }
   return file;
 }

@@ -35,7 +35,7 @@ import { shieldBlocks, damagePlayer, combat, killEnemy } from './side/combat';
 import { collect } from './side/pickups';
 import { renderScene } from './side/render';
 import { tickSpells, castSpell, blowLur, updateHelpers, shootFire } from './side/spells';
-import { setLightPaths, shutCellsIn, spread } from './side/obstacles';
+import { LOOSE, setLightPaths, shutCellsIn, spread } from './side/obstacles';
 /** Steps after a dialog closes before Up or a tap can start another (half a second). */
 const INTERACT_PAUSE = 30;
 /** Steps before the same person or sign starts again while Dagny stays put (three seconds). */
@@ -747,9 +747,13 @@ export class SideScene implements Scene, WorldApi {
     this.game.save();
   }
 
-  /** A thrust from above breaks rotten boards; the light path comes and goes with Lyse. */
+  /** A thrust from above breaks rotten boards; the crowbar brings down loose stones; the light path comes and goes with Lyse. */
   private tryObstacles(): void {
     const p = this.player;
+    if (p.swordActive && hasItem(this.s, LOOSE.item)) {
+      const hit = shutCellsIn(this, LOOSE.ch, p.swordBox({ x: 0, y: 0, w: 0, h: 0 }));
+      if (hit.length) this.openCells(spread(this, LOOSE.ch, hit), 'door');
+    }
     if (p.downThrust) {
       const hit = shutCellsIn(this, '_', p.swordBox({ x: 0, y: 0, w: 0, h: 0 }));
       if (hit.length) {

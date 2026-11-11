@@ -447,6 +447,8 @@ export const itemSprites: Record<string, SpriteDef> = {
     ]],
   },
   /** Iron ore (8×8). */
+  /** The crowbar (the crypt's tool, fas 4). */
+  spett: { w: 10, h: 10, outline: 'k', frames: [['........gG', '.......gG.', '......gG..', '.....gG...', '....gG....', '...gG.....', '..gG......', '.gG.......', 'gGG.......', '.g........']] },
   /** The lift crank (Gruvan's tool, fas 4): an iron crank with a wooden handle. */
   hissvev: { w: 10, h: 10, outline: 'k', frames: [['......BB..', '......BB..', '......gG..', '......gG..', '..gGGGGG..', '..gG......', '.GGGG.....', '.GgGG.....', '.GGGG.....', '..........']] },
   malm: { w: 8, h: 8, outline: 'k', frames: [['..gggg..', '.gGGrGg.', 'gGrGGGGg', 'gGGGGrGg', 'gGGrGGGg', 'gGGGGGGg', '.gGGrGg.', '..gggg..']] },

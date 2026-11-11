@@ -240,7 +240,9 @@ function jumpModel(a: AreaDef, radio: boolean, opts: { up?: number; hatches?: bo
   const w = t[0].length;
   const groups = rides(a, opts.items);
   const onRide = (x: number, y: number): boolean => groups.some((g) => g.has(`${x},${y}`));
-  const solid = (x: number, y: number): boolean => y >= h || (x >= 0 && x < w && y >= 0 && (t[y][x] === '#' || (t[y][x] === 'L' && !opts.keys) || (t[y][x] === '!' && !opts.hatches) || (t[y][x] === '?' && !radio)));
+  const solid = (x: number, y: number): boolean =>
+    y >= h ||
+    (x >= 0 && x < w && y >= 0 && (t[y][x] === '#' || (t[y][x] === 'L' && !opts.keys) || (t[y][x] === '!' && !opts.hatches) || (t[y][x] === '?' && !radio) || (t[y][x] === '}' && !opts.items?.has('spett'))));
   const free = (x: number, y: number): boolean => x >= 0 && x < w && y < h && (y < 0 || (!solid(x, y) && !'^~n'.includes(t[y][x])));
   const floor = (x: number, y: number): boolean => y + 1 < h && y + 1 >= 0 && (solid(x, y + 1) || '=%&'.includes(t[y + 1][x] ?? '') || onRide(x, y));
   const stand = (x: number, y: number): boolean => free(x, y) && free(x, y - 1) && floor(x, y);
@@ -330,7 +332,7 @@ describe('no pits to get stuck in', () => {
     for (const a of Object.values(AREAS)) {
       if (a.wind || a.beat) continue;
       // A room whose lifts need a temple's tool is walked with and without it (fas 4).
-      const tools = [...new Set((a.platforms ?? []).flatMap((p) => (p.needs ? [p.needs] : [])))];
+      const tools = [...new Set([...(a.platforms ?? []).flatMap((p) => (p.needs ? [p.needs] : [])), ...(a.tiles.some((r) => r.includes('}')) ? ['spett'] : [])])];
       for (const radio of [false, true]) {
         for (const items of tools.length ? [new Set<string>(), new Set(tools)] : [undefined]) {
           const stuck = softlocks(a, radio, items);

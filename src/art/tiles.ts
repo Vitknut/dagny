@@ -784,6 +784,25 @@ export const tileSprites: Record<string, SpriteDef> = {
       '................',
     ],
   ),
+  /** Loose masonry in a crypt wall: the crowbar brings it down (fas 4). */
+  lostBlock: t([
+    'kgggggkkgggggggk',
+    'gGGGGgkgGGGwGGgk',
+    'gGwGGgkgGGGGGGgk',
+    'gGGGGgkgGGGGGGgk',
+    'kgggggkkggggggkk',
+    'kkkk.kkkkk.kkkkk',
+    'gggkgggggkkggggk',
+    'GGgkgGGGGgkgGGGg',
+    'GwgkgGGwGgkgGwGg',
+    'GGgkgGGGGgkgGGGg',
+    'gggkkggggkkkgggk',
+    'kk.kkkk.kkkkk.kk',
+    'kgggggkggggkgggk',
+    'gGGGGgkgGGgkgGGg',
+    'gGGwGgkgGGgkgGwg',
+    'kgggggkkgggkkggk',
+  ]),
   /** Locked door – solid until opened with a key. */
   lockedDoor: t([
     'gBBBBBBBBBBBBBBg',

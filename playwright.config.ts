@@ -14,7 +14,12 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   reporter: process.env.CI ? 'line' : 'list',
-  use: { baseURL: `http://localhost:${PORT}/`, trace: 'off' },
+  use: {
+    baseURL: `http://localhost:${PORT}/`,
+    trace: 'off',
+    // A machine with its own Chromium (not the one this Playwright version downloads) names it here.
+    launchOptions: process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {},
+  },
   projects: [
     { name: 'smoke', testMatch: 'smoke.spec.ts', use: { ...devices['Pixel 7 landscape'] } },
     { name: 'monkey', testMatch: ['monkey.spec.ts', 'obstacles.spec.ts'], use: { viewport: { width: 960, height: 540 } } },

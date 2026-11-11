@@ -49,3 +49,47 @@ describe('door letters', () => {
     for (const a of Object.values(AREAS)) for (const k of Object.keys(a.doors ?? {})) expect('MTBLX'.includes(k), `${a.id}: door ${k}`).toBe(false);
   });
 });
+
+describe('the crypt as a net', () => {
+  it('Gravkoret leads to the sacristy, the ossuary and – past loose stones – the vaults', () => {
+    const hall = AREAS.krypta_hall;
+    const to = [hall.right?.to, ...Object.values(hall.doors ?? {}).map((d) => d.to)];
+    expect(to.sort()).toEqual(['krypta_2', 'krypta_benhus', 'krypta_sakristia']);
+    expect(hall.tiles.some((r) => r.includes('c')), 'a candle').toBe(true);
+    expect(hall.tiles.some((r) => r.includes('}')), 'loose stones').toBe(true);
+    expect(TEMPLES.find((t) => t.id === 'krypta')!.tool).toBe('spett');
+    expect(AREAS.krypta_sakristia.sealed).toBeDefined();
+    expect(AREAS.krypta_sakristia.finds?.find((f) => f.item === 'spett')?.after).toBe('krypta_sakristia_rensad');
+  });
+
+  it('without the crowbar, or without Nedåtstöt, the crypt is never done', () => {
+    expect(playthrough().flags.has('krypta_klar')).toBe(true);
+    const noBar = playthrough({ withhold: ['spett'] });
+    expect(noBar.areas.has('krypta_hall')).toBe(true);
+    expect(noBar.areas.has('krypta_2')).toBe(false);
+    expect(noBar.flags.has('krypta_klar')).toBe(false);
+    const noThrust = playthrough({ withholdSkills: ['nedatstot'] });
+    expect(noThrust.areas.has('krypta_4')).toBe(true);
+    expect(noThrust.flags.has('krypta_klar')).toBe(false);
+  }, 30_000);
+});
+
+describe('Grimmen floating is struck only from above', async () => {
+  const { Enemy } = await import('../src/entities/enemy');
+  const { BOSSES } = await import('../src/data/enemies');
+  const { stubWorld } = await import('./helpers/world');
+
+  it('in his second phase a blow from the side glances off, a thrust from above bites', () => {
+    const w = stubWorld({ w: 30, h: 12, player: { x: 60, y: 165 } });
+    const g = new Enemy(BOSSES.grim, 240, 176);
+    g.awake = true;
+    expect(g.takeHit(2, 100, 'high', w)).toBe('hit');
+    g.iframes = 0;
+    g.phase = 1;
+    expect(g.takeHit(2, 100, 'high', w)).toBe('blocked');
+    g.iframes = 0;
+    expect(g.takeHit(2, 100, 'fire', w)).toBe('blocked');
+    g.iframes = 0;
+    expect(g.takeHit(2, 100, 'down', w)).toBe('hit');
+  });
+});

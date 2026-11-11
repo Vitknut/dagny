@@ -141,6 +141,12 @@ export const VASEN: Readonly<Record<string, VasenEntry>> = {
     berattelse:
       'Stenknektarna är kryptans gamla stenväktare. I mörkret är de svåra att se – och svåra att stoppa.',
   },
+  klockaren: {
+    folktro:
+      'Klockaren ringde i kyrkklockorna och höll ordning i kyrkan. Det sades att en klockare som dog i tjänsten aldrig riktigt lämnade den: han gick sina rundor om nätterna, och den som rörde kyrkans saker fick svara honom.',
+    berattelse:
+      'I Stenkyrkans sakristia vaktar en gammal klockare det han en gång fick ansvar för. Han fäktas som han levde – noga, och utan brådska.',
+  },
   malmjatte: {
     folktro:
       'I gruvbygderna sades att berget självt vaktade sin malm. Den som tog för mycket, eller tog utan att tacka, kunde möta något i orterna som var tyngre än en människa och långsammare än en häst.',

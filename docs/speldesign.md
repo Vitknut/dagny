@@ -107,6 +107,13 @@ Four things on the map open for good when Dagny casts the right reading standing
 - Each place behind gives XP and an extra life (Jordkällaren fills health and magic instead), and is found once.
 - The solver opens them when it has the reading and reaches a tile beside them; `tests/world.test.ts` checks that the places behind are reached only that way.
 
+## The crypt as a net (fas 4)
+
+Stenkyrkan's crypt is built the same way as the mine. From **Gravkoret** (a candle, three ways) Dagny goes to **Sakristian**, where the way back shuts and **Klockaren**, the dead bell-ringer (a fencer, `guard: true`), keeps the **järnspett**; to **Benhuset**, a dark dead end with the key to the vaults; and – once the crowbar is hers – through a wall of **loose stones** (`}`, struck with the crowbar in the pack) on to Valvgången, Gravkammaren and Grimmen.
+
+- **Grimmen needs Nedåtstöt**, as smeden Algot says: floating in his second phase he is struck only from above (`BossPhase.only: 'down'`; `BossDef.needs` tells the solver).
+- Saves (version 6): the crowbar is given to a save standing past the wall, or with the crypt done.
+
 ## The mine as a net (fas 4 pilot)
 
 Den gamla gruvan is no longer a corridor. From **Hisshallen** (a candle, three ways) Dagny goes to **Verkstaden**, where the way back shuts and **Malmjätten** (a lesser guardian, `guard: true`) stands over the **hissvev**; to **Malmorten**, a dead end with the temple's key and the ore for the smith; and on to **Hisschaktet**, whose lifts stand still without the crank (`PlatformDef.needs`). The landing's floor is whole but for one hole, which the dead lift fills, so the shaft can't be dropped into without it. The hall's own lift runs to a gallery under the roof (a thermos) – the crank used again.

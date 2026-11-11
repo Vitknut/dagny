@@ -9,6 +9,7 @@ import type { SkillId, SpellId } from '../../data/types';
  *  (  torra rötter – a tangle of dry roots: a fireball (Eld) burns it away
  *  [  lyktgrind    – a gate of dead lanterns: thunder (Åska) in the room opens it
  *  -  ljusstig     – a ledge that is only there in the light (Lyse)
+ *  }  lösa stenar  – loose masonry: struck with the crowbar in the pack (spettet, the crypt's tool) it comes down
  *
  * The first three open for good (kept in GameState.opened, like hatches);
  * the light path comes and goes with the light.
@@ -20,9 +21,12 @@ export const OBSTACLES: Readonly<Record<string, { ability: SpellId | SkillId; sp
   '-': { ability: 'lyse', sprite: 'ljusstig' },
 };
 
+/** Loose masonry and the tool that brings it down (fas 4, the crypt). */
+export const LOOSE = { ch: '}', item: 'spett', sprite: 'lostBlock' } as const;
+
 /** The ones that stand solid until opened (all but the light path). */
 export function isBarrier(ch: string): boolean {
-  return ch === '_' || ch === '(' || ch === '[';
+  return ch === '_' || ch === '(' || ch === '[' || ch === LOOSE.ch;
 }
 
 /** What the room needs to know to open its barriers. */

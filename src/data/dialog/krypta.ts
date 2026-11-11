@@ -2,6 +2,14 @@ import type { DialogDef } from '../types';
 
 /** Temple 1: Stenkyrkans krypta and Kyrkogrimmen. */
 export const KRYPTA: Record<string, DialogDef> = {
+  krypta_korskylt: {
+    pages: ['Inristat i en gravsten i golvet:\n"HÄR VILA DE SOM BYGGDE MUREN. BRYT DEN EJ UTAN KLOCKARENS SPETT."'],
+  },
+
+  sakristian_stangs: {
+    pages: ['Dörren slår igen bakom Dagny. Någon har väntat här länge, med svärdet i handen och nyckelknippan i bältet.'],
+  },
+
   krypta_skylt1: {
     pages: ['En inskription i stenen:\n"Här vilar grimmen som vaktar kyrkan. Väck honom ej med vrede."'],
   },

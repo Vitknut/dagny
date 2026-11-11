@@ -65,6 +65,8 @@ export function blocks(a: AreaDef, x: number, y: number, has: Has): boolean {
   if (ch === '_') return !has.skills.has('nedatstot');
   if (ch === '(') return !has.spells.has('eld');
   if (ch === '[') return !has.spells.has('aska');
+  // Loose masonry comes down to the crowbar (the crypt's tool).
+  if (ch === '}') return !has.items.has('spett');
   // A place only an ability reaches (a high ledge, a narrow hole, a path in the light).
   for (const n of a.needs ?? []) if (x >= n.x0 && x <= n.x1 && y >= n.y0 && y <= n.y1 && !has.spells.has(n.ability) && !has.skills.has(n.ability)) return true;
   // A place only a temple's tool gets her to (a lift that runs only with the crank).
@@ -355,7 +357,7 @@ export function playthrough(opts: Options = {}): Playthrough {
     // The guardian, then its treasure on the altar and whoever waited behind it.
     const t = TEMPLES.find((x) => x.id === a.temple);
     const guarded = a.tiles.some((r) => r.includes('B'));
-    if (bossCell && t && !flags.has(`${t.id}_boss`)) {
+    if (bossCell && t && !flags.has(`${t.id}_boss`) && (!BOSSES[t.boss]?.needs || skills.has(BOSSES[t.boss].needs!))) {
       const b = BOSSES[t.boss];
       if (!b) problems.push(`temple ${t.id} has no guardian ${t.boss}`);
       log('boss', t.boss);

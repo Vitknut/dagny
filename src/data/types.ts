@@ -111,6 +111,8 @@ export interface BossPhase {
   speed: number;
   /** Seconds between attacks. */
   attackEvery: number;
+  /** In this phase only this kind of blow bites (Grimmen floating: a thrust from above). */
+  only?: 'down' | 'up' | 'fire';
 }
 
 export interface BossDef extends EnemyDef {
@@ -120,6 +122,8 @@ export interface BossDef extends EnemyDef {
   introDialog: string;
   /** Dialog shown when the boss is reconciled ("förlikad"). */
   defeatDialog: string;
+  /** A technique without which the guardian can't be beaten (for the solver; the phase's `only` is what really asks for it). */
+  needs?: SkillId;
 }
 
 export interface TempleDef {

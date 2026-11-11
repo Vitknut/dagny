@@ -46,6 +46,13 @@ export const ENEMIES: Readonly<Record<string, EnemyDef>> = {
     box: { x: 1, y: 1, w: 13, h: 23 }, puff: 'moss', heavy: true, nudge: 1.8,
     drops: { lingon: 0.4, termos: 0.3 },
   },
+  // The lesser guardian in the crypt's sacristy (fas 4): the dead bell-ringer, a fencer.
+  klockaren: {
+    id: 'klockaren', name: 'Klockaren', sprite: 'gast', behavior: 'parrier',
+    hp: 14, damage: 2, xp: 90, speed: 0.55, guardDelay: 22, thrustRest: 70, guard: true,
+    box: { x: 3, y: 4, w: 10, h: 20 }, puff: 'mist',
+    drops: { lingon: 1 },
+  },
   // The lesser guardian in the mine's workshop (fas 4): a stone knight grown big on ore.
   malmjatte: {
     id: 'malmjatte', name: 'Malmjätten', sprite: 'stenknekt', behavior: 'tank',
@@ -194,8 +201,10 @@ export const BOSSES: Readonly<Record<string, BossDef>> = {
     box: { x: 4, y: 12, w: 26, h: 20 }, puff: 'mist', heavy: true,
     phases: [
       { atHpFraction: 1, sprite: 'grim', speed: 1.7, attackEvery: 2.2 },
-      { atHpFraction: 0.5, sprite: 'grimSpirit', speed: 1.1, attackEvery: 1.7 },
+      // Floating high, the spirit is struck only from above (Nedåtstöt, from smeden Algot).
+      { atHpFraction: 0.5, sprite: 'grimSpirit', speed: 1.1, attackEvery: 1.7, only: 'down' },
     ],
+    needs: 'nedatstot',
     introDialog: 'grim_vaknar',
     defeatDialog: 'grim_forlikad',
   },

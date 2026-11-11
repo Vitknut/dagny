@@ -121,7 +121,7 @@ export class Enemy implements Body {
     if (this.boss && !this.awake) return 'none';
     if (this.untouchable || this.veiled) return 'none';
     // Some creatures have their own answer: only fire, or only a thrust from above or below, bites.
-    const only = this.def.only;
+    const only = this.boss?.phases[this.phase]?.only ?? this.def.only;
     if (only && height !== only) {
       world.sparks(this.x + this.w / 2, this.y + 4);
       world.sfx('block');

@@ -203,3 +203,72 @@ test('the workshop opens when the ore giant falls, and the crank lies there (gru
   });
   expect(r).toEqual({ shut: true, crankBefore: false, cleared: true, crankAfter: true });
 });
+
+test('loose stones come down to a blow with the crowbar in the pack, not without it (krypta_hall)', async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const { SideScene } = await import('/src/game/sidescene.ts');
+    const { newGame } = await import('/src/game/state.ts');
+    const g = (window as unknown as { dagny: Record<string, unknown> }).dagny as unknown as {
+      state: ReturnType<typeof newGame>;
+      overlays: unknown[];
+      input: { keyboard: boolean[] };
+      setScene(s: unknown): void;
+      update(): void;
+    };
+    const out: boolean[] = [];
+    for (const bar of [false, true]) {
+      const s = newGame();
+      s.flags.push('intro_done');
+      if (bar) s.items.push('spett');
+      g.state = s;
+      g.overlays.length = 0;
+      // Just left of the wall at column 40, facing it.
+      const sc = new SideScene(g as never, 'krypta_hall', { x: 38 * 16 + 4, y: 10 * 16 - 22, facing: 1 });
+      g.setScene(sc);
+      for (const e of sc.enemies) e.dead = true;
+      for (let i = 0; i < 80; i++) {
+        // Walk up to the wall and strike, as a player would.
+        g.input.keyboard[1] = i < 40;
+        g.input.keyboard[5] = i >= 40 && i % 20 < 2;
+        g.update();
+        g.overlays.length = 0;
+      }
+      g.input.keyboard.fill(false);
+      out.push(sc.grid.kinds[8 * sc.grid.w + 40] !== 1);
+    }
+    return out;
+  });
+  expect(r).toEqual([false, true]);
+});
+
+test('the sacristy opens when the bell-ringer falls, and the crowbar lies there (krypta_sakristia)', async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const { SideScene } = await import('/src/game/sidescene.ts');
+    const { newGame } = await import('/src/game/state.ts');
+    const g = (window as unknown as { dagny: Record<string, unknown> }).dagny as unknown as {
+      state: ReturnType<typeof newGame>;
+      overlays: unknown[];
+      setScene(s: unknown): void;
+      update(): void;
+    };
+    const s = newGame();
+    s.flags.push('intro_done');
+    g.state = s;
+    g.overlays.length = 0;
+    const sc = new SideScene(g as never, 'krypta_sakristia', { x: 8 * 16, y: 10 * 16 - 22 });
+    g.setScene(sc);
+    const step = (n: number): void => {
+      for (let i = 0; i < n; i++) {
+        g.update();
+        g.overlays.length = 0;
+        s.hp = 99;
+      }
+    };
+    step(30);
+    const shut = sc.grid.kinds[8 * sc.grid.w] === 1;
+    for (const e of sc.enemies) e.dead = true;
+    step(30);
+    return { shut, crank: sc.pickups.some((p) => p.pid === 'spett'), cleared: s.flags.includes('krypta_sakristia_rensad') };
+  });
+  expect(r).toEqual({ shut: true, crank: true, cleared: true });
+});

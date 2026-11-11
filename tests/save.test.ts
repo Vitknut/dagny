@@ -191,3 +191,14 @@ describe('version 5 (the mine as a net, fas 4)', () => {
     }
   });
 });
+
+describe('version 6 (the crypt as a net, fas 4)', () => {
+  it('a save past the loose wall, or with the crypt done, has the crowbar', () => {
+    const past = deserialize(JSON.stringify({ v: 5, savedAt: 0, state: { ...newGame(), items: ['svard'], loc: { area: 'krypta_3', x: 40, y: 140 } } }))!;
+    expect(past.state.items).toContain('spett');
+    const done = deserialize(JSON.stringify({ v: 5, savedAt: 0, state: { ...newGame(), items: ['svard', 'eka'], flags: ['krypta_klar'] } }))!;
+    expect(done.state.items).toContain('spett');
+    const before = deserialize(JSON.stringify({ v: 5, savedAt: 0, state: { ...newGame(), items: ['svard'], loc: { area: 'krypta_1', x: 40, y: 140 } } }))!;
+    expect(before.state.items).not.toContain('spett');
+  });
+});

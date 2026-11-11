@@ -9,7 +9,7 @@ export const TEMPLES: readonly TempleDef[] = [
     id: 'krypta', number: 1, name: 'Stenkyrkans krypta', short: 'Stenkyrkan',
     mechanic: 'Valv, ljusstakar, enkla dörrar och nycklar.',
     tone: 'krypta', music: 'tempel', bossMusic: 'boss',
-    treasure: 'eka', boss: 'grim', entryArea: 'krypta_1',
+    treasure: 'eka', boss: 'grim', entryArea: 'krypta_1', tool: 'spett',
     lore: 'I kryptan står ett namn inristat i stenen, nästan bortnött: "...da, Väktare 1921–1946".',
   },
   {

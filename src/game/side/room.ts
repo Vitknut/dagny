@@ -5,7 +5,7 @@ import { ENEMY_CHARS, PICKUP_CHARS, THEMES, DECO, FRONT, kindOf } from '../../da
 import { NPCS } from '../../data/npcs';
 import { spawnCritters } from './critters';
 import { makeTrial } from './trial';
-import { OBSTACLES, isBarrier } from './obstacles';
+import { LOOSE, OBSTACLES, isBarrier } from './obstacles';
 import { TEMPLE_BOSS_DAMAGE, TEMPLE_ENEMY_BONUS, lifeAtTier } from '../../data/progression';
 import { areaTier } from '../reach';
 import { ITEMS } from '../../data/items';
@@ -86,6 +86,10 @@ export function build(sc: SideScene): void {
           break;
         case '-':
           sc.lightCells.push(i);
+          break;
+        case '}':
+          if (s.opened.includes(sc.pid(tx, ty))) kind = Kind.Empty;
+          else sc.tileSprite[i] = LOOSE.sprite;
           break;
         case 'k':
           if (!s.opened.includes(sc.pid(tx, ty))) {
