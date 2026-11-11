@@ -68,3 +68,24 @@ describe('small animals', () => {
   });
 });
 
+
+describe('animals never go through walls', () => {
+  it('a squirrel with no tree, a hare and a sparrow fleeing at a wall stay out of the rock', async () => {
+    const { updateCritters, spawnCritters } = await import('../src/game/side/critters');
+    const { Kind, kindAt } = await import('../src/engine/collision');
+    const w = 30;
+    const h = 12;
+    const kinds = new Uint8Array(w * h);
+    for (let x = 0; x < w; x++) for (const y of [10, 11]) kinds[y * w + x] = Kind.Solid;
+    // A wall to the right, floor to ceiling.
+    for (let y = 0; y < 10; y++) kinds[y * w + 20] = Kind.Solid;
+    const grid = { w, h, kinds, wallLeft: true, wallRight: true };
+    const area = { id: 'test', tiles: Array.from({ length: h }, () => '.'.repeat(w)), critters: [{ kind: 'ekorre', tx: 15, ty: 9 }, { kind: 'hare', tx: 16, ty: 9 }, { kind: 'sparv', tx: 17, ty: 9 }] };
+    const list = spawnCritters(area as never, grid as never, []);
+    // Dagny walks in from the left: they all flee right, towards the wall.
+    for (let i = 0; i < 400; i++) {
+      updateCritters(list, grid as never, { x: Math.min(19 * 16, 12 * 16 + i * 0.5), y: 9 * 16 }, 0);
+      for (const c of list) expect(kindAt(grid as never, Math.floor(c.x / 16), Math.floor((c.y - 4) / 16)), `${c.kind} at step ${i}`).not.toBe(Kind.Solid);
+    }
+  });
+});

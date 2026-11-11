@@ -155,6 +155,21 @@ export function spawnCritters(a: AreaDef, grid: TileGrid, avoid: Array<{ tx: num
   return out;
 }
 
+/** Whether an animal on the ground at (x, feet y) is stopped going `dir`: a wall, or no ground (or water) ahead. */
+function stopped(grid: TileGrid, x: number, y: number, dir: number): boolean {
+  const tx = Math.floor((x + dir * 7) / TILE);
+  const ty = Math.floor((y - 2) / TILE);
+  const below = kindAt(grid, tx, ty + 1);
+  return kindAt(grid, tx, ty) === Kind.Solid || below === Kind.Empty || below === Kind.Hazard;
+}
+
+/** Whether the way from x to x2 along the ground at feet y is open all the way (no wall, no gap). */
+function openWay(grid: TileGrid, x: number, x2: number, y: number): boolean {
+  const dir = Math.sign(x2 - x);
+  for (let px = x; dir !== 0 && (x2 - px) * dir > 0; px += dir * 8) if (stopped(grid, px, y, dir)) return false;
+  return true;
+}
+
 /** One step for every animal; the ones that have left the room are dropped. */
 export function updateCritters(list: Critter[], grid: TileGrid, pc: { x: number; y: number }, camY: number): void {
   for (const c of list) {
@@ -176,7 +191,7 @@ export function updateCritters(list: Critter[], grid: TileGrid, pc: { x: number;
           let best: Tree | undefined;
           for (const tr of trees) {
             const ahead = (tr.x - c.x) * c.facing;
-            if (ahead < -4 || ahead > 180 || Math.abs(tr.foot - c.y) > 20) continue;
+            if (ahead < -4 || ahead > 180 || Math.abs(tr.foot - c.y) > 20 || !openWay(grid, c.x, tr.x, c.y)) continue;
             if (!best || Math.abs(tr.x - c.x) < Math.abs(best.x - c.x)) best = tr;
           }
           c.treeX = best?.x;
@@ -192,6 +207,12 @@ export function updateCritters(list: Critter[], grid: TileGrid, pc: { x: number;
           c.vx = c.facing * (1.2 + (c.t % 5) * 0.1);
           c.vy = -1.4;
         }
+        // Never through rock: a bird that meets a wall turns and climbs.
+        if (kindAt(grid, Math.floor((c.x + c.vx + Math.sign(c.vx) * 5) / TILE), Math.floor((c.y - 4) / TILE)) === Kind.Solid) {
+          c.vx = -c.vx;
+          c.facing = c.facing === 1 ? -1 : 1;
+        }
+        if (kindAt(grid, Math.floor(c.x / TILE), Math.floor((c.y - 8 + c.vy) / TILE)) === Kind.Solid) c.vy = Math.abs(c.vy) * 0.5;
         c.x += c.vx;
         c.y += c.vy + Math.sin(c.t / 3) * 0.4;
         c.vy = Math.max(-2.2, c.vy - 0.02);
@@ -223,15 +244,19 @@ export function updateCritters(list: Critter[], grid: TileGrid, pc: { x: number;
         break;
       }
       case 'hop':
-        // A hare: long bounds away, out of the room.
+        // A hare: long bounds away, out of the room – but round, not through, a wall or a drop.
+        if (stopped(grid, c.x, c.gy, c.facing)) c.facing = c.facing === 1 ? -1 : 1;
         c.x += c.facing * 2.6;
         c.vy = c.ft % 14 === 1 ? -1.8 : c.vy + 0.26;
         c.y = Math.min(c.gy, c.y + c.vy);
         break;
       case 'climb':
         // A squirrel: to its tree and straight up into the crown. No tree near? Off along the ground.
-        if (c.treeX === undefined) c.x += c.facing * 2.4;
-        else if (Math.abs(c.treeX - c.x) > 2) c.x += Math.sign(c.treeX - c.x) * 2.2;
+        if (c.treeX === undefined) {
+          // No tree it can reach: off along the ground, turning at a wall or a drop.
+          if (stopped(grid, c.x, c.y, c.facing)) c.facing = c.facing === 1 ? -1 : 1;
+          c.x += c.facing * 2.4;
+        } else if (Math.abs(c.treeX - c.x) > 2) c.x += Math.sign(c.treeX - c.x) * 2.2;
         else {
           c.x = c.treeX;
           c.y -= 1.6;
