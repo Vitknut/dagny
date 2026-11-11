@@ -151,6 +151,12 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
     description: 'Stinsens visselpipa i nysilver. Utan den går inga tåg.',
     sprite: 'visselpipa',
   },
+  hissvev: {
+    id: 'hissvev',
+    name: 'Hissveven',
+    description: 'En vev av smidesjärn från gruvans verkstad. Med den går de gamla hissarna igen.',
+    sprite: 'hissvev',
+  },
   malm: {
     id: 'malm',
     name: 'Järnmalm',
@@ -190,4 +196,4 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
 };
 
 /** Order shown in the items menu. */
-export const ITEM_ORDER = ['svard', 'eka', 'karbidlampa', 'stovlar', 'ficklampa', 'radio', 'naverlur', 'klingaHardad', 'klingaBlank', 'silverbeslag', 'malm', 'askstenen', 'murre', 'tang', 'hacka', 'ronnkvist', 'fjader', 'uvfjader', 'askvigg', 'porslinsknopp', 'johannesort', 'prastkragar', 'runbit', 'posthorn', 'fickur', 'psalmbok', 'medaljong', 'kompass', 'skalla', 'visselpipa'];
+export const ITEM_ORDER = ['svard', 'eka', 'karbidlampa', 'stovlar', 'ficklampa', 'radio', 'naverlur', 'klingaHardad', 'klingaBlank', 'silverbeslag', 'malm', 'hissvev', 'askstenen', 'murre', 'tang', 'hacka', 'ronnkvist', 'fjader', 'uvfjader', 'askvigg', 'porslinsknopp', 'johannesort', 'prastkragar', 'runbit', 'posthorn', 'fickur', 'psalmbok', 'medaljong', 'kompass', 'skalla', 'visselpipa'];

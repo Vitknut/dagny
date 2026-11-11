@@ -107,6 +107,14 @@ Four things on the map open for good when Dagny casts the right reading standing
 - Each place behind gives XP and an extra life (Jordkällaren fills health and magic instead), and is found once.
 - The solver opens them when it has the reading and reaches a tile beside them; `tests/world.test.ts` checks that the places behind are reached only that way.
 
+## The mine as a net (fas 4 pilot)
+
+Den gamla gruvan is no longer a corridor. From **Hisshallen** (a candle, three ways) Dagny goes to **Verkstaden**, where the way back shuts and **Malmjätten** (a lesser guardian, `guard: true`) stands over the **hissvev**; to **Malmorten**, a dead end with the temple's key and the ore for the smith; and on to **Hisschaktet**, whose lifts stand still without the crank (`PlatformDef.needs`). The landing's floor is whole but for one hole, which the dead lift fills, so the shaft can't be dropped into without it. The hall's own lift runs to a gallery under the roof (a thermos) – the crank used again.
+
+- The solver reads `AreaDef.needsItem`; the softlock test walks such rooms with and without the tool; `tests/temples.test.ts` checks the net and that without the crank the guardian is never reached.
+- Saves (version 5): the crank is given to a save standing past the landing, or with the mine done (`TempleDef.tool`).
+- The rest of the temples follow only once this has been played.
+
 ## The first temple's creatures
 
 Dagny starts with 8 health (four bars), so the crypt must not drain it faster than skill can keep up:

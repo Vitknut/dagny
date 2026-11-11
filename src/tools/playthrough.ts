@@ -67,6 +67,8 @@ export function blocks(a: AreaDef, x: number, y: number, has: Has): boolean {
   if (ch === '[') return !has.spells.has('aska');
   // A place only an ability reaches (a high ledge, a narrow hole, a path in the light).
   for (const n of a.needs ?? []) if (x >= n.x0 && x <= n.x1 && y >= n.y0 && y <= n.y1 && !has.spells.has(n.ability) && !has.skills.has(n.ability)) return true;
+  // A place only a temple's tool gets her to (a lift that runs only with the crank).
+  for (const n of a.needsItem ?? []) if (x >= n.x0 && x <= n.x1 && y >= n.y0 && y <= n.y1 && !has.items.has(n.item)) return true;
   return false;
 }
 

@@ -169,3 +169,25 @@ describe('version 4 (Kartan 2.0, 96 × 72)', () => {
     expect(isExplored(f.state, p.x, p.y)).toBe(true);
   });
 });
+
+describe('version 5 (the mine as a net, fas 4)', () => {
+  it('a save with the mine done, from before the crank, has the crank', () => {
+    const old = { ...newGame(), items: ['svard', 'eka', 'karbidlampa'], flags: ['gruvan_klar'] };
+    const f = deserialize(JSON.stringify({ v: 4, savedAt: 0, state: old }))!;
+    expect(f.state.items).toContain('hissvev');
+  });
+
+  it('a save standing past the landing gets the crank, so the lifts run', () => {
+    const old = { ...newGame(), items: ['svard', 'eka'], loc: { area: 'gruvan_3', x: 40, y: 140 } };
+    const f = deserialize(JSON.stringify({ v: 4, savedAt: 0, state: old }))!;
+    expect(f.state.items).toContain('hissvev');
+  });
+
+  it('a save on the way in (or outside) does not', () => {
+    for (const area of ['gruvan_1', 'mormors_by']) {
+      const old = { ...newGame(), items: ['svard', 'eka'], loc: { area, x: 40, y: 140 } };
+      const f = deserialize(JSON.stringify({ v: 4, savedAt: 0, state: old }))!;
+      expect(f.state.items, area).not.toContain('hissvev');
+    }
+  });
+});

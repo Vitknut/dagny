@@ -47,6 +47,7 @@ describe('creatures grow with Dagny (life and XP), as in Zelda II', () => {
       expect(m, t.id).toBeGreaterThanOrEqual(t.number >= SCALE_FROM_TIER ? 2 : 1);
       expect(m, t.id).toBeLessThanOrEqual(4);
       for (const b of all) {
+        if (ENEMIES[b.id].guard) continue;
         const heavy = enemyWeight(ENEMIES[b.id]) === 'heavy';
         expect(b.blows, `${t.id} ${b.id}`).toBeLessThanOrEqual(heavy ? 10 : 6);
       }

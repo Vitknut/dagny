@@ -10,7 +10,7 @@ import { markExplored } from './explored';
 import { TEMPLES } from '../data/temples';
 
 /** Bump when the format changes, and add a migration below. */
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 5;
 export const SAVE_KEY = 'dagny.save';
 
 export interface SaveFile {
@@ -60,6 +60,15 @@ function migrate(file: Record<string, unknown>): Record<string, unknown> {
     st.ow = spot;
     if (isObj(st.loc) && st.loc.area === 'overworld') st.loc = { area: 'overworld', x: spot.x, y: spot.y };
     delete st.explored;
+  }
+  // Version 5 (fas 4): the mine became a net, and its lifts run only with the
+  // crank from the workshop. A save already past the landing (or the mine
+  // done) gets the crank, so nobody is left at a dead lift.
+  if (v < 5 && isObj(file.state)) {
+    const st = file.state;
+    const items = Array.isArray(st.items) ? st.items : (st.items = []);
+    const at = isObj(st.loc) && typeof st.loc.area === 'string' ? st.loc.area : '';
+    if (['gruvan_2', 'gruvan_3', 'gruvan_4'].includes(at) && !items.includes('hissvev')) items.push('hissvev');
   }
   return file;
 }
@@ -121,6 +130,8 @@ export function deserialize(text: string | null): SaveFile | null {
   };
   state.hp = Math.max(1, Math.min(hpMax(state), num(s.hp, d.hp)));
   state.mp = Math.max(0, Math.min(mpMax(state), num(s.mp, d.mp)));
+  // A temple done before it got its tool (fas 4): the tool is hers, as if found.
+  for (const t of TEMPLES) if (t.tool && state.flags.includes(`${t.id}_klar`) && !state.items.includes(t.tool)) state.items.push(t.tool);
   // Never leave Dagny where she can't get out with what she carries.
   repairReach(state);
   // Saves from before the map remembered what Dagny had seen: count where

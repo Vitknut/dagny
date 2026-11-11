@@ -35,6 +35,7 @@ export const ENEMY_CHARS: Readonly<Record<string, string>> = {
   m: 'myrkatt',
   r: 'kraka',
   s: 'stenknekt',
+  ')': 'malmjatte',
   j: 'sjora',
   w: 'skuggvarg',
   f: 'fladdermus',

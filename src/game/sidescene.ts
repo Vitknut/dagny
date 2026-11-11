@@ -30,7 +30,7 @@ import { updateTrial, type Trial } from './side/trial';
 import { compact, nearestFreeSpot, tmpA, type Checkpoint, type Marker, type SpellTimers } from './side/shared';
 
 export { nearestFreeSpot } from './side/shared';
-import { build, refreshRoom, spawnAfterBoss, spawnTreasure, renderStatic, renderFront, roomTier, templeBonus } from './side/room';
+import { build, placeFind, refreshRoom, spawnAfterBoss, spawnTreasure, renderStatic, renderFront, roomTier, templeBonus } from './side/room';
 import { shieldBlocks, damagePlayer, combat, killEnemy } from './side/combat';
 import { collect } from './side/pickups';
 import { renderScene } from './side/render';
@@ -454,7 +454,15 @@ export class SideScene implements Scene, WorldApi {
     // Platforms move first and carry whoever stands on them.
     const rider = this.riding;
     const waiting = p.onGround && !rider ? p.x + p.w / 2 : null;
-    for (const pl of this.platforms) pl.update(pl === rider && p.onGround, waiting);
+    // A lift that needs the crank stands still without it.
+    for (const pl of this.platforms) {
+      if (pl.def.needs && !hasItem(this.s, pl.def.needs)) {
+        pl.dx = 0;
+        pl.dy = 0;
+        continue;
+      }
+      pl.update(pl === rider && p.onGround, waiting);
+    }
     if (rider && p.onGround) {
       const ox = p.x;
       p.x += rider.dx;
@@ -952,6 +960,8 @@ export class SideScene implements Scene, WorldApi {
       this.seal = 0;
       edge(true);
       setFlag(this.s, `${this.area.id}_rensad`);
+      // What the guard stood over shows now (the mine's crank).
+      for (const fd of this.area.finds ?? []) if (fd.after === `${this.area.id}_rensad`) placeFind(this, fd.item, fd.tx, fd.ty);
       g.audio.playMusic(this.music());
       this.sfx('unlock');
       g.toast(STR.sealOpen, 3);

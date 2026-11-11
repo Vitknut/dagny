@@ -46,6 +46,13 @@ export const ENEMIES: Readonly<Record<string, EnemyDef>> = {
     box: { x: 1, y: 1, w: 13, h: 23 }, puff: 'moss', heavy: true, nudge: 1.8,
     drops: { lingon: 0.4, termos: 0.3 },
   },
+  // The lesser guardian in the mine's workshop (fas 4): a stone knight grown big on ore.
+  malmjatte: {
+    id: 'malmjatte', name: 'Malmjätten', sprite: 'stenknekt', behavior: 'tank',
+    hp: 24, damage: 3, xp: 140, speed: 0.32, guard: true,
+    box: { x: 1, y: 1, w: 13, h: 23 }, puff: 'moss', heavy: true, nudge: 1.2,
+    drops: { lingon: 1 },
+  },
   sjora: {
     id: 'sjora', name: 'Sjörå-skott', sprite: 'sjora', behavior: 'shooter',
     hp: 5, damage: 2, xp: 15, speed: 0,

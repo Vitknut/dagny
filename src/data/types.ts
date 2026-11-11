@@ -100,6 +100,8 @@ export interface EnemyDef {
   shot?: string;
   /** Becomes friendly after being defeated (flavour text shown). */
   befriend?: string;
+  /** A lesser guardian (the mine's ore giant by the crank): many blows on purpose, so not held to the ordinary creatures' count. */
+  guard?: boolean;
 }
 
 export interface BossPhase {
@@ -137,6 +139,8 @@ export interface TempleDef {
   entryArea: string | null;
   /** Lore found inside – the story of the last Väktare, piece by piece. */
   lore: string;
+  /** The tool found inside that opens the rest of the temple (fas 4); given to old saves of a finished temple. */
+  tool?: string;
 }
 
 export interface VillageDef {
@@ -304,6 +308,8 @@ export interface PlatformDef {
   mode: 'loop' | 'ride';
   /** Pixels per step (default 0.6 for lifts, 1.1 for carts). */
   speed?: number;
+  /** Stands still (at tx, ty) until Dagny carries this item (a mine lift and its crank). */
+  needs?: string;
 }
 
 export interface AreaDef {
@@ -410,6 +416,8 @@ export interface AreaDef {
    * solver; the room's shape is what really keeps her out.
    */
   needs?: Array<{ ability: SpellId | SkillId; x0: number; y0: number; x1: number; y1: number }>;
+  /** Parts of the room only a temple's tool gets Dagny to (a lift that runs only with the crank). For the solver, like `needs`. */
+  needsItem?: Array<{ item: string; x0: number; y0: number; x1: number; y1: number }>;
   /**
    * A cave-in that chases Dagny: once she passes tile column `at` (coming in
    * from the left), the roof comes down behind her and the rubble moves right

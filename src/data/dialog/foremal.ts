@@ -45,6 +45,10 @@ export const FOREMAL: Record<string, DialogDef> = {
     pages: ['Klingan är ÅSKSLIPAD!\nSvärdet gör 1 mer i skada.'],
   },
 
+  hittade_hissvev: {
+    pages: ['Dagny hittade HISSVEVEN. Med den går de gamla hissarna i gruvan igen.'],
+  },
+
   hittade_malm: {
     pages: ['Dagny hittade en klump JÄRNMALM. Smeden Holm i Bruksorten kan nog använda den.'],
   },

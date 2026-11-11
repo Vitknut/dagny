@@ -141,6 +141,12 @@ export const VASEN: Readonly<Record<string, VasenEntry>> = {
     berattelse:
       'Stenknektarna är kryptans gamla stenväktare. I mörkret är de svåra att se – och svåra att stoppa.',
   },
+  malmjatte: {
+    folktro:
+      'I gruvbygderna sades att berget självt vaktade sin malm. Den som tog för mycket, eller tog utan att tacka, kunde möta något i orterna som var tyngre än en människa och långsammare än en häst.',
+    berattelse:
+      'Malmjätten står i gruvans verkstad, bland gammalt verktyg, och släpper ingen förbi. Den är byggd av samma sten som berget runt den.',
+  },
   sjora: {
     folktro:
       'Sjörået rådde över sjön och fisket. Fiskare kunde lämna en gåva vid stranden, en slant eller en bit bröd, för att få god fångst. Den som tog för mycket, eller glömde sjörået, kunde få tomma nät – eller drunkna.',

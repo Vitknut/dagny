@@ -187,10 +187,15 @@ describe('sword upgrades', () => {
  * stand in while riding it (a lift's whole column, a cart's or log's whole
  * run, every cell a wheel's paddles pass). Riding joins them all.
  */
-function rides(a: AreaDef): Array<Set<string>> {
+function rides(a: AreaDef, items?: ReadonlySet<string>): Array<Set<string>> {
   return (a.platforms ?? []).map((p) => {
     const cells = new Set<string>();
     const add = (x: number, surface: number): void => void cells.add(`${x},${surface - 1}`);
+    // A lift that needs the crank stands still where it starts (fas 4).
+    if (p.needs && items && !items.has(p.needs)) {
+      for (const x of [p.tx, p.tx + 1]) add(x, p.ty);
+      return cells;
+    }
     if (p.kind === 'lift') {
       for (let r = Math.min(p.ty, p.toTy); r <= Math.max(p.ty, p.toTy); r++) for (const x of [p.tx, p.tx + 1]) add(x, r);
     } else if (p.kind === 'cart' || p.kind === 'log') {
@@ -229,11 +234,11 @@ interface JumpModel {
 const REACH = [3.12, 2.78, 2.45, 2.02];
 const REACH_HOPP = [4.3, 3.97, 3.71, 3.46, 3.21, 2.87];
 
-function jumpModel(a: AreaDef, radio: boolean, opts: { up?: number; hatches?: boolean; keys?: boolean; strict?: boolean } = {}): JumpModel {
+function jumpModel(a: AreaDef, radio: boolean, opts: { up?: number; hatches?: boolean; keys?: boolean; strict?: boolean; items?: ReadonlySet<string> } = {}): JumpModel {
   const t = a.tiles;
   const h = t.length;
   const w = t[0].length;
-  const groups = rides(a);
+  const groups = rides(a, opts.items);
   const onRide = (x: number, y: number): boolean => groups.some((g) => g.has(`${x},${y}`));
   const solid = (x: number, y: number): boolean => y >= h || (x >= 0 && x < w && y >= 0 && (t[y][x] === '#' || (t[y][x] === 'L' && !opts.keys) || (t[y][x] === '!' && !opts.hatches) || (t[y][x] === '?' && !radio)));
   const free = (x: number, y: number): boolean => x >= 0 && x < w && y < h && (y < 0 || (!solid(x, y) && !'^~n'.includes(t[y][x])));
@@ -281,9 +286,9 @@ function jumpModel(a: AreaDef, radio: boolean, opts: { up?: number; hatches?: bo
   return { w, h, stand, land, moves, free };
 }
 
-function softlocks(a: AreaDef, radio: boolean): string[] {
+function softlocks(a: AreaDef, radio: boolean, items?: ReadonlySet<string>): string[] {
   const t = a.tiles;
-  const { w, h, land, moves, free } = jumpModel(a, radio, { strict: true });
+  const { w, h, land, moves, free } = jumpModel(a, radio, { strict: true, items });
   const exits = new Set<string>();
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
@@ -324,9 +329,13 @@ describe('no pits to get stuck in', () => {
     const bad: string[] = [];
     for (const a of Object.values(AREAS)) {
       if (a.wind || a.beat) continue;
+      // A room whose lifts need a temple's tool is walked with and without it (fas 4).
+      const tools = [...new Set((a.platforms ?? []).flatMap((p) => (p.needs ? [p.needs] : [])))];
       for (const radio of [false, true]) {
-        const stuck = softlocks(a, radio);
-        if (stuck.length) bad.push(`${a.id} radio=${radio}: ${stuck.join(' ')}`);
+        for (const items of tools.length ? [new Set<string>(), new Set(tools)] : [undefined]) {
+          const stuck = softlocks(a, radio, items);
+          if (stuck.length) bad.push(`${a.id} radio=${radio} tools=${items ? [...items].join('+') || 'none' : '-'}: ${stuck.join(' ')}`);
+        }
       }
     }
     expect(bad).toEqual([]);

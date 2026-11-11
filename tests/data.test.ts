@@ -140,15 +140,19 @@ describe('areas', () => {
         if (chars.includes('k') || chars.includes('L')) expect(a.temple, 'keys and locks need a temple').toBeDefined();
       });
 
-      it('has as many keys as locked doors', () => {
-        const keys = (a.tiles.join('').match(/k/g) ?? []).length;
+      it('has as many keys as locked doors (in a temple: across the temple, as keys are kept per temple)', () => {
+        const rooms = a.temple ? Object.values(AREAS).filter((r) => r.temple === a.temple) : [a];
+        let keys = 0;
         let doors = 0;
-        const w = a.tiles[0].length;
-        for (let x = 0; x < w; x++) {
-          let inDoor = false;
-          for (const row of a.tiles) {
-            if (row[x] === 'L' && !inDoor) doors++;
-            inDoor = row[x] === 'L';
+        for (const r of rooms) {
+          keys += (r.tiles.join('').match(/k/g) ?? []).length;
+          const w = r.tiles[0].length;
+          for (let x = 0; x < w; x++) {
+            let inDoor = false;
+            for (const row of r.tiles) {
+              if (row[x] === 'L' && !inDoor) doors++;
+              inDoor = row[x] === 'L';
+            }
           }
         }
         expect(keys).toBeGreaterThanOrEqual(doors);

@@ -139,3 +139,67 @@ test('on the map, Eld burns the dry thicket beside Dagny, and nothing else does'
   expect(r.mp).toBeLessThan(20);
   expect(r.dialog).toBe(1);
 });
+
+test('the mine lifts stand still without the crank, and run with it (gruvan_2)', async ({ page }) => {
+  const moved = await page.evaluate(async () => {
+    const { SideScene } = await import('/src/game/sidescene.ts');
+    const { newGame } = await import('/src/game/state.ts');
+    const g = (window as unknown as { dagny: Record<string, unknown> }).dagny as unknown as {
+      state: ReturnType<typeof newGame>;
+      overlays: unknown[];
+      setScene(s: unknown): void;
+      update(): void;
+    };
+    const out: boolean[] = [];
+    for (const crank of [false, true]) {
+      const s = newGame();
+      s.flags.push('intro_done');
+      if (crank) s.items.push('hissvev');
+      g.state = s;
+      g.overlays.length = 0;
+      const sc = new SideScene(g as never, 'gruvan_2', { entry: 'A' });
+      g.setScene(sc);
+      const y0 = sc.platforms.map((p) => p.y);
+      for (let i = 0; i < 200; i++) {
+        g.update();
+        g.overlays.length = 0;
+      }
+      out.push(sc.platforms.some((p, i) => p.y !== y0[i]));
+    }
+    return out;
+  });
+  expect(moved).toEqual([false, true]);
+});
+
+test('the workshop opens when the ore giant falls, and the crank lies there (gruvan_verkstad)', async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const { SideScene } = await import('/src/game/sidescene.ts');
+    const { newGame } = await import('/src/game/state.ts');
+    const g = (window as unknown as { dagny: Record<string, unknown> }).dagny as unknown as {
+      state: ReturnType<typeof newGame>;
+      overlays: unknown[];
+      setScene(s: unknown): void;
+      update(): void;
+    };
+    const s = newGame();
+    s.flags.push('intro_done');
+    g.state = s;
+    g.overlays.length = 0;
+    const sc = new SideScene(g as never, 'gruvan_verkstad', { x: 8 * 16, y: 10 * 16 - 22 });
+    g.setScene(sc);
+    const step = (n: number): void => {
+      for (let i = 0; i < n; i++) {
+        g.update();
+        g.overlays.length = 0;
+        s.hp = 99;
+      }
+    };
+    step(30);
+    const shut = sc.grid.kinds[8 * sc.grid.w] === 1;
+    const crankBefore = sc.pickups.some((p) => p.pid === 'hissvev');
+    for (const e of sc.enemies) e.dead = true;
+    step(30);
+    return { shut, crankBefore, cleared: s.flags.includes('gruvan_verkstad_rensad'), crankAfter: sc.pickups.some((p) => p.pid === 'hissvev') };
+  });
+  expect(r).toEqual({ shut: true, crankBefore: false, cleared: true, crankAfter: true });
+});

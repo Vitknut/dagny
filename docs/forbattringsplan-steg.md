@@ -658,6 +658,8 @@ Görs ett tempel i taget. Gruvan först.
 
 ### Piloten: Gruvan med hissveven
 
+*Byggd 11 november, väntar på provspel. Sju rum: Den gamla gruvan → Hisshallen (ljus, tre vägar, ett galleri som bara den vevade hissen når) → Verkstaden (förseglad, Malmjätten, veven) / Malmorten (nyckeln och malmen) / Hisschaktet (översta golvet helt; den döda hissen fyller hålet) → Orten → Bergsalen. Nycklar räknas per tempel i testet. Sparfiler: version 5 ger veven till den som står förbi hallen eller har gruvan klar.*
+
 **Filer:** `src/data/areas/gruvan.ts`, `src/data/items.ts`,
 `src/game/sidescene.ts` (plattformar), `src/tools/playthrough.ts`.
 
