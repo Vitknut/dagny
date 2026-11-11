@@ -45,7 +45,7 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
   naverlur: {
     id: 'naverlur',
     name: 'Näverluren',
-    description: 'Håll NER och tryck MAGI: en vätte du förlikat kommer och slåss vid din sida en stund.',
+    description: 'Håll NER och tryck på magi: en vätte du förlikat kommer och slåss vid din sida en stund.',
     sprite: 'naverlur',
     treasure: true,
   },

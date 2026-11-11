@@ -24,7 +24,7 @@ export const HEM: Record<string, DialogDef> = {
   },
 
   fick_svard: {
-    pages: ['Dagny fick KLINGAN!\nSvärd: X / B-knappen. Håll NER för att slå lågt.'],
+    pages: ['Dagny fick KLINGAN!\nSlå med {svard}. Håll NER för att slå lågt.'],
   },
 
   hulda_vila: {
@@ -87,7 +87,7 @@ export const HEM: Record<string, DialogDef> = {
   },
 
   lart_lakning: {
-    pages: ['Dagny lärde sig läsningen LÄKNING!\nMagi: C / Y-knappen. Byt läsning i pausmenyn.'],
+    pages: ['Dagny lärde sig läsningen LÄKNING!\nLäs den med {magi}. Byt läsning i pausmenyn.'],
   },
 
   sven_igen: {

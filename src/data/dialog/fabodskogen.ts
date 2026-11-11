@@ -30,7 +30,7 @@ export const FABODSKOGEN: Record<string, DialogDef> = {
 
   fick_naverlur: {
     pages: [
-      'Dagny fick NÄVERLUREN!\nHåll NER och tryck MAGI, så kommer en vätte och hjälper dig en stund.',
+      'Dagny fick NÄVERLUREN!\nHåll NER och tryck {magi}, så kommer en vätte och hjälper dig en stund.',
       'Någon kular långt borta på vallen, och dimman lättar. En bit till av sommarljuset har kommit tillbaka.',
       'Från fäbodvallen går en gammal stig österut, upp mot Trollberget. Men berget öppnar sig först när alla sex platser har vaknat.',
     ],

@@ -18,6 +18,7 @@ import { SONGS } from '../src/audio/songs';
 import { SFX } from '../src/audio/sfx';
 import { parseNotes } from '../src/engine/audio';
 import { wrap } from '../src/engine/text';
+import { INPUT_SOURCES, fillButtons } from '../src/data/buttons';
 import type { DialogAction } from '../src/data/types';
 
 const KNOWN_TILE = new Set(['.', '#', '=', '^', '~', 'n', 'L', 'k', 'c', 'X', '@', 'q', '%', '&', '?', ...Object.keys(ENEMY_CHARS), ...Object.keys(PICKUP_CHARS), 'B', 'M', 'h', 'p', '+', '!']);
@@ -195,7 +196,9 @@ describe('creatures, temples, spells', () => {
 describe('dialog and text', () => {
   const allText: string[] = [];
   for (const d of Object.values(DIALOG)) {
-    allText.push(...d.pages, ...(d.choices ?? []).map((c) => c.text));
+    // Every way the page can read: one per kind of control.
+    for (const src of INPUT_SOURCES) allText.push(...d.pages.map((p) => fillButtons(p, src)));
+    allText.push(...(d.choices ?? []).map((c) => c.text));
     if (d.speaker) allText.push(d.speaker);
   }
   const collect = (v: unknown): void => {
@@ -218,7 +221,9 @@ describe('dialog and text', () => {
 
   it('every dialog page fits on the postcard (4 lines)', () => {
     for (const [id, d] of Object.entries(DIALOG)) {
-      for (const page of d.pages) expect(wrap(page, 272).length, `${id}: "${page.slice(0, 30)}…"`).toBeLessThanOrEqual(4);
+      for (const page of d.pages) {
+        for (const src of INPUT_SOURCES) expect(wrap(fillButtons(page, src), 272).length, `${id} (${src}): "${page.slice(0, 30)}…"`).toBeLessThanOrEqual(4);
+      }
     }
   });
 
@@ -428,7 +433,7 @@ describe('dialog pages', () => {
   it('every page fits the dialog box (four lines)', () => {
     // The box is VIEW_W - 48 px wide inside its margins; longer pages are cut off.
     for (const [id, d] of Object.entries(DIALOG)) {
-      d.pages.forEach((p, i) => expect(wrap(p, 272).length, `${id}[${i}]`).toBeLessThanOrEqual(4));
+      d.pages.forEach((p, i) => INPUT_SOURCES.forEach((src) => expect(wrap(fillButtons(p, src), 272).length, `${id}[${i}] ${src}`).toBeLessThanOrEqual(4)));
     }
   });
 
