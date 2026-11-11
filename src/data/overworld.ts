@@ -163,7 +163,7 @@ export const OVERWORLD: OverworldDef = {
     { x: 17, y: 57, name: 'Gamla smedjan', area: 'gamla_smedjan', entry: 'A' },
     // Where the teachers' things lie: out in the world, never inside a temple (as in Zelda II).
     { x: 92, y: 10, name: 'Rönnen vid forsen', area: 'ronnen', entry: 'A' },
-    { x: 42, y: 17, name: 'Dagmars ort', area: 'dagmars_ort', entry: 'A' },
+    { x: 42, y: 17, name: 'Övergivna orten', nameAfter: { flag: 'hulda_efter_folkparken', name: 'Dagmars ort' }, area: 'dagmars_ort', entry: 'A' },
     { x: 29, y: 9, name: 'Uvberget', area: 'uvberget', entry: 'A' },
     { x: 59, y: 15, name: 'Sidoorten', area: 'stollen_gomd', entry: 'E', requires: ['sidoorten_oppen'], dialog: 'sidoorten_stangd' },
   ],

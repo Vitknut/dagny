@@ -17,31 +17,31 @@ export const VASEN: Readonly<Record<string, VasenEntry>> = {
     folktro:
       'När en kyrka byggdes sades det att man grävde ner ett levande djur under den – ett lamm under koret, en häst eller ett svin på kyrkogården. Djurets ande blev kyrkogrimmen, som vaktade kyrkan och de döda. Den som mötte grimmen om natten kunde få ett dödsvarsel.',
     berattelse:
-      'Kyrkogrimmen har vaktat Stenkyrkans krypta längre än någon minns. När ingen längre tände ljusen där nere blev vakten bitter. Hulda tände dem en gång varje midsommar – det är hennes namn som står halvt bortnött i stenen.',
+      'Kyrkogrimmen har vaktat Stenkyrkans krypta längre än någon minns. När ingen längre tände ljusen där nere blev vakten bitter. Väktaren tände dem varje midsommar. Hennes namn står halvt bortnött i stenen.',
   },
   gruvraet: {
     folktro:
       'Gruvrået, eller gruvfrun, rådde över malmen i berget. Hon visade sig som en vacker kvinna, ofta klädd i grått. Gruvdrängar som hälsade henne och höll ordning fick rika malmådror och kunde varnas för ras. Den som svor eller visslade i gruvan kunde råka illa ut.',
     berattelse:
-      'Gruvrået minns kvinnan som kom med sin lampa varje vår och hälsade. Lampan märkt H.D. hängde kvar på sin spik i arton år – den var Huldas, buren av Dagmar.',
+      'Gruvrået minns kvinnan som kom med sin lampa varje vår och hälsade. Lampan märkt H.D. hängde kvar på sin spik i arton år.',
   },
   backahasten: {
     folktro:
       'Bäckahästen visade sig som en vacker vit häst vid bäckar och åar. Barn som satte sig på dess rygg fick se ryggen växa, så att fler fick plats – och så sprang hästen ner i vattnet. Det sades att den försvann om någon sa dess namn högt.',
     berattelse:
-      'Väktarna sa Bäckahästens namn högt vid forsen varje sommar. När ingen gjorde det längre blev den vild. Vid dammen lämnade Dagmar sina stövlar – de som Hulda köpt åt henne 1945.',
+      'Väktarna sa Bäckahästens namn högt vid forsen varje sommar. När ingen gjorde det längre blev den vild. Vid dammen lämnade den förra Väktaren sina stövlar.',
   },
   havsfrun: {
     folktro:
       'Havsfrun var havets rå: vacker framifrån, men ibland med fisksjärt eller en rygg som drivved. Fiskare som såg henne visste att storm var på väg. Den som visade henne respekt kunde få god fångst; den som hånade henne kunde bli kvar på havet.',
     berattelse:
-      'Havsfrun drog stormen kring fyren när ljuset slocknade. Fyrvaktaren skrev i loggboken att signalen från stranden tystnade midsommarnatten 1946 – det var Dagmars lampa som slutade blinka.',
+      'Havsfrun drog stormen kring fyren när ljuset slocknade. Fyrvaktaren skrev i loggboken att signalen från stranden tystnade midsommarnatten 1946. Lampan på stranden blinkade aldrig mer.',
   },
   spelmannen: {
     folktro:
       'Spelmän som ville bli riktigt skickliga sades gå till Näcken vid ett vattenfall, på torsdagskvällar, och offra något – brännvin eller en svart katt. Den som lärde sig av Näcken kunde spela så att folk inte kunde sluta dansa, ibland inte ens spelmannen själv.',
     berattelse:
-      'Spelmannen vid dansbanan lärde sig sin konst av något i vattnet och kunde aldrig sluta. På ett fotografi från midsommar 1945 dansar en kvinna med kopparfärgat hår till hans fiol – Dagmar, som skrattar.',
+      'Spelmannen vid dansbanan lärde sig sin konst av något i vattnet och kunde aldrig sluta. På ett fotografi från midsommar 1945 dansar en kvinna med kopparfärgat hår till hans fiol. Hon skrattar.',
   },
   skogsraet: {
     folktro:
@@ -73,7 +73,7 @@ export const VASEN: Readonly<Record<string, VasenEntry>> = {
     folktro:
       'Lyktgubbar, eller irrbloss, var små ljus som rörde sig över myrar och ängar om natten. Det sades att de var själar efter döda – ofta någon som i livet flyttat en gränssten och nu måste vandra med sin lykta. Den som följde ljuset kunde gå vilse eller hamna i myren.',
     berattelse:
-      'Irrblossen lockar Dagny mot gungflyet på myren. På fotografiet från dansbanan dansar Dagmar med ett av dem.',
+      'Irrblossen lockar Dagny mot gungflyet på myren. På fotografiet från dansbanan dansar en kvinna med kopparhår med ett av dem.',
   },
   nisse: {
     folktro:

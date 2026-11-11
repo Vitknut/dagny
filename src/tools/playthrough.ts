@@ -32,7 +32,8 @@ import { newGame } from '../game/state';
 
 export interface Step {
   wave: number;
-  kind: 'area' | 'talk' | 'burn' | 'item' | 'lose' | 'flag' | 'spell' | 'skill' | 'boss' | 'container' | 'life' | 'key' | 'door' | 'scene';
+  /** 'hear': a dialog heard for the first time (its id), for checks on what is said when. */
+  kind: 'area' | 'talk' | 'hear' | 'burn' | 'item' | 'lose' | 'flag' | 'spell' | 'skill' | 'boss' | 'container' | 'life' | 'key' | 'door' | 'scene';
   what: string;
   /** Where it happened (area id, or 'overworld'). */
   where: string;
@@ -198,6 +199,7 @@ export function playthrough(opts: Options = {}): Playthrough {
     if (!dialogs.has(id)) {
       dialogs.add(id);
       changed = true;
+      log('hear', id);
     }
     for (const a of d.actions ?? []) run(a, id);
     for (const c of d.choices ?? []) {
@@ -524,7 +526,7 @@ export function walkthroughMarkdown(r: Playthrough): string {
   const waves = [...new Set(r.steps.map((s) => s.wave))];
   for (const w of waves) {
     out.push(`## ${w}`, '');
-    const here = r.steps.filter((s) => s.wave === w && s.kind !== 'flag');
+    const here = r.steps.filter((s) => s.wave === w && s.kind !== 'flag' && s.kind !== 'hear');
     const places = [...new Set(here.map((s) => s.where))];
     for (const p of places) {
       const at = here.filter((s) => s.where === p);

@@ -46,7 +46,7 @@ what is checked is that every door, gate, condition and dialog fits together.
 - **Eremitholmen**: meets Eremiten
 - **Måsskäret**: finds a näverdocka
 - **Signalstranden**: meets signalsten
-- **Dagmars ort**: meets Gösta
+- **Övergivna orten**: meets Gösta
 
 ## 6
 

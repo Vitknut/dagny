@@ -25,7 +25,7 @@ export const GRUVSAMHALLET: Record<string, DialogDef> = {
     speaker: 'Gamla Elin',
     pages: [
       'Så du hittade upp hit. Det gör inte många. Jag sitter helst här, nära ljuset från gluggen.',
-      'Mitt barnbarn Gösta är borta. Han ville hämta Dagmars solsten åt mig, den hon lämnade i den gamla orten i berget ovanför byn. Det var i går, och han har inte kommit tillbaka.',
+      'Mitt barnbarn Gösta är borta. Han ville hämta Väktarens solsten åt mig, den hon lämnade i den övergivna orten i berget ovanför byn. Det var i går, och han har inte kommit tillbaka.',
       'Han är rädd för mörkret, den pojken. Hitta honom och för honom hem, så ska jag lära dig något som lyser.',
     ],
     actions: [{ type: 'flag', flag: 'gosta_uppdrag' }],
@@ -33,13 +33,13 @@ export const GRUVSAMHALLET: Record<string, DialogDef> = {
 
   elin_vantar: {
     speaker: 'Gamla Elin',
-    pages: ['Gösta är kvar i den gamla orten ovanför byn. Ensam går han inte ut, han är för rädd.'],
+    pages: ['Gösta är kvar i den övergivna orten ovanför byn. Ensam går han inte ut, han är för rädd.'],
   },
 
   elin_lar: {
     speaker: 'Gamla Elin',
     pages: [
-      'Gösta kom springande hem, svart upp till öronen men hel. Och i näven hade han solstenen. Den lyser fortfarande, fast Dagmar är borta.',
+      'Gösta kom springande hem, svart upp till öronen men hel. Och i näven hade han solstenen. Den lyser fortfarande, fast hon är borta.',
       'Du har kommit långt för att vara så ung. Gruvan är mörk nu, mörkare än den varit på hundra år.',
       'Min mor lärde mig en läsning när jag skulle ner i schaktet första gången. Den har lyst för mig i sextio år.',
       '"Lyse i natt, lyse i berg, lyse för den som går utan färg..." Så. Nu bär du ljuset själv.',

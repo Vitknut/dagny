@@ -1,4 +1,4 @@
-import type { SkillId, SpellId } from '../data/types';
+import type { Condition, SkillId, SpellId } from '../data/types';
 import type { Levels } from './progression';
 import { maxHp, maxMp } from './progression';
 import { CONTAINER_HP, CONTAINER_MP } from '../data/progression';
@@ -77,6 +77,26 @@ export function newGame(): GameState {
 
 export function hasFlag(s: GameState, f: string): boolean {
   return s.flags.includes(f);
+}
+
+/** Whether every condition holds (an NPC's talk, a door, a thing that shows). No conditions: yes. */
+export function checkConditions(conds: Condition[] | undefined, s: GameState | null | undefined): boolean {
+  if (!conds || !conds.length) return true;
+  if (!s) return false;
+  return conds.every((c) => {
+    if ('flag' in c) return hasFlag(s, c.flag);
+    if ('notFlag' in c) return !hasFlag(s, c.notFlag);
+    if ('item' in c) return hasItem(s, c.item);
+    if ('notItem' in c) return !hasItem(s, c.notItem);
+    if ('spell' in c) return s.spells.includes(c.spell);
+    if ('notSpell' in c) return !s.spells.includes(c.notSpell);
+    return true;
+  });
+}
+
+/** The name to show for a place or room: its later name once its flag is set. */
+export function shownName(s: GameState | null | undefined, d: { name: string; nameAfter?: { flag: string; name: string } }): string {
+  return s && d.nameAfter && hasFlag(s, d.nameAfter.flag) ? d.nameAfter.name : d.name;
 }
 
 export function setFlag(s: GameState, f: string): void {

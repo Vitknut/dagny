@@ -7,7 +7,7 @@ export const KRYPTA: Record<string, DialogDef> = {
   },
 
   krypta_skylt2: {
-    pages: ['En nästan bortnött rad:\n"...da, Väktare. Hon tände ljusen här varje midsommar."'],
+    pages: ['En nästan bortnött rad:\n"...da, Väktare 1921–1946. Hon tände ljusen här varje midsommar."'],
   },
 
   krypta_skylt3: {

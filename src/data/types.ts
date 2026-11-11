@@ -301,6 +301,8 @@ export interface PlatformDef {
 export interface AreaDef {
   id: string;
   name: string;
+  /** Another name once a flag is set (a place whose real name would give the story away). */
+  nameAfter?: { flag: string; name: string };
   kind: AreaKind;
   tone: string;
   music: string;
@@ -424,6 +426,8 @@ export interface OverworldPlace {
   x: number;
   y: number;
   name: string;
+  /** Another name once a flag is set (a place whose real name would give the story away). */
+  nameAfter?: { flag: string; name: string };
   /** Side-view area and entry when entering this tile. */
   area?: string;
   entry?: string;

@@ -11,7 +11,7 @@ import type { EncounterDef, OverworldPlace } from '../data/types';
 import { DialogOverlay } from './dialog';
 import type { Game, Scene } from './game';
 import { drawHud } from './hud';
-import { hasFlag, hasItem, setFlag, type GameState } from './state';
+import { hasFlag, hasItem, setFlag, shownName, type GameState } from './state';
 import * as flow from './flow';
 import { ENCOUNTER_TABLES, TERRAIN_TYPE } from '../data/encounters';
 import { pickEncounter } from './encounters';
@@ -922,14 +922,15 @@ export class OverworldScene implements Scene {
       (pl) => Math.abs(pl.x - this.me.x) + Math.abs(pl.y - this.me.y) <= 1 && ((pl.hidden !== 'radio' && !pl.radio) || hasItem(this.s, 'radio')),
     );
     if (near) {
-      const w = measure(near.name) + 12;
+      const label = shownName(this.s, near);
+      const w = measure(label) + 12;
       const x = Math.round((VIEW_W - w) / 2);
       const y = VIEW_H - 22;
       ctx.fillStyle = PALETTE.k;
       ctx.fillRect(x, y, w, 14);
       ctx.fillStyle = PALETTE.y;
       ctx.fillRect(x, y + 13, w, 1);
-      drawText(ctx, near.name, VIEW_W / 2, y + 2, 'W', { align: 'center' });
+      drawText(ctx, label, VIEW_W / 2, y + 2, 'W', { align: 'center' });
     }
     if (!this.game.hudHidden) drawHud(ctx, s, { frame: this.frame });
     if (!this.game.hudHidden && hasItem(s, 'radio')) this.renderRadio(ctx);

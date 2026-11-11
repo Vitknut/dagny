@@ -12,7 +12,7 @@ import type { SpellId } from '../../data/types';
 import { Particles } from '../../entities/misc';
 import { drawBackdrop } from '../backdrop';
 import { drawHud } from '../hud';
-import { hasItem } from '../state';
+import { hasItem, shownName } from '../state';
 import { squareActive, stepsToSwap } from '../beat';
 import { lightDisc } from './shared';
 import type { SideScene } from '../sidescene';
@@ -313,7 +313,7 @@ export function renderBossBar(sc: SideScene, ctx: CanvasRenderingContext2D): voi
 export function renderName(sc: SideScene, ctx: CanvasRenderingContext2D): void {
   const a = Math.min(1, sc.nameT / 30, (150 - sc.nameT) / 20);
   ctx.globalAlpha = Math.max(0, a);
-  const name = sc.area.name;
+  const name = shownName(sc.s, sc.area);
   const w = measure(name) + 24;
   const x = Math.round((VIEW_W - w) / 2);
   const y = 46;
