@@ -85,3 +85,41 @@ describe('creatures grow with Dagny (life and XP), as in Zelda II', () => {
     for (const a of Object.values(AREAS)) expect(areaTier(a.id), a.id).toBeGreaterThanOrEqual(1);
   });
 });
+
+describe('temples are full enough to fight through (temple 3 on)', () => {
+  const rooms = Object.values(AREAS).filter((a) => {
+    const t = TEMPLES.find((x) => x.id === a.temple);
+    return !!t && t.number >= SCALE_FROM_TIER && !a.sealed && !a.tiles.join('').includes('B');
+  });
+  const enemiesIn = (a: AreaDef): Array<[number, number]> => {
+    const out: Array<[number, number]> = [];
+    a.tiles.forEach((row, y) => [...row].forEach((ch, x) => ENEMY_CHARS[ch] && out.push([x, y])));
+    return out;
+  };
+
+  it("every room but the guardian's has at least one creature per ten tiles", () => {
+    for (const a of rooms) {
+      const size = Math.max(a.tiles[0].length, a.tiles.length);
+      expect(enemiesIn(a).length, a.id).toBeGreaterThanOrEqual(Math.ceil(size / 10));
+    }
+  });
+
+  it('no creature waits right where Dagny comes in', () => {
+    // The markers some way leads in at (an exit's `entry`), and the room's left-hand entrance.
+    const arrivals = new Map<string, Set<string>>();
+    for (const r of Object.values(AREAS)) {
+      for (const ex of [r.left, r.right, ...Object.values(r.doors ?? {})]) {
+        if (ex?.to && ex.to !== 'overworld') (arrivals.get(ex.to) ?? arrivals.set(ex.to, new Set()).get(ex.to)!).add(ex.entry ?? 'A');
+      }
+    }
+    for (const a of rooms) {
+      const marks = arrivals.get(a.id) ?? new Set(['A']);
+      marks.add('A');
+      const ways: Array<[number, number]> = [];
+      a.tiles.forEach((row, y) => [...row].forEach((ch, x) => marks.has(ch) && ways.push([x, y])));
+      for (const [ex, ey] of enemiesIn(a)) {
+        for (const [wx, wy] of ways) expect(Math.abs(ex - wx) < 5 && Math.abs(ey - wy) < 3, `${a.id}: creature at ${ex},${ey} by the way in at ${wx},${wy}`).toBe(false);
+      }
+    }
+  });
+});
