@@ -28,7 +28,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      # Only the browser: the runner already has its system libraries, and
+      # apt's mirrors have failed us mid-install.
+      - run: npx playwright install chromium
       # A new seed each night, so the player tries new things over time.
       - run: echo "MONKEY_SEED=${{ inputs.seed || '' }}" >> "$GITHUB_ENV"
       - run: '[ -n "$MONKEY_SEED" ] || echo "MONKEY_SEED=$(date +%Y%m%d)" >> "$GITHUB_ENV"'

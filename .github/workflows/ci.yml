@@ -23,5 +23,7 @@ jobs:
       - run: npm test
       - run: npm run build
       # A short play on an emulated phone (e2e/smoke.spec.ts).
-      - run: npx playwright install --with-deps chromium
+      # Only the browser: the runner already has its system libraries, and
+      # apt's mirrors have failed us mid-install.
+      - run: npx playwright install chromium
       - run: npm run e2e
