@@ -378,7 +378,7 @@ describe('everything in a room can be reached by jumping, not only by the solver
     const bad: string[] = [];
     for (const a of Object.values(AREAS)) {
       if (process.env.ALLROOMS ? false : a.wind || a.beat) continue;
-      const hopp = a.needsSpell?.some((n) => n.spell === 'hopp');
+      const hopp = a.needs?.some((n) => n.ability === 'hopp');
       const up = hopp ? 5 : 3;
       const m = jumpModel(a, true, { up, hatches: true, keys: true, strict: true });
       const seen = reachable(a, m);
@@ -388,7 +388,7 @@ describe('everything in a room can be reached by jumping, not only by the solver
           const wanted = 'kXqhp+'.includes(ch) || (!!a.doors?.[ch] && a.doors[ch].to !== a.id && !a.doors[ch].dialog) || /[1-9]/.test(ch);
           if (!wanted) return;
           // A place only the bird gets into (Hamn): not for this model.
-          if (a.needsSpell?.some((n) => n.spell === 'hamn' && tx >= n.x0 && tx <= n.x1 && ty >= n.y0 && ty <= n.y1)) return;
+          if (a.needs?.some((n) => n.ability === 'hamn' && tx >= n.x0 && tx <= n.x1 && ty >= n.y0 && ty <= n.y1)) return;
           if (!touches(seen, m, tx, ty, up)) bad.push(`${a.id}: '${ch}' at ${tx},${ty}`);
         }),
       );

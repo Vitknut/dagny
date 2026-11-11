@@ -35,6 +35,7 @@ import { shieldBlocks, damagePlayer, combat, killEnemy } from './side/combat';
 import { collect } from './side/pickups';
 import { renderScene } from './side/render';
 import { tickSpells, castSpell, blowLur, updateHelpers, shootFire } from './side/spells';
+import { setLightPaths, shutCellsIn, spread } from './side/obstacles';
 /** Steps after a dialog closes before Up or a tap can start another (half a second). */
 const INTERACT_PAUSE = 30;
 /** Steps before the same person or sign starts again while Dagny stays put (three seconds). */
@@ -90,6 +91,9 @@ export class SideScene implements Scene, WorldApi {
   helpers: Array<{ x: number; y: number; vx: number; vy: number; onGround: boolean; w: number; h: number; life: number; cd: number; facing: 1 | -1 }> = [];
   lurCooldown = 0;
   beatCells: Array<{ i: number; tx: number; ty: number; group: '%' | '&' }> = [];
+  /** Light-path cells ('-'): ledges only there while Lyse burns (side/obstacles.ts). */
+  lightCells: number[] = [];
+  private lightOn = false;
   lastBeat = -1;
 
   /** The dance floor's light strings are lit (always, unless the room waits for Åska). */
@@ -506,6 +510,7 @@ export class SideScene implements Scene, WorldApi {
     // Locked doors: push against them with a key.
     this.tryDoors();
     this.tryHatch();
+    this.tryObstacles();
     this.updateCavein();
 
     // --- Sealed room ---
@@ -548,6 +553,14 @@ export class SideScene implements Scene, WorldApi {
     // --- Projectiles ---
     const solidAt = (x: number, y: number): boolean => isSolidAt(this.grid, x, y);
     for (const pr of this.projectiles) {
+      // A fireball sets dry roots alight before the wall stops it.
+      if (pr.fromPlayer && pr.sprite === 'fireball' && !pr.dead && pr.delay <= 0) {
+        const roots = shutCellsIn(this, '(', { x: pr.x + Math.min(0, pr.vx), y: pr.y, w: pr.w + Math.abs(pr.vx), h: pr.h });
+        if (roots.length) {
+          pr.dead = true;
+          this.openCells(spread(this, '(', roots), 'fire');
+        }
+      }
       pr.update(this.grid, solidAt);
       if (pr.dead || pr.delay > 0) continue;
       if (pr.fromPlayer) {
@@ -704,15 +717,41 @@ export class SideScene implements Scene, WorldApi {
       for (let tx = Math.floor(b.x / TILE); tx <= Math.floor((b.x + b.w) / TILE); tx++) {
         const i = ty * this.grid.w + tx;
         if (this.area.tiles[ty]?.[tx] !== '!' || this.grid.kinds[i] !== Kind.Solid) continue;
-        this.grid.kinds[i] = Kind.Empty;
-        this.tileSprite[i] = null;
-        this.s.opened.push(this.pid(tx, ty));
-        this.puff(tx * TILE + 8, ty * TILE + 8, 'mist');
-        this.sfx('door');
-        this.shake(8, 2);
-        this.staticLayer = renderStatic(this);
-        this.game.save();
+        this.openCells([i], 'door');
       }
+    }
+  }
+
+  /** Opens shut cells for good (a hatch, rotten boards, roots, a lantern gate): kept in the save. */
+  openCells(cells: readonly number[], sound: string): void {
+    if (!cells.length) return;
+    for (const i of cells) {
+      const tx = i % this.grid.w;
+      const ty = Math.floor(i / this.grid.w);
+      this.grid.kinds[i] = Kind.Empty;
+      this.tileSprite[i] = null;
+      this.s.opened.push(this.pid(tx, ty));
+      this.puff(tx * TILE + 8, ty * TILE + 8, 'mist');
+    }
+    this.sfx(sound);
+    this.shake(8, 2);
+    this.staticLayer = renderStatic(this);
+    this.game.save();
+  }
+
+  /** A thrust from above breaks rotten boards; the light path comes and goes with Lyse. */
+  private tryObstacles(): void {
+    const p = this.player;
+    if (p.downThrust) {
+      const hit = shutCellsIn(this, '_', p.swordBox({ x: 0, y: 0, w: 0, h: 0 }));
+      if (hit.length) {
+        this.openCells(hit, 'door');
+        p.bounce();
+      }
+    }
+    if (this.lightCells.length && this.lit() !== this.lightOn) {
+      this.lightOn = this.lit();
+      setLightPaths(this, this.lightCells, this.lightOn);
     }
   }
 

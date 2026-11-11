@@ -39,6 +39,37 @@ export interface Step {
   where: string;
 }
 
+/** What Dagny has, for whether a cell keeps her out. */
+export interface Has {
+  items: ReadonlySet<string>;
+  spells: ReadonlySet<string>;
+  skills: ReadonlySet<string>;
+  /** A locked door in this column has been opened. */
+  unlocked: (col: number) => boolean;
+}
+
+/**
+ * Whether a cell keeps Dagny out, given what she has: rock, a door still
+ * locked, a hidden passage without the radio, a hatch, rotten boards, roots
+ * or a lantern gate she can't open yet, or a place only an ability reaches
+ * (AreaDef.needs). Gravity is not modelled; `needs` stands in for it.
+ */
+export function blocks(a: AreaDef, x: number, y: number, has: Has): boolean {
+  const ch = a.tiles[y]?.[x];
+  if (ch === undefined || ch === '#') return true;
+  if (ch === '?') return !has.items.has('radio');
+  if (ch === 'L') return !has.unlocked(x);
+  // A hatch opens to an up-thrust from below.
+  if (ch === '!') return !has.skills.has('uppatstot');
+  // Rotten boards, dry roots and dead lanterns (game/side/obstacles.ts).
+  if (ch === '_') return !has.skills.has('nedatstot');
+  if (ch === '(') return !has.spells.has('eld');
+  if (ch === '[') return !has.spells.has('aska');
+  // A place only an ability reaches (a high ledge, a narrow hole, a path in the light).
+  for (const n of a.needs ?? []) if (x >= n.x0 && x <= n.x1 && y >= n.y0 && y <= n.y1 && !has.spells.has(n.ability) && !has.skills.has(n.ability)) return true;
+  return false;
+}
+
 export interface Options {
   /** Items that never reach Dagny's hands (to check what each one opens). */
   withhold?: readonly string[];
@@ -213,17 +244,7 @@ export function playthrough(opts: Options = {}): Playthrough {
 
   // --- Rooms ------------------------------------------------------------------------------
 
-  const solid = (a: AreaDef, x: number, y: number): boolean => {
-    const ch = a.tiles[y]?.[x];
-    if (ch === undefined || ch === '#') return true;
-    if (ch === '?') return !items.has('radio');
-    if (ch === 'L') return !done.has(`${a.id}:col${x}`);
-    // A hatch opens to an up-thrust from below.
-    if (ch === '!') return !skills.has('uppatstot');
-    // A ledge only a reading reaches.
-    for (const n of a.needsSpell ?? []) if (x >= n.x0 && x <= n.x1 && y >= n.y0 && y <= n.y1 && !spells.has(n.spell)) return true;
-    return false;
-  };
+  const solid = (a: AreaDef, x: number, y: number): boolean => blocks(a, x, y, { items, spells, skills, unlocked: (col) => done.has(`${a.id}:col${col}`) });
 
   const spawnCell = (a: AreaDef, entry: string | undefined, at?: Cell): Cell => {
     if (at) return at;

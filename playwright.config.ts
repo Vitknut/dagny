@@ -17,7 +17,7 @@ export default defineConfig({
   use: { baseURL: `http://localhost:${PORT}/`, trace: 'off' },
   projects: [
     { name: 'smoke', testMatch: 'smoke.spec.ts', use: { ...devices['Pixel 7 landscape'] } },
-    { name: 'monkey', testMatch: 'monkey.spec.ts', use: { viewport: { width: 960, height: 540 } } },
+    { name: 'monkey', testMatch: ['monkey.spec.ts', 'obstacles.spec.ts'], use: { viewport: { width: 960, height: 540 } } },
   ],
   webServer: {
     command: `npx vite --port ${PORT} --strictPort`,

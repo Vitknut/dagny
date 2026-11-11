@@ -404,11 +404,12 @@ export interface AreaDef {
    */
   lurGuide?: string;
   /**
-   * Parts of the room only a reading gets Dagny up to – a ledge too high for an
-   * ordinary jump that Hopp reaches (tile boxes, inclusive). For the
-   * playthrough solver; the room's shape is what really keeps her out.
+   * Parts of the room only an ability gets Dagny to – a ledge too high for an
+   * ordinary jump (Hopp), a hole only a bird gets through (Hamn), a path only
+   * there in the light (Lyse) (tile boxes, inclusive). For the playthrough
+   * solver; the room's shape is what really keeps her out.
    */
-  needsSpell?: Array<{ spell: string; x0: number; y0: number; x1: number; y1: number }>;
+  needs?: Array<{ ability: SpellId | SkillId; x0: number; y0: number; x1: number; y1: number }>;
   /**
    * A cave-in that chases Dagny: once she passes tile column `at` (coming in
    * from the left), the roof comes down behind her and the rubble moves right

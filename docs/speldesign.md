@@ -85,6 +85,18 @@ guardian has a page and that every page fits its panel.
 - Each stands only where Dagny already has its answer, and never in a room that opens only when every creature is beaten (`tests/answers.test.ts`).
 - **Fencers in every later temple:** Gasten (Fyren), Kavaljeren (Folkparken), Vittran (Fäbodskogen) and Drabanten (Trollberget) fight like the tomtenisse, each quicker to follow Dagny's height and to thrust (`guardDelay`, `thrustRest`; `tests/fencer.test.ts`).
 
+## The rule of three: each ability is wanted again
+
+Every ability that opens the world is wanted in at least three rooms, one of them in Trollberget, and each time it guards something (`tests/abilities.test.ts`). Four new kinds of obstacle (`game/side/obstacles.ts`), besides the hatch:
+
+- **Rotten boards** (`_`): a thrust from above (Nedåtstöt) breaks them – Krypta, Gruvan, Trollberget.
+- **Dry roots** (`(`): a fireball (Eld) sets the whole tangle alight – Gruvan, Fäbodskogen, Trollgångarna.
+- **A gate of dead lanterns** (`[`): thunder (Åska) in the room lights them and the gate opens – Fyren, Trollgångarna (and Folkparken's dance floor).
+- **A light path** (`-`): one-way ledges that are only there while Lyse burns – Gruvan, Kvarnen, Trollberget.
+- Hatches (Uppåtstöt) now also in the lighthouse tower and Trollberget; ledges too high for an ordinary jump (Hopp) in Folkparken and Trollberget; pockets under the roof with a slot only a bird passes (Hamn) in Kvarnen and Trollgångarna. A pocket always has a hole to drop out of, so Dagny is never shut in without magic.
+- The rewards are small (bullar, termosar, lingon) and lie off the main path. Boxes stand two tiles high at the walls with a roof over the nook, so they are climbed in two short steps from either side.
+- Measured jumps (`Player`): an ordinary jump rises 50 px, Hopp 90 px; the placements keep clear of both.
+
 ## The first temple's creatures
 
 Dagny starts with 8 health (four bars), so the crypt must not drain it faster than skill can keep up:

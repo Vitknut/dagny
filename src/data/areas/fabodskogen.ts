@@ -28,9 +28,9 @@ export const FABODSKOGEN: Record<string, AreaDef> = {
       ".............................................===........####",
       "........................l...............................####",
       "........................................................####",
-      "..........................................===...........L...",
-      "........................................................L...",
-      "..A.I...m.........>.b.....v.............,..........T....L..E",
+      ".......................##.................===...........L...",
+      "......................#..(..............................L...",
+      "..A.I...m.........>.b.#g.(v.............,..........T....L..E",
       "############~~~~~~############~~~~~~~#######################",
       "############~~~~~~############~~~~~~~#######################",
     ],
@@ -145,7 +145,7 @@ export const FABODSKOGEN: Record<string, AreaDef> = {
     ambience: ['mist', 'fireflies'],
     // The key lies in a hollow in the rock with a way in only a bird fits through (Hamn, from
     // Karna at Fäboden); Dagny lands inside as herself and drops out through the crack in its floor.
-    needsSpell: [{ spell: 'hamn', x0: 31, y0: 1, x1: 37, y1: 3 }],
+    needs: [{ ability: 'hamn', x0: 31, y0: 1, x1: 37, y1: 3 }],
     left: { to: 'fabod_2', entry: 'A' },
     doors: {
       Q: { to: 'fabod_3', entry: 'A', dialog: 'villse2' },

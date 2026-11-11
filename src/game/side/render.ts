@@ -1,3 +1,4 @@
+import { renderLightPaths } from './obstacles';
 import { renderCritters } from './critters';
 import { renderTrial } from './trial';
 import { TILE } from '../../engine/collision';
@@ -67,6 +68,7 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
       drawSprite(ctx, id, (c.tx + c.ty) % 2, x, y);
     }
   }
+  renderLightPaths(ctx, sc.lightCells, sc.grid.w, camX, camY, sc.lit(), f);
   // The cave-in's rubble behind its front.
   if (sc.caveX !== null) {
     const front = sc.caveX - camX;

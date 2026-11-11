@@ -18,13 +18,15 @@ export const FOLKPARKEN: Record<string, AreaDef> = {
     left: { to: 'overworld', ow: { x: 41, y: 62 } },
     right: { to: 'folkparken_2', entry: 'A' },
     signs: { I: 'park_skylt1' },
+    // The rule of three (hopp: a ledge too high for an ordinary jump).
+    needs: [{ ability: 'hopp', x0: 23, y0: 3, x1: 25, y1: 4 }],
     tiles: [
       ".........................................................###",
       ".........................................................###",
       ".........................................................###",
       ".........................................................###",
-      ".........................................................###",
-      ".............k..........................w.......d........###",
+      "........................b................................###",
+      ".............k.........===..............w.......d........###",
       "...........====.........................#####............###",
       "........................................#####.==.........L..",
       ".........==..........................==.#####............L..",
@@ -110,7 +112,7 @@ export const FOLKPARKEN: Record<string, AreaDef> = {
     ambience: ['fireflies'],
     // The light strings are dead: Åska, from Oskar in Stationssamhället, wakes the floor.
     beat: { period: 75, wake: 'dansbanan_vaknat' },
-    needsSpell: [{ spell: 'aska', x0: 10, y0: 0, x1: 49, y1: 11 }],
+    needs: [{ ability: 'aska', x0: 10, y0: 0, x1: 49, y1: 11 }],
     left: { to: 'folkparken_2', entry: 'E' },
     right: { to: 'folkparken_4', entry: 'A' },
     signs: { I: 'park_skylt2', J: 'park_slingor' },

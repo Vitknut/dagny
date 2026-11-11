@@ -265,7 +265,7 @@ den skada Dagny väntas ha, från tempel 3. Tempel 1–2 är orörda.*
 
 ### Fas 3 – Varje förmåga används flera gånger
 
-**3.1 Regeln om tre (V1).**
+**3.1 Regeln om tre (V1).** *Klar 11 november: sju förmågor i minst tre rum var, varav ett i Trollberget (`tests/abilities.test.ts`, `e2e/obstacles.spec.ts`). Belöningarna är mat i små gömmor, så ingen huvudväg ändrades.*
 - *Vad:* varje magi och teknik ska krävas på minst tre ställen: där man får
   den, i ett senare tempel, och i Trollberget. Dessutom en valfri hemlighet
   var.

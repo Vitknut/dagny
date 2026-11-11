@@ -5,6 +5,7 @@ import { ENEMY_CHARS, PICKUP_CHARS, THEMES, DECO, FRONT, kindOf } from '../../da
 import { NPCS } from '../../data/npcs';
 import { spawnCritters } from './critters';
 import { makeTrial } from './trial';
+import { OBSTACLES, isBarrier } from './obstacles';
 import { TEMPLE_BOSS_DAMAGE, TEMPLE_ENEMY_BONUS, lifeAtTier } from '../../data/progression';
 import { areaTier } from '../reach';
 import { ITEMS } from '../../data/items';
@@ -75,6 +76,16 @@ export function build(sc: SideScene): void {
         case '!':
           if (s.opened.includes(sc.pid(tx, ty))) kind = Kind.Empty;
           else sc.tileSprite[i] = 'hatch';
+          break;
+        case '_':
+        case '(':
+        case '[':
+          // Rotten boards, dry roots, dead lanterns (side/obstacles.ts).
+          if (s.opened.includes(sc.pid(tx, ty))) kind = Kind.Empty;
+          else sc.tileSprite[i] = OBSTACLES[ch].sprite;
+          break;
+        case '-':
+          sc.lightCells.push(i);
           break;
         case 'k':
           if (!s.opened.includes(sc.pid(tx, ty))) {
@@ -213,8 +224,9 @@ export function build(sc: SideScene): void {
 export function sealHiddenRooms(sc: SideScene, fill: (x: number, y: number) => string): void {
   const { w, h } = sc.grid;
   const tiles = sc.area.tiles;
-  // A hatch is a way through, not a hidden wall: what lies above it shows.
-  const open = (x: number, y: number): boolean => x >= 0 && y >= 0 && x < w && y < h && (sc.grid.kinds[y * w + x] !== Kind.Solid || tiles[y][x] === '!');
+  // A hatch, rotten boards, roots or a lantern gate are ways through, not hidden walls: what lies behind shows.
+  const open = (x: number, y: number): boolean =>
+    x >= 0 && y >= 0 && x < w && y < h && (sc.grid.kinds[y * w + x] !== Kind.Solid || tiles[y][x] === '!' || isBarrier(tiles[y][x]));
   const seen = new Uint8Array(w * h);
   const stack: number[] = [];
   for (let y = 0; y < h; y++) {

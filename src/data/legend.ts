@@ -21,6 +21,11 @@ import { Kind, type TileKind } from '../engine/collision';
  *  h  life container (livbehållare)   p  magic container (magibehållare)
  *  +  näverdocka – an extra life (taken once)
  *  !  hatch in a floor: solid until struck from below with Uppåtstöt (opened once)
+ *  _  rotten boards: solid until struck from above with Nedåtstöt (opened once)
+ *  (  dry roots: solid until a fireball (Eld) burns them (opened once)
+ *  [  a gate of dead lanterns: solid until Åska thunders in the room (opened once)
+ *  -  a light path: a one-way ledge that is only there while Lyse burns
+ *  (see game/side/obstacles.ts)
  */
 export const ENEMY_CHARS: Readonly<Record<string, string>> = {
   v: 'vatte',
@@ -86,6 +91,9 @@ export function kindOf(ch: string): TileKind {
     case 'L':
     case '?':
     case '!':
+    case '_':
+    case '(':
+    case '[':
       return Kind.Solid;
     case '%':
     case '&':

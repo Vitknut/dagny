@@ -1,3 +1,4 @@
+import { allShut } from './obstacles';
 import { moveBody, overlaps } from '../../engine/collision';
 import { VIEW_W, VIEW_H } from '../../engine/screen';
 import { TILE } from '../../engine/collision';
@@ -94,6 +95,8 @@ export function castSpell(sc: SideScene): void {
         const r = e.takeHit(8 + s.levels.magi * 2, e.x, 'magic', sc);
         if (r === 'dead') killEnemy(sc, e);
       }
+      // Dead lanterns in the room light up, and their gates open.
+      sc.openCells(allShut(sc, '['), 'thunder');
       // The thunder runs into the dead light strings, and the dance floor wakes.
       const wake = sc.area.beat?.wake;
       if (wake && !hasFlag(s, wake)) {
