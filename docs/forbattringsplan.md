@@ -124,6 +124,14 @@ som håller fast det.
 
 ### Fas 0 – Snabba rättningar (en kort session)
 
+**Klar 11 november.** Byggt enligt steg-dokumentet. Testet för namnläckan
+hittade tre läckor till som ingen genomgång hade sett: kryptans sida i
+Väsensboken sa rakt ut att namnet på stenen var Huldas (öppnas i första
+templet), Gruvråets sida sa att lampan var Huldas och bars av Dagmar, och
+Havsfruns sida nämnde Dagmar. Huldas bitar räknade platser ("Tre platser
+har vaknat"), vilket blev fel när de hördes sent; de är nu utan siffror
+utom den sista.
+
 **0.1 Täta läckorna av Dagmars namn (S1).**
 - *Vad:* Elin säger "Väktarens solsten". Platsen heter "Övergivna orten" (inte
   "Gamla orten", som krockar med Gamla stollen) tills Hulda har sagt namnet,
