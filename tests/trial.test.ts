@@ -23,14 +23,14 @@ describe("Prosten's trial of candles", () => {
     const s = newGame();
     s.flags.push(t.requires);
     const tr = makeTrial(area, s)!;
-    expect(updateTrial(tr, area, s, at(t.order[0]), true)).toBe('lit');
+    expect(updateTrial(tr, area, s, at(t.order[0]), true, true)).toBe('lit');
     updateTrial(tr, area, s, away, true);
-    expect(updateTrial(tr, area, s, at(t.order[2]), true)).toBe('wrong');
+    expect(updateTrial(tr, area, s, at(t.order[2]), true, true)).toBe('wrong');
     expect(tr.candles.every((c) => !c.lit)).toBe(true);
     for (let i = 0; i < 50; i++) updateTrial(tr, area, s, away, true);
     let last = null;
     for (const sign of t.order) {
-      last = updateTrial(tr, area, s, at(sign), true);
+      last = updateTrial(tr, area, s, at(sign), true, true);
       updateTrial(tr, area, s, away, true);
     }
     expect(last).toBe('done');
@@ -41,6 +41,18 @@ describe("Prosten's trial of candles", () => {
     const s = newGame();
     s.flags.push(t.requires);
     const tr = makeTrial(area, s)!;
-    expect(updateTrial(tr, area, s, at(t.order[0]), false)).toBeNull();
+    expect(updateTrial(tr, area, s, at(t.order[0]), false, true)).toBeNull();
+  });
+
+  it('walking past a candle lights nothing and puts nothing out: only Up at it does', () => {
+    const s = newGame();
+    s.flags.push(t.requires);
+    const tr = makeTrial(area, s)!;
+    expect(updateTrial(tr, area, s, at(t.order[0]), true, true)).toBe('lit');
+    // Past a wrong one without pressing: nothing happens.
+    expect(updateTrial(tr, area, s, at(t.order[3]), true)).toBeNull();
+    expect(tr.near).toBe(t.candles.findIndex((c) => c.sign === t.order[3]));
+    expect(tr.candles.filter((c) => c.lit)).toHaveLength(1);
+    expect(updateTrial(tr, area, s, at(t.order[1]), true, true)).toBe('lit');
   });
 });

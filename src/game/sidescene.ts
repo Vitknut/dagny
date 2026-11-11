@@ -539,7 +539,11 @@ export class SideScene implements Scene, WorldApi {
 
     // --- A trial of candles ---
     if (this.trial) {
-      const ev = updateTrial(this.trial, this.area, s, p, p.state !== 'bird');
+      const up = p.onGround && p.state === 'normal' && g.input.pressed(Act.Up) && !g.modal;
+      const ev = updateTrial(this.trial, this.area, s, p, p.state !== 'bird', up);
+      // The candle she stands at shows that Up lights it.
+      const near = this.trial.candles[this.trial.near];
+      if (near && !this.prompt) this.prompt = { x: near.tx * TILE + 8, y: near.ty * TILE - 22 };
       if (ev === 'lit') this.sfx('checkpoint');
       else if (ev === 'wrong') {
         this.sfx('puff');

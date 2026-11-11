@@ -326,3 +326,41 @@ test('the hush before a guardian: quiet way in, the waiting tune, then it steps 
   expect(r.tunnel, 'the way in is a low tunnel').toBe(true);
   expect(r.reopened, 'the way back opens after the fight').toBe(true);
 });
+
+test("Prosten's candles light with Up, and walking past one does nothing (prastgardens_vind)", async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const { SideScene } = await import('/src/game/sidescene.ts');
+    const { newGame } = await import('/src/game/state.ts');
+    const g = (window as unknown as { dagny: Record<string, unknown> }).dagny as unknown as {
+      state: ReturnType<typeof newGame>;
+      overlays: unknown[];
+      input: { keyboard: boolean[] };
+      setScene(s: unknown): void;
+      update(): void;
+    };
+    const s = newGame();
+    s.flags.push('intro_done', 'eld_prov');
+    g.state = s;
+    g.overlays.length = 0;
+    // On the lower floor at the start, walk right past the heart candle (7, 9).
+    const sc = new SideScene(g as never, 'prastgardens_vind', { x: 3 * 16, y: 10 * 16 - 22, facing: 1 });
+    g.setScene(sc);
+    const step = (n: number, keys: number[] = []): void => {
+      for (let i = 0; i < n; i++) {
+        for (let k = 0; k < 10; k++) g.input.keyboard[k] = keys.includes(k);
+        g.update();
+        g.overlays.length = 0;
+      }
+    };
+    step(40);
+    step(60, [1]);
+    const pastHeart = sc.trial!.candles.filter((c) => c.lit).length;
+    // Up at the sun candle (19, 4) on the upper floor.
+    sc.player.place(19 * 16 + 3, 5 * 16 - 22);
+    step(40);
+    step(1, [2]);
+    step(5);
+    return { pastHeart, sun: sc.trial!.candles.find((c) => c.sign === 'sol')!.lit };
+  });
+  expect(r).toEqual({ pastHeart: 0, sun: true });
+});

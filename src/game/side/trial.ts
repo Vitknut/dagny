@@ -6,8 +6,9 @@ import { hasFlag, setFlag, type GameState } from '../state';
 
 /**
  * A trial of candles (Prosten's, before he teaches Eld): candles with a sign
- * carved above each, to be lit in the order a verse gives. Touch the wrong one
- * and every flame dies at once. Nothing says so; the dark says it.
+ * carved above each, to be lit in the order a verse gives. Dagny lights one
+ * by standing at it and pressing Up (walking past lights nothing). Light the
+ * wrong one and every flame dies at once. Nothing says so; the dark says it.
  */
 export interface TrialCandle {
   tx: number;
@@ -24,30 +25,35 @@ export interface Trial {
   next: number;
   /** Steps left of the gust after a wrong one. */
   gust: number;
+  /** The unlit candle Dagny stands at now (-1: none), for the prompt over it. */
+  near: number;
 }
 
 export function makeTrial(a: AreaDef, s: GameState): Trial | null {
   const t = a.candleTrial;
   if (!t) return null;
   const done = hasFlag(s, t.flag);
-  return { candles: t.candles.map((c) => ({ ...c, lit: done, touching: false })), next: done ? t.order.length : 0, gust: 0 };
+  return { candles: t.candles.map((c) => ({ ...c, lit: done, touching: false })), next: done ? t.order.length : 0, gust: 0, near: -1 };
 }
 
 export type TrialEvent = 'lit' | 'wrong' | 'done' | null;
 
-/** One step: Dagny is `box`; a bird lights nothing. */
-export function updateTrial(tr: Trial, a: AreaDef, s: GameState, box: { x: number; y: number; w: number; h: number }, human: boolean): TrialEvent {
+/** One step: Dagny is `box`; `light` is Up pressed this step; a bird lights nothing. */
+export function updateTrial(tr: Trial, a: AreaDef, s: GameState, box: { x: number; y: number; w: number; h: number }, human: boolean, light = false): TrialEvent {
   const t = a.candleTrial!;
+  tr.near = -1;
   if (hasFlag(s, t.flag) || !hasFlag(s, t.requires)) return null;
+  for (const [i, c] of tr.candles.entries()) {
+    c.touching = human && overlaps({ x: c.tx * TILE, y: c.ty * TILE, w: TILE, h: TILE }, box);
+    if (c.touching && !c.lit) tr.near = i;
+  }
   if (tr.gust > 0) {
     tr.gust--;
-    for (const c of tr.candles) c.touching = human && overlaps({ x: c.tx * TILE, y: c.ty * TILE, w: TILE, h: TILE }, box);
     return null;
   }
   let ev: TrialEvent = null;
   for (const c of tr.candles) {
-    const on = human && overlaps({ x: c.tx * TILE, y: c.ty * TILE, w: TILE, h: TILE }, box);
-    if (on && !c.touching && !c.lit) {
+    if (light && c.touching && !c.lit && ev === null) {
       if (c.sign === t.order[tr.next]) {
         c.lit = true;
         tr.next++;
@@ -64,7 +70,6 @@ export function updateTrial(tr: Trial, a: AreaDef, s: GameState, box: { x: numbe
         ev = 'wrong';
       }
     }
-    c.touching = on;
   }
   return ev;
 }
