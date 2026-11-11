@@ -108,7 +108,7 @@ export const KRYPTA: Record<string, AreaDef> = {
     ambience: ['dust'],
     left: { to: 'krypta_hall', entry: 'S' },
     // The bell-ringer shuts the way back; when he lies still, the crowbar is there.
-    sealed: { dialog: 'sakristian_stangs', music: 'boss' },
+    sealed: { dialog: 'sakristian_stangs', music: 'mellanboss' },
     finds: [{ item: 'spett', tx: 27, ty: 9, after: 'krypta_sakristia_rensad' }],
     tiles: [
       "################################",

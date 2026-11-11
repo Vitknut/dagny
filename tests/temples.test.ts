@@ -93,3 +93,11 @@ describe('Grimmen floating is struck only from above', async () => {
     expect(g.takeHit(2, 100, 'down', w)).toBe('hit');
   });
 });
+
+describe('the lesser guardians', () => {
+  it('have their own music, not the great guardians\' song', async () => {
+    const { SONGS } = await import('../src/audio/songs');
+    expect(SONGS.mellanboss).toBeDefined();
+    for (const id of ['krypta_sakristia', 'gruvan_verkstad']) expect(AREAS[id].sealed?.music, id).toBe('mellanboss');
+  });
+});

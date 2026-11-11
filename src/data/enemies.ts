@@ -49,14 +49,14 @@ export const ENEMIES: Readonly<Record<string, EnemyDef>> = {
   // The lesser guardian in the crypt's sacristy (fas 4): the dead bell-ringer, a fencer.
   klockaren: {
     id: 'klockaren', name: 'Klockaren', sprite: 'gast', behavior: 'parrier',
-    hp: 14, damage: 2, xp: 90, speed: 0.55, guardDelay: 22, thrustRest: 70, guard: true,
+    hp: 40, damage: 3, xp: 150, speed: 0.7, guardDelay: 10, thrustRest: 40, guard: true,
     box: { x: 3, y: 4, w: 10, h: 20 }, puff: 'mist',
     drops: { lingon: 1 },
   },
   // The lesser guardian in the mine's workshop (fas 4): a stone knight grown big on ore.
   malmjatte: {
     id: 'malmjatte', name: 'Malmjätten', sprite: 'stenknekt', behavior: 'tank',
-    hp: 24, damage: 3, xp: 140, speed: 0.32, guard: true,
+    hp: 44, damage: 3, xp: 180, speed: 0.36, guard: true,
     box: { x: 1, y: 1, w: 13, h: 23 }, puff: 'moss', heavy: true, nudge: 1.2,
     drops: { lingon: 1 },
   },

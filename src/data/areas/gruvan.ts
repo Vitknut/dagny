@@ -115,7 +115,7 @@ export const GRUVAN: Record<string, AreaDef> = {
     ambience: ['dust'],
     left: { to: 'gruvan_hall', entry: 'V' },
     // The ore giant shuts the way back; when it falls, the crank lies by the bench.
-    sealed: { dialog: 'verkstaden_stangs', music: 'boss' },
+    sealed: { dialog: 'verkstaden_stangs', music: 'mellanboss' },
     finds: [{ item: 'hissvev', tx: 27, ty: 9, after: 'gruvan_verkstad_rensad' }],
     tiles: [
       "################################",

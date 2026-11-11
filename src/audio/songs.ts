@@ -183,6 +183,34 @@ export const SONGS: Record<string, SongDef> = {
   },
 
   /**
+   * "Vakten vid dörren" – the lesser guardians (Klockaren, Malmjätten): D minor,
+   * driving and short, a stubborn figure on D that keeps being pushed down to
+   * B-flat and A, as if the guard would not give way.
+   */
+  mellanboss: {
+    bpm: 150,
+    loop: true,
+    tracks: [
+      {
+        inst: 'pulse', vol: 0.9,
+        notes: `d5:2 r:1 d5:1 f5:2 a5:2 g5:2 f5:2 e5:2 f5:2 | d5:2 r:1 d5:1 f5:2 a5:2 c6:4 a5:4 |
+                a#4:2 r:1 a#4:1 d5:2 f5:2 e5:2 d5:2 c#5:2 d5:2 | e5:2 f5:2 g5:2 a5:2 a#5:4 a5:4 |
+                d6:3 c6:1 a5:2 f5:2 g5:3 f5:1 e5:2 c#5:2 | d5:4 a4:2 d5:2 f5:4 e5:4 |
+                a#4:2 d5:2 f5:2 a#5:2 a5:2 g5:2 f5:2 e5:2 | c#5:2 e5:2 g5:2 a#5:2 a5:8`,
+      },
+      { inst: 'pulse2', vol: 0.45, notes: 'f4:16 | f4:16 | d4:16 | c#4:16 | f4:16 | f4:16 | d4:16 | e4:16' },
+      {
+        inst: 'bass', vol: 0.95,
+        notes: `d2:2 d3:2 d2:2 d3:2 a1:2 d3:2 d2:2 a1:2 | d2:2 d3:2 d2:2 d3:2 a1:2 d3:2 d2:2 a1:2 |
+                a#1:2 a#2:2 a#1:2 a#2:2 f1:2 a#2:2 a#1:2 f1:2 | a1:2 a2:2 a1:2 a2:2 e1:2 a2:2 a1:2 e1:2 |
+                d2:2 d3:2 d2:2 d3:2 a1:2 d3:2 d2:2 a1:2 | d2:2 d3:2 d2:2 d3:2 a1:2 d3:2 d2:2 a1:2 |
+                a#1:2 a#2:2 a#1:2 a#2:2 f1:2 a#2:2 a#1:2 f1:2 | a1:2 a2:2 a1:2 a2:2 e1:2 a2:2 a1:2 e1:2`,
+      },
+      { inst: 'drum', vol: 0.5, notes: 'k:2 h:1 h:1 s:2 h:1 k:1 k:2 h:2 s:2 h:2 '.repeat(8) },
+    ],
+  },
+
+  /**
    * A temple restored: the Väktarmotiv once more, but in C major – the
    * guardians are at peace.
    */
