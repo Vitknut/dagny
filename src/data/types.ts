@@ -88,6 +88,10 @@ export interface EnemyDef {
   backOnly?: boolean;
   /** Eld's fireballs bite less: damage is multiplied by this (Gruvrået carries her own flame). */
   fireResist?: number;
+  /** Only this kind of blow bites (a fireball, or a thrust from above or below); others glance off. */
+  only?: 'fire' | 'down' | 'up';
+  /** All but invisible, and not to be struck, until Lyse burns in the room. It still hurts. */
+  veiledUnlessLit?: boolean;
   /** Fencers (behaviour 'parrier'): steps before it follows Dagny's change of height (default 22). */
   guardDelay?: number;
   /** Fencers: steps of rest between thrusts, at the least (default 70). */

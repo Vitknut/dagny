@@ -6,7 +6,8 @@ import type { WorldApi } from './types';
 
 let nextId = 1;
 
-export type HitHeight = 'high' | 'low' | 'down' | 'up' | 'magic';
+/** How a blow lands: the sword's heights, a fireball ('fire'), or other magic (Åska, the näverlur's vätte). */
+export type HitHeight = 'high' | 'low' | 'down' | 'up' | 'magic' | 'fire';
 export type HitResult = 'hit' | 'blocked' | 'dead' | 'none';
 
 /** Shared between all creatures – refilled before each one thinks (no garbage per step). */
@@ -95,6 +96,8 @@ export class Enemy implements Body {
     return this.def.damage + this.bonusDamage;
   }
 
+  /** Unseen and not to be struck (veiledUnlessLit, without Lyse). */
+  veiled = false;
   /** XP for beating it: grows with its life (scaleTo). */
   xp: number;
 
@@ -116,9 +119,17 @@ export class Enemy implements Body {
   takeHit(dmg: number, fromX: number, height: HitHeight, world: WorldApi): HitResult {
     if (this.dead || this.iframes > 0) return 'none';
     if (this.boss && !this.awake) return 'none';
-    if (this.untouchable) return 'none';
+    if (this.untouchable || this.veiled) return 'none';
+    // Some creatures have their own answer: only fire, or only a thrust from above or below, bites.
+    const only = this.def.only;
+    if (only && height !== only) {
+      world.sparks(this.x + this.w / 2, this.y + 4);
+      world.sfx('block');
+      this.iframes = 8;
+      return 'blocked';
+    }
     // Skogsrået: lovely from the front – only her hollow back can be hurt.
-    if (this.def.backOnly && height !== 'magic') {
+    if (this.def.backOnly && height !== 'magic' && height !== 'fire') {
       const fromRight = fromX > this.x + this.w / 2;
       if (fromRight === (this.facing === 1)) {
         world.sparks(this.x + (fromRight ? this.w : 0), this.y + 10);
@@ -167,6 +178,7 @@ export class Enemy implements Body {
   update(world: WorldApi): void {
     if (this.dead) return;
     this.t++;
+    if (this.def.veiledUnlessLit) this.veiled = !world.lit();
     if (this.flash > 0) this.flash--;
     if (this.iframes > 0) this.iframes--;
     const p = world.playerCenter();
@@ -229,7 +241,7 @@ export class Enemy implements Body {
       return;
     }
     const ghostly = this.boss && this.phase === 1 && this.def.behavior === 'boss_grim';
-    ctx.globalAlpha = this.alpha * (ghostly ? 0.85 : 1);
+    ctx.globalAlpha = this.alpha * (ghostly ? 0.85 : 1) * (this.veiled ? 0.12 : 1);
     if (ctx.globalAlpha <= 0.01) {
       ctx.globalAlpha = 1;
       return;

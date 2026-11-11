@@ -81,6 +81,24 @@ export const VASEN: Readonly<Record<string, VasenEntry>> = {
     berattelse:
       'Tomtenissarna i kryptan har ingen gård kvar att vakta och har tagit till svärd i stället. De fäktas, men rusar inte – de vill bara bli lämnade i fred.',
   },
+  grytvatte: {
+    folktro:
+      'Vättarna bodde under golv och i jorden runt gården. Den som hällde ut hett vatten utan att varna dem skållade dem, och de glömde aldrig. Den här vätten är spelets egen: den har satt en järngryta på huvudet för att aldrig skållas igen.',
+    berattelse:
+      'Grytvätten i kvarnen tål svärdet från sidan. Grytan klingar och klingan studsar. Men ovanifrån är den inte så säker.',
+  },
+  bjara: {
+    folktro:
+      'Bjäran, eller mjölkharen, var ett väsen som en trollkunnig tillverkade av stickor och garn och väckte med tre droppar blod. Den sög mjölk ur grannens kor och spydde den i ägarens kärna. Kulor bet inte på den; bara eld, eller en kula av arvsilver.',
+    berattelse:
+      'Bjärorna i Fäbodskogen har ingen ägare kvar och stjäl mjölk åt ingen. Svärdet går rakt igenom stickorna. Bara eld biter.',
+  },
+  mara: {
+    folktro:
+      'Maran red människor och djur om natten: hon satte sig på bröstet på den som sov, så att han inte kunde andas. Hästar som hon ridit stod svettiga på morgonen med flätad man. Ett ljus som brann hela natten höll henne borta.',
+    berattelse:
+      'Maran i folkparken syns knappt i mörkret, och svärdet går rakt igenom henne. Hon ser Dagny, men Dagny ser henne inte. Inte förrän något lyser.',
+  },
   gast: {
     folktro:
       'En gast var den oroliga anden efter någon som drunknat och aldrig fått en grav i vigd jord. Längs kusten hördes gastar ropa i stormen, och det sades att de ville ha sällskap ner i djupet.',

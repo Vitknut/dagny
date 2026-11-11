@@ -230,13 +230,13 @@ den skada Dagny väntas ha, från tempel 3. Tempel 1–2 är orörda.*
   medianen ligger mellan 2 och 4 slag i alla tempel och att ingen vanlig
   fiende tar fler än 6.
 
-**2.2 Tätare tempel (B2).**
+**2.2 Tätare tempel (B2).** *Klar 11 november (tempel 3–6; tempel 1–2 orörda).*
 - *Vad:* 6–8 fiender per rum i stället för 4, utplacerade där de möter
   hindren (på plattformar, vid nycklar).
 - *Test:* datatest: varje tempelrum utom väktarens har minst en fiende per
   tio rutors bredd. Hopp- och fastnar-testerna körs som vanligt.
 
-**2.3 Duellanter i andra halvan (B4).**
+**2.3 Duellanter i andra halvan (B4).** *Klar 11 november: Gasten, Kavaljeren, Vittran och Drabanten.*
 - *Vad:* en ny fäktare per sent tempel på samma beteende som tomtenissen men
   snabbare: en fyrvaktargast i fyren, en dansör i Folkparken, en vallpiga i
   Fäbodskogen, bergtrollens livvakt i Trollberget.
@@ -245,7 +245,7 @@ den skada Dagny väntas ha, från tempel 3. Tempel 1–2 är orörda.*
 - *Test:* `tests/fencer.test.ts` körs för varje ny fäktare: den parerar där
   Dagny slår, står öppen efter sitt utfall, och går att besegra.
 
-**2.4 Fiender med ett eget svar (från genomgången 9 november).**
+**2.4 Fiender med ett eget svar (från genomgången 9 november).** *Klar 11 november: Grytvätten, Bjäran och Maran.*
 - *Vad:* några fiender går bara att besegra på ett visst sätt: ett väsen som
   bara tål eld, ett som måste slås uppifrån (Nedåtstöt) eller underifrån
   (Uppåtstöt), och ett som bara syns i Lyse. Ett slag per tempel, inte fler.
@@ -257,7 +257,7 @@ den skada Dagny väntas ha, från tempel 3. Tempel 1–2 är orörda.*
   Lösaren kräver att förmågan finns innan en sådan fiende står i vägen för en
   nyckel.
 
-**2.5 Liven räknas om efter provspel.**
+**2.5 Liven räknas om efter provspel.** *Väntar på provspel.*
 - *Vad:* med den nya dödsregeln och trapporna i 2.1 kan tre liv från början
   och åtta näverdockor bli antingen för mycket eller för lite. Antalet dockor
   och var de ligger ses över när 2.1–2.4 har provspelats.

@@ -77,6 +77,14 @@ creature, a page opens (with a toast). Each page has two leaves:
 The texts are in `src/data/vasen.ts`; a test checks that every creature and
 guardian has a page and that every page fits its panel.
 
+## Creatures with their own answer, and the later fencers
+
+- **Grytvätten** (Kvarnen) wears an iron pot: the blade glances off from the side; only a thrust from above bites (`only: 'down'`).
+- **Bjäran** (Fäbodskogen), the milk hare of folk belief, is sticks and yarn: only a fireball bites (`only: 'fire'`; fireballs strike as `'fire'`, Åska and the näverlur's vätte as `'magic'`).
+- **Maran** (Folkparken, in the dark) is all but invisible and cannot be struck until Lyse burns, though she still hurts (`veiledUnlessLit`).
+- Each stands only where Dagny already has its answer, and never in a room that opens only when every creature is beaten (`tests/answers.test.ts`).
+- **Fencers in every later temple:** Gasten (Fyren), Kavaljeren (Folkparken), Vittran (Fäbodskogen) and Drabanten (Trollberget) fight like the tomtenisse, each quicker to follow Dagny's height and to thrust (`guardDelay`, `thrustRest`; `tests/fencer.test.ts`).
+
 ## The first temple's creatures
 
 Dagny starts with 8 health (four bars), so the crypt must not drain it faster than skill can keep up:

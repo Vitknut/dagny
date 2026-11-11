@@ -117,6 +117,25 @@ export const ENEMIES: Readonly<Record<string, EnemyDef>> = {
     box: { x: 2, y: 3, w: 12, h: 21 }, puff: 'moss', heavy: true,
     drops: { lingon: 0.4, termos: 0.3 },
   },
+  // --- Creatures with their own answer: only one kind of blow bites ---
+  grytvatte: {
+    id: 'grytvatte', name: 'Grytvätten', sprite: 'grytvatte', behavior: 'walker',
+    hp: 6, damage: 2, xp: 16, speed: 0.5, only: 'down',
+    box: { x: 3, y: 4, w: 10, h: 12 }, puff: 'moss',
+    drops: { bulle: 0.3 },
+  },
+  bjara: {
+    id: 'bjara', name: 'Bjäran', sprite: 'bjara', behavior: 'hopper',
+    hp: 6, damage: 2, xp: 22, speed: 1.2, only: 'fire',
+    box: { x: 2, y: 4, w: 12, h: 8 }, puff: 'leaf',
+    drops: { lingon: 0.3 },
+  },
+  mara: {
+    id: 'mara', name: 'Maran', sprite: 'mara', behavior: 'floater',
+    hp: 5, damage: 2, xp: 24, speed: 0.6, veiledUnlessLit: true,
+    box: { x: 2, y: 2, w: 8, h: 8 }, puff: 'mist', flying: true,
+    drops: { termos: 0.3 },
+  },
   // --- Fencers for the later temples: the tomtenisse's way of fighting, quicker each time ---
   gast: {
     id: 'gast', name: 'Gasten', sprite: 'gast', behavior: 'parrier',

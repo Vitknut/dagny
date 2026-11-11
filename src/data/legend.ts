@@ -43,7 +43,11 @@ export const ENEMY_CHARS: Readonly<Record<string, string>> = {
   o: 'stubbtroll',
   a: 'bergtroll',
   '*': 'skuggan',
-  // The later fencers (all letters are taken)
+  // Creatures with their own answer (all letters are taken)
+  '<': 'grytvatte',
+  '>': 'bjara',
+  '|': 'mara',
+  // The later fencers
   $: 'gast',
   ';': 'kavaljer',
   ',': 'vittra',
