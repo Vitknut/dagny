@@ -385,6 +385,14 @@ Zelda II. *Test:* textgranskning; lösaren påverkas inte.
 Tre nya slag av tester, utöver dem som står vid varje åtgärd. De riktar sig
 mot den sorts fel du har hittat för hand.
 
+*Klar 11 november.* `tests/bosses.test.ts` (väktarna, från två startslag:
+det gamla Bäckahäst-felet syntes bara vid det ena), `e2e/monkey.spec.ts`
+(körs varje natt i flödet "Slumpspelare", med nytt frö varje natt) och
+`e2e/smoke.spec.ts` (i "Kontroll"). Alla tre fäller det gamla felet när det
+läggs tillbaka. Slumpspelaren hittade två nya fel, som är lagade: fågeln som
+föll i vatten blev Dagny i fågelstorlek, och raset i Rasgången kunde trycka in
+Dagny i en stenpelare.
+
 1. **Väktare över tid.** Bäckahäst-testet görs allmänt: varje väktare körs i
    3 000 steg i varje fas, och testet kräver att den är sårbar minst en viss
    del av tiden och att den byter anfall. Det hade fångat Bäckahästen.

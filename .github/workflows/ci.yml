@@ -21,3 +21,6 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      # A short play on an emulated phone (e2e/smoke.spec.ts).
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e
