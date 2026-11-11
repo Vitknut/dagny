@@ -343,10 +343,11 @@ describe('the ending', () => {
     Object.keys(DIALOG).flatMap((id) => actionsOf(id).flatMap((a) => (a.type === 'flag' ? [a.flag] : []))),
   );
 
-  it('Trollberget opens only when the six other places are restored', () => {
+  it('Trollberget opens only when the six other places are restored, and Hulda has told everything', () => {
     const troll = OVERWORLD.places.find((p) => p.name === 'Trollberget')!;
     expect(troll.area).toBe('troll_1');
-    expect(troll.requires).toHaveLength(6);
+    expect(troll.requires).toHaveLength(7);
+    expect(troll.requires).toContain('hulda_efter_fabodskogen');
     for (const t of TEMPLES.filter((x) => x.id !== 'trollberget')) {
       expect(troll.requires).toContain(`${t.id}_klar`);
       expect(flagsSet.has(`${t.id}_klar`), `${t.id}_klar is set by some dialog`).toBe(true);

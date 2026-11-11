@@ -107,3 +107,28 @@ describe("Hulda tells her story in order, even when Dagny comes home late", () =
     ]);
   });
 });
+
+describe('Trollberget waits until Hulda has told everything', () => {
+  it('without her last piece the mountain does not open, and the game cannot be finished', () => {
+    const run = playthrough({ withholdFlags: ['hulda_efter_fabodskogen'] });
+    expect(run.areas.has('troll_1')).toBe(false);
+    expect(run.finished).toBe(false);
+  });
+
+  it('with it, the game is finished, and Dagny was home before the mountain', () => {
+    const run = playthrough();
+    expect(run.finished).toBe(true);
+    // Steps are in the order they happen, also within a wave.
+    const told = run.steps.findIndex((s) => s.kind === 'flag' && s.what === 'hulda_efter_fabodskogen');
+    const mountain = run.steps.findIndex((s) => s.kind === 'area' && s.what === 'troll_1');
+    expect(told).toBeGreaterThanOrEqual(0);
+    expect(told).toBeLessThan(mountain);
+  });
+
+  it('the locked mountain says why: asleep, or waiting for something to be said', () => {
+    const troll = OVERWORLD.places.find((p) => p.area === 'troll_1')!;
+    expect(troll.requires).toContain('hulda_efter_fabodskogen');
+    expect(troll.dialogWhen?.find((w) => w.missing === 'hulda_efter_fabodskogen')?.dialog).toBe('trollberget_vantar');
+    expect(DIALOG.trollberget_vantar).toBeDefined();
+  });
+});

@@ -37,11 +37,11 @@ describe('the overworld', () => {
       }
       if (temple.treasure) carried.push(temple.treasure);
     }
-    // Trollberget is on the road from the last region, and waits for the six flags.
+    // Trollberget is on the road from the last region, and waits for the six places and Hulda's last piece.
     const troll = placeOfArea('troll_1');
     expect(reach(carried).has(`${troll.x},${troll.y}`)).toBe(true);
     expect(reach(carried.filter((i) => i !== 'radio')).has(`${troll.x},${troll.y}`), 'Trollberget without the radio').toBe(false);
-    expect(troll.requires).toHaveLength(6);
+    expect(troll.requires).toHaveLength(7);
   });
 
   it('every place is reachable with all treasures, and every gate has a hint', () => {

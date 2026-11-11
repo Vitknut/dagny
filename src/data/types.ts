@@ -435,6 +435,8 @@ export interface OverworldPlace {
   dialog?: string;
   /** Flags needed before the area opens; `dialog` is shown until then. */
   requires?: string[];
+  /** Shown instead of `dialog` when this is the only flag still missing. */
+  dialogWhen?: Array<{ missing: string; dialog: string }>;
   /**
    * A hidden place: 'near' shows only when Dagny stands right beside it
    * (a cave behind a waterfall); 'radio' only when she carries the radio.

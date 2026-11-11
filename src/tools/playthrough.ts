@@ -46,6 +46,8 @@ export interface Options {
   withholdSkills?: readonly string[];
   /** Readings (spells) she never learns. */
   withholdSpells?: readonly string[];
+  /** Flags that are never set (to check what each one opens). */
+  withholdFlags?: readonly string[];
   /** Also take the random meetings on the overworld (friendly ones and fights). */
   meetings?: boolean;
   /** Stop after this many waves. */
@@ -118,7 +120,7 @@ export function playthrough(opts: Options = {}): Playthrough {
     });
 
   const setFlag = (f: string): void => {
-    if (flags.has(f)) return;
+    if (flags.has(f) || (opts.withholdFlags ?? []).includes(f)) return;
     flags.add(f);
     log('flag', f);
   };

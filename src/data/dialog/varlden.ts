@@ -30,6 +30,10 @@ export const VARLDEN: Record<string, DialogDef> = {
     pages: ['Trollberget reser sig svart mot himlen. Vägen upp är stängd så länge de andra platserna sover.'],
   },
 
+  trollberget_vantar: {
+    pages: ['Berget är tyst nu. Det är som om det väntar på att något ska sägas först. Hemma.'],
+  },
+
   behover_eka: {
     pages: ['Vattnet är svart och djupt. Botten syns inte.'],
   },

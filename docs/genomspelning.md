@@ -192,27 +192,30 @@ what is checked is that every door, gate, condition and dialog fits together.
 - **Fäboden**: hands over Koskällan
 - **Djupskogen**: unlocks a door
 - **Fäbodvallen**: reconciles Skogsrået; gets Näverluren
-- **Trollberget**: finds a key
 
 ## 25
+
+- **Trollberget**: finds a key
+
+## 26
 
 - **Trollberget**: unlocks a door
 - **Trollgrottan**: finds a näverdocka; finds a key
 
-## 26
+## 27
 
 - **Trollgrottan**: unlocks a door
 - **Trollgångarna**
 - **Djupa gångarna**
 - **Bergshjärtat**: finds a key
 
-## 27
+## 28
 
 - **Bergshjärtat**: unlocks a door
 - **Skuggsalen**
 - **Bergakungens sal**: meets Dagmar; reconciles Bergakungen; scene: ending
 
-## 28
+## 29
 
 - **Midsommarafton**: meets Karin, Greta, Anders, Maj, murre_ep, Olle, Mormor Hulda, Sven, Vätten; scene: credits
 

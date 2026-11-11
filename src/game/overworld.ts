@@ -586,7 +586,9 @@ export class OverworldScene implements Scene {
         this.game.audio.play('door');
         flow.goToArea(this.game, place.area, { entry: place.entry });
       } else if (place.dialog) {
-        this.game.pushOverlay(new DialogOverlay(this.game, place.dialog, () => this.afterRadioVoice()));
+        const missing = (place.requires ?? []).filter((f) => !hasFlag(this.s, f));
+        const why = missing.length === 1 ? place.dialogWhen?.find((w) => w.missing === missing[0])?.dialog : undefined;
+        this.game.pushOverlay(new DialogOverlay(this.game, why ?? place.dialog, () => this.afterRadioVoice()));
       }
     }
   }

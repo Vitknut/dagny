@@ -125,7 +125,9 @@ export const OVERWORLD: OverworldDef = {
     { x: 7, y: 6, name: 'Fäbodskogen', area: 'fabod_1', entry: 'A' },
     {
       x: 48, y: 6, name: 'Trollberget', area: 'troll_1', entry: 'A', dialog: 'trollberget_sover',
-      requires: ['krypta_klar', 'gruvan_klar', 'kvarnen_klar', 'fyren_klar', 'folkparken_klar', 'fabodskogen_klar'],
+      requires: ['krypta_klar', 'gruvan_klar', 'kvarnen_klar', 'fyren_klar', 'folkparken_klar', 'fabodskogen_klar', 'hulda_efter_fabodskogen'],
+      // The six places are awake, but Hulda has not told her part yet.
+      dialogWhen: [{ missing: 'hulda_efter_fabodskogen', dialog: 'trollberget_vantar' }],
     },
     { x: 88, y: 2, name: 'Fallgrottan', area: 'fallgrottan', entry: 'A', hidden: 'near' },
     { x: 39, y: 7, name: 'Väktarkammaren', area: 'vaktarkammaren', entry: 'A', hidden: 'radio', leadsTo: { x: 41, y: 7 } },
