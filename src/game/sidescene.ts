@@ -125,6 +125,8 @@ export class SideScene implements Scene, WorldApi {
   seal = 0;
   nameT = 0;
   flashT = 0;
+  /** The grille between the quiet way in and the arena is down (side/render.ts). */
+  gateShut = false;
   private lockMsgT = 0;
   deadT = 0;
   spell: SpellTimers = { skydd: 0, hopp: 0, lyse: 0, eld: 0, hamn: 0 };
@@ -1002,6 +1004,10 @@ export class SideScene implements Scene, WorldApi {
   private updateBoss(): void {
     const b = this.boss;
     if (!b) return;
+    if (this.area.hush && b.x < (this.area.hush + 1) * TILE) {
+      b.x = (this.area.hush + 1) * TILE;
+      if (b.vx < 0) b.vx = 0;
+    }
     const g = this.game;
     const gate = this.area.hush ?? 0;
     if (!b.awake && !b.dead && this.player.x > (gate + 5) * TILE) {
@@ -1009,6 +1015,11 @@ export class SideScene implements Scene, WorldApi {
       this.grid.wallLeft = true;
       // Block the passage back while the fight lasts (where the quiet way in meets the arena).
       for (let y = 0; y < this.grid.h; y++) if (this.grid.kinds[y * this.grid.w + gate] === Kind.Empty) this.grid.kinds[y * this.grid.w + gate] = Kind.Solid;
+      // An iron grille comes down there, so the wall is seen.
+      if (this.area.hush) {
+        this.gateShut = true;
+        this.sfx('door');
+      }
       // The guardian steps out of nothing: mist where it will stand.
       for (let i = 0; i < 10; i++) this.puff(b.x + Math.random() * b.w, b.y + Math.random() * b.h, 'mist');
       this.flashT = 12;
@@ -1025,10 +1036,12 @@ export class SideScene implements Scene, WorldApi {
       if (this.bossOutro === 90) {
         const temple = this.area.temple ?? '';
         setFlag(this.s, `${temple}_boss`);
-        // Re-open the way back.
+        // Re-open the way back (where the quiet way in meets the arena): the grille goes up.
+        const gate = this.area.hush ?? 0;
         for (let y = 0; y < this.grid.h; y++) {
-          if (this.area.tiles[y][0] !== '#') this.grid.kinds[y * this.grid.w] = Kind.Empty;
+          if (this.area.tiles[y][gate] !== '#') this.grid.kinds[y * this.grid.w + gate] = Kind.Empty;
         }
+        this.gateShut = false;
         g.audio.playMusic(this.area.music);
         const dlg = (b.boss?.defeatDialog) ?? 'boss_forlikad';
         g.pushOverlay(new DialogOverlay(g, dlg, () => {

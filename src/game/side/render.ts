@@ -49,6 +49,11 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
   ctx.drawImage(sc.staticLayer, camX, camY, VIEW_W, VIEW_H, 0, 0, VIEW_W, VIEW_H);
   renderGrass(sc, ctx, camX, camY);
   renderDrapes(sc, ctx, camX, camY);
+  // The grille that shuts the arena while the guardian fights.
+  if (sc.gateShut && sc.area.hush) {
+    const gx = sc.area.hush * TILE - camX;
+    for (let y = 0; y < sc.grid.h; y++) if (sc.area.tiles[y][sc.area.hush] !== '#') drawSprite(ctx, 'galler', 0, gx, y * TILE - camY);
+  }
 
   // Animated tiles.
   for (const a of sc.anim) {

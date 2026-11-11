@@ -301,16 +301,28 @@ test('the hush before a guardian: quiet way in, the waiting tune, then it steps 
     }
     g.input.keyboard.fill(false);
     const hush = sc.area.hush ?? 0;
-    return {
-      before,
+    const woke = {
       wokeAt: Math.floor(sc.player.x / 16),
       hush,
       after: sc.music(),
       shut: sc.grid.kinds[8 * sc.grid.w + hush] === 1,
+      grille: sc.gateShut,
+      tunnel: sc.grid.kinds[5 * sc.grid.w + 12] === 1,
     };
+    // The guardian falls: the grille goes up again.
+    const { killEnemy } = await import('/src/game/side/combat.ts');
+    killEnemy(sc as never, sc.boss! as never);
+    for (let i = 0; i < 120; i++) {
+      g.update();
+      g.overlays.length = 0;
+    }
+    return { before, ...woke, reopened: sc.grid.kinds[8 * sc.grid.w + hush] !== 1 && !sc.gateShut };
   });
   expect(r.before).toEqual({ music: 'vantan', awake: false, creatures: 0 });
   expect(r.wokeAt).toBeGreaterThanOrEqual(r.hush + 5);
   expect(r.after).toBe('boss');
   expect(r.shut).toBe(true);
+  expect(r.grille, 'the grille is seen').toBe(true);
+  expect(r.tunnel, 'the way in is a low tunnel').toBe(true);
+  expect(r.reopened, 'the way back opens after the fight').toBe(true);
 });
