@@ -3,6 +3,7 @@ import { Act } from '../engine/input';
 import { VIEW_W, VIEW_H } from '../engine/screen';
 import { AREAS } from '../data/areas';
 import { ENEMIES } from '../data/enemies';
+import { lifeAtTier } from '../data/progression';
 import { kindOf } from '../data/legend';
 import { NPCS } from '../data/npcs';
 import { PALETTE } from '../data/palettes';
@@ -29,7 +30,7 @@ import { updateTrial, type Trial } from './side/trial';
 import { compact, nearestFreeSpot, tmpA, type Checkpoint, type Marker, type SpellTimers } from './side/shared';
 
 export { nearestFreeSpot } from './side/shared';
-import { build, refreshRoom, spawnAfterBoss, spawnTreasure, renderStatic, renderFront, templeBonus } from './side/room';
+import { build, refreshRoom, spawnAfterBoss, spawnTreasure, renderStatic, renderFront, roomTier, templeBonus } from './side/room';
 import { shieldBlocks, damagePlayer, combat, killEnemy } from './side/combat';
 import { collect } from './side/pickups';
 import { renderScene } from './side/render';
@@ -46,6 +47,8 @@ export interface Spawn {
   x?: number;
   y?: number;
   facing?: 1 | -1;
+  /** A meeting on the map: the tier of the region it started in (game/reach.ts, tierAt). */
+  tier?: number;
 }
 
 /**
@@ -124,6 +127,11 @@ export class SideScene implements Scene, WorldApi {
   dark: HTMLCanvasElement | null = null;
   private exiting = false;
   prompt: { x: number; y: number } | null = null;
+
+  /** The tier a meeting was started at (Spawn.tier). */
+  get spawnTier(): number | undefined {
+    return this.spawn.tier;
+  }
 
   constructor(readonly game: Game, areaId: string, private readonly spawn: Spawn) {
     const area = AREAS[areaId];
@@ -307,6 +315,7 @@ export class SideScene implements Scene, WorldApi {
     const def = ENEMIES[id];
     if (!def || this.minions() >= 2) return false;
     const e = new Enemy(def, px, py);
+    e.scaleTo(lifeAtTier(def, roomTier(this)));
     e.bonusDamage = templeBonus(this.area.temple);
     e.facing = px < this.player.x ? 1 : -1;
     this.enemies.push(e);

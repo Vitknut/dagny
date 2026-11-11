@@ -111,8 +111,8 @@ export function killEnemy(sc: SideScene, e: Enemy): void {
   const s = sc.s;
   sc.sfx('puff');
   sc.puff(e.x + e.w / 2, e.y + e.h / 2, e.def.puff);
-  s.xp += e.def.xp;
-  sc.particles.spawn({ x: e.x + e.w / 2 - 6, y: e.y - 4, vy: -0.5, life: 50, text: `+${e.def.xp}`, color: PALETTE.Y });
+  s.xp += e.xp;
+  sc.particles.spawn({ x: e.x + e.w / 2 - 6, y: e.y - 4, vy: -0.5, life: 50, text: `+${e.xp}`, color: PALETTE.Y });
   // The first time: a page opens in Väsensboken.
   if (VASEN[e.def.id] && !hasFlag(s, `vasen_${e.def.id}`)) {
     setFlag(s, `vasen_${e.def.id}`);

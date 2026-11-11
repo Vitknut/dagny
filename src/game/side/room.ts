@@ -5,7 +5,8 @@ import { ENEMY_CHARS, PICKUP_CHARS, THEMES, DECO, FRONT, kindOf } from '../../da
 import { NPCS } from '../../data/npcs';
 import { spawnCritters } from './critters';
 import { makeTrial } from './trial';
-import { TEMPLE_BOSS_DAMAGE, TEMPLE_ENEMY_BONUS } from '../../data/progression';
+import { TEMPLE_BOSS_DAMAGE, TEMPLE_ENEMY_BONUS, lifeAtTier } from '../../data/progression';
+import { areaTier } from '../reach';
 import { ITEMS } from '../../data/items';
 import { templeById } from '../../data/temples';
 import { Enemy } from '../../entities/enemy';
@@ -136,7 +137,7 @@ export function build(sc: SideScene): void {
             // A cleared sealed room stays empty.
             if (def && !(a.sealed && hasFlag(s, `${a.id}_rensad`))) {
               const e = new Enemy(def, px, py);
-              if (a.hard) e.harden();
+              e.scaleTo(lifeAtTier(def, roomTier(sc)));
               e.bonusDamage = templeBonus(a.temple);
               sc.enemies.push(e);
               // A meeting on the map shuts the way back (game/sidescene.ts, updateSeal).
@@ -361,3 +362,9 @@ export function bossBonus(temple: string | undefined, base: number): number {
   const n = temple ? templeById(temple)?.number : undefined;
   return n ? Math.max(0, (TEMPLE_BOSS_DAMAGE[n - 1] ?? base) - base) : 0;
 }
+
+/** How deep in the game this room is (1–7): a meeting takes the region it started in, other rooms their own (game/reach.ts). */
+export function roomTier(sc: SideScene): number {
+  return sc.area.kind === 'encounter' ? sc.spawnTier ?? 1 : areaTier(sc.area.id);
+}
+

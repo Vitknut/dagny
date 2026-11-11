@@ -4,7 +4,6 @@ import type { AreaDef } from '../types';
 export const TROLLBERGET: Record<string, AreaDef> = {
   troll_1: {
     id: 'troll_1',
-    hard: true,
     name: 'Trollberget',
     kind: 'temple',
     temple: 'trollberget',
@@ -43,7 +42,6 @@ export const TROLLBERGET: Record<string, AreaDef> = {
 
   troll_2: {
     id: 'troll_2',
-    hard: true,
     name: 'Trollgrottan',
     kind: 'temple',
     temple: 'trollberget',
@@ -91,7 +89,6 @@ export const TROLLBERGET: Record<string, AreaDef> = {
 
   troll_gangar_1: {
     id: 'troll_gangar_1',
-    hard: true,
     name: 'Trollgångarna',
     kind: 'temple',
     temple: 'trollberget',
@@ -142,7 +139,6 @@ export const TROLLBERGET: Record<string, AreaDef> = {
 
   troll_gangar_2: {
     id: 'troll_gangar_2',
-    hard: true,
     name: 'Djupa gångarna',
     kind: 'temple',
     temple: 'trollberget',
@@ -192,7 +188,6 @@ export const TROLLBERGET: Record<string, AreaDef> = {
 
   troll_3: {
     id: 'troll_3',
-    hard: true,
     name: 'Bergshjärtat',
     kind: 'temple',
     temple: 'trollberget',
@@ -281,7 +276,6 @@ export const TROLLBERGET: Record<string, AreaDef> = {
 
   troll_skugga: {
     id: 'troll_skugga',
-    hard: true,
     name: 'Skuggsalen',
     kind: 'temple',
     temple: 'trollberget',

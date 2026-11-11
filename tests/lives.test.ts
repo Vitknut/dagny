@@ -169,11 +169,10 @@ describe('näverdockor (extra lives)', () => {
 describe('Trollberget', () => {
   const rooms = Object.values(AREAS).filter((a) => a.temple === 'trollberget');
 
-  it('is the longest temple, and every room in it is hard', () => {
+  it('is the longest temple', () => {
     for (const t of TEMPLES.filter((x) => x.id !== 'trollberget')) {
       expect(rooms.length).toBeGreaterThan(Object.values(AREAS).filter((a) => a.temple === t.id).length);
     }
-    for (const a of rooms.filter((r) => r.id !== 'troll_4')) expect(a.hard, a.id).toBe(true);
   });
 
   it('Trollgångarna: one door in each maze room goes on, the others lead back', () => {

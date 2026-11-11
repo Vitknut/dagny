@@ -190,7 +190,7 @@ starkast borta vid Björkhagen. Som om någon pratade."
   ingen bit ska kunna höras två gånger. Ordningstestet från 0.2 gäller också
   telefonvägen.
 
-**1.2 Den sista biten krävs före Trollberget (S2).**
+**1.2 Den sista biten krävs före Trollberget (S2).** *Klar 11 november.*
 - *Vad:* Trollberget öppnar när de sex platserna är väckta *och* Hulda har
   berättat allt. Annars: "Berget är tyst. Det är som om det väntar på att
   något ska sägas först."
@@ -211,7 +211,11 @@ starkast borta vid Björkhagen. Som om någon pratade."
 
 ### Fas 2 – Fienderna växer med Dagny
 
-**2.1 Liv- och XP-trappa per tempel (B1, B3).**
+**2.1 Liv- och XP-trappa per tempel (B1, B3).** *Klar 11 november, med en
+ändring mot planen: att räkna från fiendens egen nivå räckte inte, eftersom
+de sena fienderna själva är för svaga (dansgasten dog ändå på ett slag i
+Folkparken). I stället siktar trappan på ett antal slag per fiendetyp mot
+den skada Dagny väntas ha, från tempel 3. Tempel 1–2 är orörda.*
 - *Vad:* som skadetrappan. Vanliga fiender i tempel 1–7 får liv × 1, 1, 1,5,
   2, 2,5, 3, 3,5 och XP i samma takt. I möten på kartan följer trappan
   området.

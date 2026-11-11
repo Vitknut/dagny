@@ -67,3 +67,67 @@ export function repairReach(s: GameState): boolean {
   }
   return moved;
 }
+
+/** The treasures that open the regions, in order (the boat opens the second region). */
+const REGION_KEYS = ['eka', 'karbidlampa', 'stovlar', 'ficklampa', 'radio'];
+let tierGrid: number[][] | null = null;
+
+/**
+ * How deep in the game a tile on the map lies, 1–6: the number of the temple
+ * whose region it is in (the home valley is 1, the highlands 6). Regions open
+ * in temple order, so this is also how strong Dagny is expected to be there.
+ */
+export function tierAt(x: number, y: number): number {
+  if (!tierGrid) {
+    const out = OVERWORLD.tiles.map((row) => [...row].map(() => 0));
+    for (let k = 0; k <= REGION_KEYS.length; k++) {
+      for (const key of reachableTiles(REGION_KEYS.slice(0, k))) {
+        const [tx, ty] = key.split(',').map(Number);
+        if (!out[ty][tx]) out[ty][tx] = k + 1;
+      }
+    }
+    tierGrid = out;
+  }
+  return tierGrid[y]?.[x] || 1;
+}
+
+let areaTiers: Map<string, number> | null = null;
+
+/**
+ * The tier of a room: a temple's own number; otherwise the tier of the map
+ * tile its way in lies on, carried on through the rooms behind it. Meetings
+ * on the map are shared by every region and take the tier where they start.
+ */
+export function areaTier(areaId: string): number {
+  const a = AREAS[areaId];
+  if (!a) return 1;
+  const temple = a.temple ? TEMPLES.find((t) => t.id === a.temple) : undefined;
+  if (temple) return temple.number;
+  if (!areaTiers) {
+    areaTiers = new Map();
+    const queue: string[] = [];
+    for (const p of OVERWORLD.places) {
+      if (!p.area) continue;
+      const tier = tierAt(p.x, p.y);
+      if ((areaTiers.get(p.area) ?? 99) > tier) {
+        areaTiers.set(p.area, tier);
+        queue.push(p.area);
+      }
+    }
+    while (queue.length) {
+      const id = queue.shift()!;
+      const room = AREAS[id];
+      const tier = areaTiers.get(id)!;
+      for (const ex of [room?.left, room?.right, ...Object.values(room?.doors ?? {})]) {
+        const to = ex?.to;
+        if (!to || to === 'overworld' || AREAS[to]?.temple || AREAS[to]?.kind === 'encounter') continue;
+        if ((areaTiers.get(to) ?? 99) > tier) {
+          areaTiers.set(to, tier);
+          queue.push(to);
+        }
+      }
+    }
+  }
+  return areaTiers.get(areaId) ?? 1;
+}
+

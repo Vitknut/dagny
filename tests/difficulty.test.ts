@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { BOSSES } from '../src/data/enemies';
 import { TEMPLES } from '../src/data/temples';
-import { bossBonus, templeBonus } from '../src/game/side/room';
+import { bossBonus, roomTier, templeBonus } from '../src/game/side/room';
+import { AREAS } from '../src/data/areas';
+import { BOSSES, ENEMIES } from '../src/data/enemies';
+import { ENEMY_CHARS } from '../src/data/legend';
+import { EXPECTED_SWORD, SCALE_FROM_TIER, enemyWeight, lifeAtTier } from '../src/data/progression';
+import type { AreaDef } from '../src/data/types';
+import { Enemy } from '../src/entities/enemy';
+import { areaTier, tierAt } from '../src/game/reach';
+import { OVERWORLD } from '../src/data/overworld';
 
 describe('each temple hits harder than the one before (as in Zelda II)', () => {
   it('ordinary creatures: +0, +0, +1, +1, +2, +2, +3', () => {
@@ -14,5 +21,67 @@ describe('each temple hits harder than the one before (as in Zelda II)', () => {
     const byNumber = [...TEMPLES].sort((a, b) => a.number - b.number);
     const touch = byNumber.map((t) => BOSSES[t.boss].damage + bossBonus(t.id, BOSSES[t.boss].damage));
     expect(touch).toEqual([3, 3, 4, 4, 5, 5, 6]);
+  });
+});
+
+describe('creatures grow with Dagny (life and XP), as in Zelda II', () => {
+  const ordinary = (id: string): boolean => !!ENEMIES[id] && ENEMIES[id].behavior !== 'shadow';
+  const blowsIn = (tier: number, areas: AreaDef[]): Array<{ id: string; blows: number }> => {
+    const out: Array<{ id: string; blows: number }> = [];
+    for (const a of areas) {
+      for (const row of a.tiles) {
+        for (const ch of row) {
+          const id = ENEMY_CHARS[ch];
+          if (id && ordinary(id)) out.push({ id, blows: Math.ceil(lifeAtTier(ENEMIES[id], tier) / EXPECTED_SWORD[tier - 1]) });
+        }
+      }
+    }
+    return out;
+  };
+  const median = (xs: number[]): number => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
+
+  it('in every temple an ordinary creature takes two to four blows, and none becomes a sponge', () => {
+    for (const t of TEMPLES) {
+      const all = blowsIn(t.number, Object.values(AREAS).filter((a) => a.temple === t.id));
+      const m = median(all.map((b) => b.blows));
+      expect(m, t.id).toBeGreaterThanOrEqual(t.number >= SCALE_FROM_TIER ? 2 : 1);
+      expect(m, t.id).toBeLessThanOrEqual(4);
+      for (const b of all) {
+        const heavy = enemyWeight(ENEMIES[b.id]) === 'heavy';
+        expect(b.blows, `${t.id} ${b.id}`).toBeLessThanOrEqual(heavy ? 10 : 6);
+      }
+    }
+  });
+
+  it('the first two temples are left as they were tuned', () => {
+    for (const e of Object.values(ENEMIES)) {
+      expect(lifeAtTier(e, 1)).toBe(e.hp);
+      expect(lifeAtTier(e, 2)).toBe(e.hp);
+    }
+  });
+
+  it('a creature that grows is worth more XP in step', () => {
+    const vatte = new Enemy(ENEMIES.vatte, 0, 0);
+    vatte.scaleTo(lifeAtTier(ENEMIES.vatte, 6));
+    expect(vatte.maxHp).toBeGreaterThan(ENEMIES.vatte.hp);
+    expect(vatte.xp).toBe(Math.round((ENEMIES.vatte.xp * vatte.maxHp) / ENEMIES.vatte.hp));
+  });
+
+  it('a meeting on the map takes the tier of the region it started in', () => {
+    const meeting = (tier: number | undefined) => ({ area: AREAS.mote_skog, spawnTier: tier }) as unknown as Parameters<typeof roomTier>[0];
+    expect(roomTier(meeting(5))).toBe(5);
+    expect(roomTier(meeting(undefined))).toBe(1);
+    expect(tierAt(OVERWORLD.start.x, OVERWORLD.start.y)).toBe(1);
+  });
+
+  it('caves and small places take the tier of where they lie on the map', () => {
+    expect(areaTier('krypta_2')).toBe(1);
+    expect(areaTier('dagmars_ort')).toBe(2);
+    expect(areaTier('ronnen')).toBe(3);
+    expect(areaTier('tjuvgrottan_3')).toBe(4);
+    expect(areaTier('arlskaret')).toBe(4);
+    expect(areaTier('uvberget')).toBe(6);
+    expect(areaTier('troll_2')).toBe(7);
+    for (const a of Object.values(AREAS)) expect(areaTier(a.id), a.id).toBeGreaterThanOrEqual(1);
   });
 });

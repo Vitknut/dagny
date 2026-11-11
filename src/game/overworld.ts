@@ -15,7 +15,7 @@ import { hasFlag, hasItem, setFlag, shownName, type GameState } from './state';
 import * as flow from './flow';
 import { ENCOUNTER_TABLES, TERRAIN_TYPE } from '../data/encounters';
 import { pickEncounter } from './encounters';
-import { reachableTiles } from './reach';
+import { reachableTiles, tierAt } from './reach';
 import { markExplored } from './explored';
 import { SPRITES } from '../art';
 
@@ -712,7 +712,7 @@ export class OverworldScene implements Scene {
         this.leaving = true;
         this.game.audio.play('roar');
         this.game.vibrate(30);
-        flow.goToArea(this.game, pick.area, { entry: 'W', facing: 1 });
+        flow.goToArea(this.game, pick.area, { entry: 'W', facing: 1, tier: tierAt(me.t < 1 ? me.fx : me.x, me.t < 1 ? me.fy : me.y) });
         return;
       }
     }

@@ -412,8 +412,6 @@ export interface AreaDef {
   themeBoxes?: Array<{ x0: number; y0: number; x1: number; y1: number; theme: string }>;
   /** Leaving by the right exit sets this flag: a way that opens only from inside. */
   opens?: string;
-  /** Tougher creatures (the last temple): more health and harder blows. */
-  hard?: boolean;
   /** Dialog started automatically the first time (needs flag to not repeat). */
   onEnter?: { dialog: string; unlessFlag: string; setFlag: string };
 }

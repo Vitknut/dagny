@@ -120,7 +120,8 @@ export const ENEMIES: Readonly<Record<string, EnemyDef>> = {
   /** Skuggan – Dagny's own shadow, torn loose in the mountain. Mirrors her guard. */
   skuggan: {
     id: 'skuggan', name: 'Skuggan', sprite: 'skuggan', behavior: 'shadow',
-    hp: 30, damage: 3, xp: 250, speed: 1.0,
+    // 45: what she had when Trollberget made every creature 1.5 × as tough (the staircase leaves her as she is).
+    hp: 45, damage: 3, xp: 250, speed: 1.0,
     box: { x: 3, y: 2, w: 10, h: 22 }, puff: 'mist',
     drops: { lingon: 1 },
   },

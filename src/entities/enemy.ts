@@ -73,6 +73,7 @@ export class Enemy implements Body {
   readonly boss: BossDef | null;
 
   constructor(readonly def: EnemyDef, px: number, py: number) {
+    this.xp = def.xp;
     this.boss = 'phases' in def ? (def as BossDef) : null;
     this.w = def.box.w;
     this.h = def.box.h;
@@ -94,9 +95,14 @@ export class Enemy implements Body {
     return this.def.damage + this.bonusDamage;
   }
 
-  /** Makes this creature tougher (the last temple). Its extra damage comes from the temple (TEMPLE_ENEMY_BONUS). */
-  harden(): void {
-    this.hp = this.maxHp = Math.ceil(this.def.hp * 1.5);
+  /** XP for beating it: grows with its life (scaleTo). */
+  xp: number;
+
+  /** Grows to `life` (see lifeAtTier); the XP grows with it. */
+  scaleTo(life: number): void {
+    if (life <= this.def.hp) return;
+    this.xp = Math.round((this.def.xp * life) / this.def.hp);
+    this.hp = this.maxHp = life;
   }
 
 
