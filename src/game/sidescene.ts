@@ -491,7 +491,13 @@ export class SideScene implements Scene, WorldApi {
       // Only one hurt per fall: a held stick can't send Dagny straight back in.
       if (this.hazardGrace === 0) damagePlayer(this, 2, p.x + p.w / 2 - p.facing, true);
       this.hazardGrace = 50;
-      if (this.s.hp > 0) {
+      if (this.s.hp > 0 && p.state === 'bird') {
+        // The bird stays a bird, back where Dagny last stood (feet on the same spot).
+        p.x = p.safeX;
+        p.y = p.safeY + STAND_H - p.h;
+        p.vx = 0;
+        p.vy = 0;
+      } else if (this.s.hp > 0) {
         p.state = 'normal';
         p.place(p.safeX, p.safeY);
       }
@@ -674,6 +680,17 @@ export class SideScene implements Scene, WorldApi {
     if (p.x < this.caveX + 4) {
       if (p.invuln === 0) damagePlayer(this, 2, this.caveX - 20);
       p.x = this.caveX + 4;
+      // Shoved against a pillar: the rubble lifts her up onto it, never into the rock.
+      if (rectHitsSolid(this.grid, p)) {
+        let up = TILE / 2;
+        while (up <= 4 * TILE && rectHitsSolid(this.grid, { x: p.x, y: p.y - up, w: p.w, h: p.h })) up += TILE / 2;
+        if (up <= 4 * TILE) p.y -= up;
+        else {
+          const free = nearestFreeSpot(this.grid, p.x, p.y, p.w, p.h);
+          if (free) p.place(free.x, free.y);
+        }
+        p.vy = 0;
+      }
     }
     if (this.caveX > (this.grid.w - 3) * TILE) this.caveX = null;
   }
