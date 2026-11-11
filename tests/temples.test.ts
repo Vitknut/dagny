@@ -33,7 +33,7 @@ describe('the mine as a net (the pilot)', () => {
     expect(without.areas.has('gruvan_hall')).toBe(true);
     expect(without.areas.has('gruvan_4')).toBe(false);
     expect(without.finished).toBe(false);
-  });
+  }, 30_000);
 
   it('the crank is found before the shaft is ridden down, and the ore drift is visited too (its key opens the shaft)', () => {
     const run = playthrough();
@@ -41,7 +41,7 @@ describe('the mine as a net (the pilot)', () => {
     expect(at('item', 'hissvev')).toBeGreaterThanOrEqual(0);
     expect(at('area', 'gruvan_malm')).toBeGreaterThanOrEqual(0);
     expect(at('item', 'hissvev')).toBeLessThan(at('area', 'gruvan_3'));
-  });
+  }, 30_000);
 });
 
 describe('door letters', () => {

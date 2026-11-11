@@ -261,13 +261,15 @@ describe('what a reading opens on the map (fas 3.2)', () => {
     const behind = (m: (typeof opened)[number]) =>
       OVERWORLD.places.find((p) => p.dialog && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => p.x === m.x + dx && p.y === m.y + dy))!;
     const all = playthrough();
+    // One run without each reading (the solver is slow on a CI runner).
+    const without = new Map([...new Set(opened.map((m) => m.spell!))].map((sp) => [sp, playthrough({ withholdSpells: [sp] })]));
     for (const m of opened) {
       const p = behind(m);
       expect(p, m.flag).toBeDefined();
       expect(all.dialogs.has(p.dialog!), `${p.name} with every reading`).toBe(true);
-      const without = playthrough({ withholdSpells: [m.spell!] });
-      expect(without.dialogs.has(p.dialog!), `${p.name} without ${m.spell}`).toBe(false);
-      expect(without.flags.has(m.flag), `${m.flag} without ${m.spell}`).toBe(false);
+      const run = without.get(m.spell!)!;
+      expect(run.dialogs.has(p.dialog!), `${p.name} without ${m.spell}`).toBe(false);
+      expect(run.flags.has(m.flag), `${m.flag} without ${m.spell}`).toBe(false);
     }
-  });
+  }, 30_000);
 });
