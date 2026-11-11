@@ -65,7 +65,7 @@ Regler som alltid gäller:
 4. Data. I `overworld.ts` och `areas/smaplatser.ts` (id `dagmars_ort` står
    kvar):
    ```ts
-   name: 'Gamla orten',
+   name: 'Övergivna orten',
    nameAfter: { flag: 'hulda_efter_folkparken', name: 'Dagmars ort' },
    ```
 5. Repliker i `dialog/gruvsamhallet.ts`:
@@ -81,12 +81,23 @@ Regler som alltid gäller:
      skrattar."
    - Skogsrået och Bergakungen får behålla namnet (tempel 6 och 7).
 
+**Förarbete i lösaren.** Steg av sorten `'talk'` sparar personens id, inte
+replikens, och `dialogs` är en mängd utan uppgift om när en replik hördes.
+Lägg därför till en ny sort i `Step.kind`, `'hear'`, och logga den i
+`talk()` i `src/tools/playthrough.ts`, där en replik läggs i `dialogs` första
+gången:
+```ts
+if (!dialogs.has(id)) { dialogs.add(id); changed = true; log('hear', id); }
+```
+Kontrollera att `walkthroughMarkdown` hoppar över `'hear'`, så att
+genomspelningen inte fylls av repliknamn.
+
 **Test** – `tests/story.test.ts`, "Dagmars namn sägs inte före Hulda":
 ```ts
 const run = playthrough();
-const reveal = run.steps.find((s) => s.kind === 'talk' && s.what === 'hulda_efter_folkparken')!.wave;
+const reveal = run.steps.find((s) => s.kind === 'flag' && s.what === 'hulda_efter_folkparken')!.wave;
 // 1. Repliker
-for (const st of run.steps.filter((s) => s.kind === 'talk' && s.wave < reveal))
+for (const st of run.steps.filter((s) => s.kind === 'hear' && s.wave < reveal))
   expect(DIALOG[st.what].pages.join(' '), st.what).not.toMatch(/Dagmar/);
 // 2. Namn på platser och rum som går att nå före dess
 for (const st of run.steps.filter((s) => s.kind === 'area' && s.wave < reveal))
@@ -100,6 +111,18 @@ För punkt 3: samla fiendebokstäver ur `tiles` i de nådda rummen med
 
 **Klart när:** testet är grönt, och `grep -rn "Dagmar" src/data` bara ger
 träffar som hörs efter avslöjandet.
+
+### 0.1b Kryptans skylt och Huldas citat
+
+Hulda säger efter Fäbodskogen: *"...da, Väktare 1921–1946" – det står Hulda i
+kryptan.* Skylten i kryptan (`krypta_skylt2`, `dialog/krypta.ts`) säger bara
+*"...da, Väktare. Hon tände ljusen här varje midsommar."* Lägg årtalen på
+skylten: *"...da, Väktare 1921–1946. Hon tände ljusen här varje midsommar."*
+Årtalen avslöjar inget (de passar både Hulda och en okänd).
+
+**Test** – i `tests/story.test.ts`: den citerade raden i
+`hulda_efter_fabodskogen` (texten inom citattecken som börjar med "...da")
+finns ordagrant i `krypta_skylt2`.
 
 ### 0.2 Huldas bitar i rätt ordning
 
@@ -307,10 +330,20 @@ som vanligt.
 
 **Steg**
 
-1. Tabeller i `progression.ts`, bredvid `TEMPLE_ENEMY_BONUS`:
+1. **Varför inte en enda multiplikator för alla:** de seglivade fienderna
+   hör redan hemma sent i spelet. Med × 3,5 i Trollberget skulle bergtrollet
+   (26 liv) ta 10 slag och stenknekten 7. Trappan räknas därför från varje
+   fiendes *egen* nivå: en fiende som hör hemma i tempel 6 och står i tempel
+   6 får inget påslag, en vätte från hemdalen får mycket.
+
+   I `enemies.ts`, ett fält per fiende: `home: number` (templet den hör hemma
+   i, 1–7; möten på kartan räknas till områdets tempel). I `progression.ts`:
    ```ts
-   /** Life and XP of ordinary creatures in temple 1–7, as a multiple of their own. */
-   export const TEMPLE_ENEMY_SCALE = [1, 1, 1.5, 2, 2.5, 3, 3.5];
+   /** How hard a temple is, 1–7: life and XP of ordinary creatures grow by this relative to their own home. */
+   export const TEMPLE_STRENGTH = [1, 1.3, 1.7, 2.2, 2.8, 3.4, 4];
+   export function enemyScale(home: number, temple: number): number {
+     return Math.max(1, TEMPLE_STRENGTH[temple - 1] / TEMPLE_STRENGTH[home - 1]);
+   }
    ```
 2. På `Enemy`: fältet `xp` (i dag läses `def.xp` direkt) och en metod:
    ```ts
@@ -324,7 +357,8 @@ som vanligt.
    Ta bort `hard: true` ur `areas/trollberget.ts` och fältet ur `AreaDef` i
    samma incheckning.
 3. I `room.ts` där `bonusDamage` sätts, och i `spawnEnemy`:
-   `e.scale(templeScale(a.temple))`, med `templeScale` bredvid `templeBonus`.
+   `e.scale(enemyScale(def.home, templeNumber(a.temple)))`, med
+   `templeNumber` bredvid `templeBonus`.
 4. I `combat.ts` rad 114–115: `e.xp` i stället för `e.def.xp`.
 5. Möten på kartan: `AreaDef` för möten får `tier?: number` (0–6), satt efter
    vilket område mötet hör till, och samma `scale`. Tabellen i
@@ -338,16 +372,21 @@ it('ordinary creatures take 2–4 blows in every temple', () => {
   for (const t of TEMPLES) {
     const styrka = /* Styrka-nivån lösaren har när den går in i templet; se nedan */;
     const dmg = swordDamage(styrka, itemsAt(run, t));
-    const blows = enemiesIn(t).map((e) => Math.ceil(Math.ceil(e.hp * TEMPLE_ENEMY_SCALE[t.number - 1]) / dmg));
+    const blows = enemiesIn(t).map((e) => Math.ceil(Math.ceil(e.hp * enemyScale(e.home, t.number)) / dmg));
     expect(median(blows), t.id).toBeGreaterThanOrEqual(2);
     expect(median(blows), t.id).toBeLessThanOrEqual(4);
+    // A ceiling too: no ordinary creature becomes a sponge.
+    expect(Math.max(...blows), t.id).toBeLessThanOrEqual(6);
   }
 });
 ```
 Lösaren räknar inte nivåer. Använd en fast, uttalad antagen kurva i testet,
 `EXPECTED_STYRKA = [1, 2, 3, 5, 6, 7, 8]`, och skriv i kommentaren att den
-kommer från provspel (Styrka 7 vid tempel 6). Justera `TEMPLE_ENEMY_SCALE`
-tills testet går igenom, inte tvärtom.
+kommer från provspel (Styrka 7 vid tempel 6). Justera `TEMPLE_STRENGTH`
+och fiendernas `home` tills testet går igenom, inte tvärtom.
+
+Utgångsläget (räknat 11 november med den kurvan): Folkparken och
+Fäbodskogen har median 1 slag, fyren nästan bara 1.
 
 Uppdatera också testet som i dag håller skadetrappan, så att det inte längre
 nämner `harden`.
@@ -475,6 +514,11 @@ skriv upp den och ta den i T2.
 
 **Filer:** nytt `e2e/monkey.spec.ts`, `playwright.config.ts`, `package.json`.
 
+**Var den körs:** 93 rum × 2 varv × 2 000 steg i en riktig webbläsare tar
+flera minuter. Den läggs i ett eget GitHub-flöde som körs varje natt
+(`on: schedule`) och för hand, inte i "Kontroll". Rökprovet (T3) ligger i
+"Kontroll".
+
 **Steg**
 
 1. `npm i -D @playwright/test` och ett skript `"e2e": "playwright test"`.
@@ -528,13 +572,21 @@ skriv upp den och ta den i T2.
 **Krokar som finns:** `AreaDef.needsSpell` (zoner som kräver en magi, lästa av
 lösaren), luckor `!` (Uppåtstöt), `lampSecrets`, `dark`.
 
+**Förarbete:** Nedåtstöt, Eld och Lyse har ingen markering i rummen i dag,
+så testet nedan kan inte räkna dem. Gör `needsSpell` allmän först:
+`needs?: Array<{ ability: SpellId | SkillId; x0; y0; x1; y1 }>`, läst av
+lösaren på samma ställe som `needsSpell`. Byt de tre befintliga
+`needsSpell` till `needs` i samma incheckning. Sköra golv (Nedåtstöt),
+torra rötter (Eld) och vägar som bara syns i ljus (Lyse) får var sin zon i
+`needs` i de rum där de läggs.
+
 **Steg**
 
 1. Skriv testet först, `tests/abilities.test.ts`:
    ```ts
    const uses = { hopp: [], hamn: [], aska: [], eld: [], lyse: [], uppatstot: [], nedatstot: [] };
    for (const a of Object.values(AREAS)) {
-     for (const n of a.needsSpell ?? []) uses[n.spell].push(a.id);
+     for (const n of a.needs ?? []) uses[n.ability].push(a.id);
      if (a.tiles.some((r) => r.includes('!'))) uses.uppatstot.push(a.id);
    }
    for (const [k, rooms] of Object.entries(uses)) {
@@ -654,7 +706,10 @@ fyndet i rummet, repliken `hittade_medaljong`).
 
 **5.2 Johan (Fiskeläget).** Återanvänd `Follower` (`side/follower.ts`) och
 `lostChild` på ett nytt rum, "Dimman", där Johan sitter i sin båt. Kompassen
-tas bort som föremål.
+tas bort som föremål. **Johans livbehållare ska vara kvar:** han ger den när
+han är hemma, som i dag (`johan_tack` har `container`-belöningen). Testet i
+`tests/secrets.test.ts` kräver åtta livbehållare och fångar det om den
+försvinner.
 
 **5.3 Den gömda läraren (Karna).** Nytt rum `karnas_stuga` och en plats på
 kartan med `hidden: 'lyse'` (ny sort bredvid `'near'` och `'radio'`;

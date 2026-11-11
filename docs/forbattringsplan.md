@@ -59,6 +59,7 @@ stora arbetet och det som gör spelet mer likt Zelda II på djupet.
 | S2 | **Huldas bitar går att missa helt.** De spelas bara om man går hem till Mormors by efter varje tempel. Inget kräver det, inte ens den sista ("Hon var din mamma"). Tåget stannar inte i Mormors by och finns först efter tempel 5. En spelare som inte går hem möter Dagmar utan att ha hört något, och Dagmars replik "Mamma hade släppt platserna" blir obegriplig. | `npcs.ts` (hulda), `overworld.ts` (Trollberget kräver bara de sex templen) |
 | S3 | **Bitarna spelas baklänges om de staplas.** Listan prövar den senaste först. Går man hem efter tempel 4 utan att ha varit hemma sedan tempel 1 hör man fyren, sedan kvarnen, sedan gruvan. | `npcs.ts` rad 10–15 |
 | S4 | **Byfolket har bara två lägen:** före och efter sitt eget tempel. Ingen reagerar på de stora vändningarna. Sven och Tyra, som anar sanningen, säger samma sak efter att Hulda har berättat allt. | `npcs.ts` |
+| S6 | **Hulda citerar en skylt som inte säger det hon citerar.** Efter Fäbodskogen: *"...da, Väktare 1921–1946" – det står Hulda i kryptan.* Skylten i kryptan säger *"...da, Väktare. Hon tände ljusen här varje midsommar."* Årtalen saknas. | `dialog/hem.ts`, `dialog/krypta.ts` |
 | S5 | Olle säger att radion brusar "nära Björkhagen, som om berget hade en dörr". Dörren i berget (Väktarkammaren) ligger längst i norr. Bruset nära Björkhagen är ett av Dagmars röstfragment. | `dialog/hem.ts` |
 
 ### Logik
@@ -124,9 +125,11 @@ som håller fast det.
 ### Fas 0 – Snabba rättningar (en kort session)
 
 **0.1 Täta läckorna av Dagmars namn (S1).**
-- *Vad:* Elin säger "Väktarens solsten". Platsen heter "Gamla orten" tills
-  Hulda har sagt namnet, sedan "Dagmars ort". Väsensbokens blad om irrblossen
-  och Bäckahästen skrivs om utan namn ("kvinnan med kopparhår").
+- *Vad:* Elin säger "Väktarens solsten". Platsen heter "Övergivna orten" (inte
+  "Gamla orten", som krockar med Gamla stollen) tills Hulda har sagt namnet,
+  sedan "Dagmars ort". Väsensbokens blad om irrblossen, Bäckahästen och
+  Spelmannen skrivs om utan namn ("kvinnan med kopparhår"). Spelmannens sida
+  öppnas vid tempel 5, innan Hulda har sagt det.
 - *Varför:* avslöjandet efter Folkparken är byggt i fem steg. Ett namn på
   kartan i tempel 2 tar udden av alla fem.
 - *Hur:* repliker i `dialog/gruvsamhallet.ts` och `vasen.ts`; platsnamn med
@@ -206,11 +209,14 @@ starkast borta vid Björkhagen. Som om någon pratade."
   området.
 - *Varför:* i dag växer bara Dagny. Med trappan tar en vätte i tempel 6 två
   slag i stället för ett, och striderna ger XP som betyder något.
-- *Hur:* `TEMPLE_ENEMY_HP` och `TEMPLE_ENEMY_XP` i `data/progression.ts`,
-  satta i `room.ts` där `bonusDamage` sätts i dag.
+- *Hur:* räknat från varje fiendes egen nivå (fältet `home`), inte en enda
+  multiplikator för alla. Annars blir de seglivade fienderna svampar: med
+  × 3,5 skulle bergtrollet ta 10 slag. Sätts i `room.ts` där `bonusDamage`
+  sätts i dag.
 - *Test:* `tests/difficulty.test.ts` utökas: för varje tempel räknas "slag
-  per fiende" med den Styrka lösaren har när den kommer dit. Kravet är att
-  medianen ligger mellan 2 och 4 slag i alla tempel.
+  per fiende" med en uttalad Styrka-kurva från provspel. Kravet är att
+  medianen ligger mellan 2 och 4 slag i alla tempel och att ingen vanlig
+  fiende tar fler än 6.
 
 **2.2 Tätare tempel (B2).**
 - *Vad:* 6–8 fiender per rum i stället för 4, utplacerade där de möter
@@ -329,7 +335,8 @@ koskällan. Byt de andra:
 - Bruksorten: Rosa vill inte ha tillbaka något. Hon vill att någon säger
   Gunnars namn vid forsen (en replik vid en sten, som Väktarna gjorde).
 - Fiskeläget: Johan behöver hjälp att hitta hem i dimman. Dagny ror före med
-  ficklampan (följ-efter-mekaniken från Gösta, på vatten).
+  ficklampan (följ-efter-mekaniken från Gösta, på vatten). Hans livbehållare
+  är kvar som belöning.
 - Stationssamhället: visselpipan är kvar men leder till tåget, så den räknas
   som huvudspår.
 - *Test:* lösaren når varje belöning; räddningstesterna från Gösta gäller.
@@ -370,7 +377,8 @@ mot den sorts fel du har hittat för hand.
    3 000 steg i varje fas, och testet kräver att den är sårbar minst en viss
    del av tiden och att den byter anfall. Det hade fångat Bäckahästen.
 2. **En slumpspelare i varje rum.** En bot trycker slumpvisa knappar i 2 000
-   steg i varje rum, i människoform och som fågel. Efter varje steg gäller:
+   steg i varje rum, i människoform och som fågel. Den tar flera minuter och
+   körs därför varje natt, inte i varje kontroll. Efter varje steg gäller:
    Dagny står inte inne i en vägg, inga värden är NaN, hälsan är inom sina
    gränser, och inget fel kastas. Det hade fångat fågeln som sjönk i marken.
 3. **Rökprov i webbläsare.** Ett Playwright-test i GitHub-flödet "Kontroll":
@@ -413,6 +421,13 @@ som uppdateringar.
 | Sidouppdrag och byar | Inte granskat | Samma mall i alla sex byar | Fas 5 (nytt) |
 | Tempo och texter | Inte granskat | Lång start, långa vägar, knapptexter för tangentbord | Fas 0 och 7 (nytt) |
 | Tester | Per mekanik: lösaren, fastnar-test i alla lägen, hopp-test, gamla sparfiler | Tre nya slag för fel över tid | Båda, under fas 4 och "Testsäkring" |
+
+**Granskning 11 november.** Båda dokumenten är kontrollerade mot koden. Fem
+fel är rättade: testet för namnläckan byggde på data lösaren inte hade, liv-
+trappan gjorde seglivade fiender till svampar, testet för regeln om tre kunde
+inte räkna Nedåtstöt, Eld och Lyse, platsnamnet krockade med Gamla stollen,
+och en livbehållare skulle ha försvunnit med kompassen. Kryptans skylt (S6)
+var missad av båda genomgångarna.
 
 De två genomgångarna säger inte emot varandra någonstans. Den första gick på
 djupet i svårighet och tempel; den här breddar till story, balans i siffror,
