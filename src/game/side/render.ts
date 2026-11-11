@@ -11,7 +11,7 @@ import { SPELLS } from '../../data/spells';
 import type { SpellId } from '../../data/types';
 import { Particles } from '../../entities/misc';
 import { drawBackdrop } from '../backdrop';
-import { drawHud } from '../hud';
+import { drawHud, spellLines } from '../hud';
 import { hasItem, shownName } from '../state';
 import { squareActive, stepsToSwap } from '../beat';
 import { lightDisc } from './shared';
@@ -133,7 +133,7 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
   }
 
   if (!sc.game.hudHidden && sc.game.state) {
-    drawHud(ctx, sc.game.state, { keys: sc.area.temple ? sc.s.keys[sc.area.temple] ?? 0 : undefined, frame: f });
+    drawHud(ctx, sc.game.state, { keys: sc.area.temple ? sc.s.keys[sc.area.temple] ?? 0 : undefined, frame: f, active: activeSpells(sc) });
     renderSpellIcons(sc, ctx);
   }
   renderBossBar(sc, ctx);
@@ -283,13 +283,18 @@ export function renderDarkness(sc: SideScene, ctx: CanvasRenderingContext2D, cam
   ctx.globalAlpha = 1;
 }
 
+/** The readings burning in this room. */
+function activeSpells(sc: SideScene): SpellId[] {
+  return Object.entries(sc.spell).filter(([, t]) => t > 0).map(([k]) => k as SpellId);
+}
+
 export function renderSpellIcons(sc: SideScene, ctx: CanvasRenderingContext2D): void {
   let x = 14;
   const y = 33;
-  for (const [k, t] of Object.entries(sc.spell)) {
-    if (t <= 0) continue;
+  // The selected reading is shown (lit) on the line above; only the others here.
+  for (const k of spellLines(sc.s.selectedSpell, activeSpells(sc)).others) {
     // It lasts the room out: just the name, no countdown.
-    const txt = SPELLS[k as SpellId].name;
+    const txt = SPELLS[k].name;
     drawText(ctx, txt, x, y, 'c', { shadow: 'k' });
     x += measure(txt) + 6;
   }

@@ -1,6 +1,7 @@
 import { drawSprite } from '../engine/sprites';
 import { drawText } from '../engine/text';
 import { SPELLS } from '../data/spells';
+import type { SpellId } from '../data/types';
 import { STR } from '../data/strings';
 import { hpMax, mpMax, type GameState } from './state';
 import { nextTarget } from './progression';
@@ -10,7 +11,17 @@ import { P, drawBar } from './ui';
  * HUD: life, magic, levels (S/M/L) and XP along the top edge, clear of the
  * touch controls (which live in the bottom corners and the top-right corner).
  */
-export function drawHud(ctx: CanvasRenderingContext2D, s: GameState, opts: { keys?: number; frame: number; lowHpBlink?: boolean }): void {
+/**
+ * The magic lines under the bars: the selected reading (yellow while it burns
+ * in this room) and, below it, any other reading still burning. The selected
+ * one is never written twice.
+ */
+export function spellLines(selected: SpellId | null | undefined, active: readonly SpellId[]): { selected: SpellId | null; lit: boolean; others: SpellId[] } {
+  const sel = selected ?? null;
+  return { selected: sel, lit: !!sel && active.includes(sel), others: active.filter((a) => a !== sel) };
+}
+
+export function drawHud(ctx: CanvasRenderingContext2D, s: GameState, opts: { keys?: number; frame: number; lowHpBlink?: boolean; active?: readonly SpellId[] }): void {
   const mh = hpMax(s);
   const mm = mpMax(s);
   // Life
@@ -20,8 +31,9 @@ export function drawHud(ctx: CanvasRenderingContext2D, s: GameState, opts: { key
   // Magic
   drawSprite(ctx, 'hudCup', 0, 5, 14);
   drawBar(ctx, 14, 15, s.mp, mm, P.U, P.n, 1);
-  if (s.selectedSpell) {
-    drawText(ctx, SPELLS[s.selectedSpell].name, 14, 22, 'W', { shadow: 'k' });
+  const lines = spellLines(s.selectedSpell, opts.active ?? []);
+  if (lines.selected) {
+    drawText(ctx, SPELLS[lines.selected].name, 14, 22, lines.lit ? 'Y' : 'W', { shadow: 'k' });
   }
   // Levels and XP
   const lx = 120;
