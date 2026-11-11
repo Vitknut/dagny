@@ -268,7 +268,7 @@ export const HEM: Record<string, DialogDef> = {
 
   olle_radio: {
     speaker: 'Olle',
-    pages: ['Har du också fått en radio! Lyssna... det brusar annorlunda nära Björkhagen. Som om berget hade en dörr.'],
+    pages: ['Har du också fått en radio! Lyssna... det brusar som starkast borta vid Björkhagen. Som om någon pratade, långt bort.'],
   },
 
   hulda_efter_fabodskogen: {
