@@ -265,7 +265,15 @@ den skada Dagny väntas ha, från tempel 3. Tempel 1–2 är orörda.*
 
 ### Fas 3 – Varje förmåga används flera gånger
 
-**3.1 Regeln om tre (V1).** *Klar 11 november: sju förmågor i minst tre rum var, varav ett i Trollberget (`tests/abilities.test.ts`, `e2e/obstacles.spec.ts`). Belöningarna är mat i små gömmor, så ingen huvudväg ändrades.*
+**3.1 Regeln om tre (V1).** *Byggd 11 november, men fel: hindren lades vid sidan av vägen med mat som belöning, så ingen förmåga krävdes. Det bröt mot planens poäng; se rättelsen nedan. Gömmorna ligger kvar som den valfria hemligheten.*
+
+**3.1b Rättelse: förmågorna ska krävas på vägen (11 november).** Provspel visade att Eld, Lyse och Läkning inte behövs någonstans: man kan hoppa över Kyrkbyn och Gruvsamhället utan att märka det. Det är inte Zelda II.
+- *Vad:* varje förmåga som öppnar världen krävs på vägen framåt, på minst tre ställen: nära där man får den, i ett senare tempel och i Trollberget. Hindret ligger tidigt i templet, helst vid ingången, så att man märker vad man saknar vid dörren och inte djupt inne.
+- *Gruvan först:* torra rötter stänger gången in i Den gamla gruvan (Eld från Kyrkbyn), och vägen över spikgropen i Orten finns bara i ljuset (Lyse från Gruvsamhället).
+- *Övriga:* Nedåtstöt (Grimmen, ett senare tempel, Trollberget), Uppåtstöt, Hopp, Åska och Hamn får var sitt hinder på vägen i ett senare tempel och i Trollberget. Hamn får två i Trollberget, eftersom inget tempel kommer mellan Fäbodskogen och berget.
+- *Undantag:* Läkning och Skydd förblir hjälp, som Life och Shield i Zelda II.
+- *Extraliven* i Jättegrytan och Måsskäret var för lätta att få. De flyttas dit det kräver något: hopp över vatten med fiender som stör, och en avsats som bara Hopp når.
+- *Test:* `tests/abilities.test.ts` kräver att varje hinder vaktar vägen vidare (en utgång bakom sig), inte bara en sak. Genomspelaren klarar inte spelet utan någon av de sju förmågorna.
 - *Vad:* varje magi och teknik ska krävas på minst tre ställen: där man får
   den, i ett senare tempel, och i Trollberget. Dessutom en valfri hemlighet
   var.
