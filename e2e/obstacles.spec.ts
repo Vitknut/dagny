@@ -364,3 +364,52 @@ test("Prosten's candles light with Up, and walking past one does nothing (prastg
   });
   expect(r).toEqual({ pastHeart: 0, sun: true });
 });
+
+test('every door in every room takes Dagny where it says (Up at the door)', async ({ page }) => {
+  test.setTimeout(240_000);
+  const bad = await page.evaluate(async () => {
+    const { SideScene } = await import('/src/game/sidescene.ts');
+    const { newGame } = await import('/src/game/state.ts');
+    const { AREAS } = await import('/src/data/areas.ts');
+    const g = (window as unknown as { dagny: Record<string, unknown> }).dagny as unknown as {
+      state: ReturnType<typeof newGame>;
+      scene: { area?: { id: string } } | null;
+      overlays: unknown[];
+      input: { keyboard: boolean[] };
+      setScene(s: unknown): void;
+      update(): void;
+    };
+    const out: string[] = [];
+    for (const a of Object.values(AREAS)) {
+      for (const [ch, d] of Object.entries(a.doors ?? {})) {
+        if (d.requires || d.to === 'overworld') continue;
+        const y = a.tiles.findIndex((r) => r.includes(ch));
+        const x = a.tiles[y].indexOf(ch);
+        const s = newGame();
+        s.flags.push('intro_done');
+        g.state = s;
+        g.overlays.length = 0;
+        const sc = new SideScene(g as never, a.id, { x: x * 16 + 3, y: (y + 1) * 16 - 22 });
+        g.setScene(sc);
+        for (const e of sc.enemies) e.dead = true;
+        const kb = g.input.keyboard;
+        for (let i = 0; i < 60; i++) {
+          kb.fill(false);
+          kb[2] = i >= 40 && i < 43;
+          g.update();
+          g.overlays.length = 0;
+        }
+        // The door leads through a fade; let it finish.
+        for (let i = 0; i < 60; i++) {
+          kb.fill(false);
+          g.update();
+          g.overlays.length = 0;
+        }
+        const now = g.scene?.area?.id;
+        if (now !== d.to) out.push(`${a.id} door ${ch} → ${d.to}, but Dagny is in ${now}`);
+      }
+    }
+    return out;
+  });
+  expect(bad).toEqual([]);
+});

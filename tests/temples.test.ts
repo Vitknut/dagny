@@ -45,8 +45,15 @@ describe('the mine as a net (the pilot)', () => {
 });
 
 describe('door letters', () => {
-  it('no door uses a letter that means something else (M the cat, T a thermos, B a guardian, L a lock, X an altar)', () => {
-    for (const a of Object.values(AREAS)) for (const k of Object.keys(a.doors ?? {})) expect('MTBLX'.includes(k), `${a.id}: door ${k}`).toBe(false);
+  it('no door uses a letter that means something else (a creature like V, an item like T, M the cat, B a guardian, L a lock, X an altar, I a sign)', async () => {
+    const { ENEMY_CHARS, PICKUP_CHARS } = await import('../src/data/legend');
+    const taken = new Set(['M', 'B', 'L', 'X', ...Object.keys(ENEMY_CHARS), ...Object.keys(PICKUP_CHARS)]);
+    for (const a of Object.values(AREAS)) {
+      for (const k of Object.keys(a.doors ?? {})) {
+        expect(taken.has(k), `${a.id}: door ${k}`).toBe(false);
+        expect(Object.keys(a.signs ?? {}).includes(k), `${a.id}: door ${k} is also a sign`).toBe(false);
+      }
+    }
   });
 });
 

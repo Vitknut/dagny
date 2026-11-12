@@ -65,7 +65,7 @@ export const GRUVAN: Record<string, AreaDef> = {
     left: { to: 'gruvan_1', entry: 'E' },
     right: { to: 'gruvan_2', entry: 'A' },
     doors: {
-      V: { to: 'gruvan_verkstad', entry: 'A' },
+      R: { to: 'gruvan_verkstad', entry: 'A' },
       N: { to: 'gruvan_malm', entry: 'A' },
     },
     signs: { I: 'gruvan_hallskylt' },
@@ -84,7 +84,7 @@ export const GRUVAN: Record<string, AreaDef> = {
       "#.....===......................................#",
       "................................................",
       "................................................",
-      "..A.I...c.....V....u......N....u..............E.",
+      "..A.I...c.....R....u......N....u..............E.",
       "################################################",
       "################################################",
     ],
@@ -114,7 +114,7 @@ export const GRUVAN: Record<string, AreaDef> = {
     backdrop: 'mine',
     theme: 'mine',
     ambience: ['dust'],
-    left: { to: 'gruvan_hall', entry: 'V' },
+    left: { to: 'gruvan_hall', entry: 'R' },
     // The ore giant shuts the way back; when it falls, the crank lies by the bench.
     sealed: { dialog: 'verkstaden_stangs', music: 'mellanboss' },
     finds: [{ item: 'hissvev', tx: 27, ty: 9, after: 'gruvan_verkstad_rensad' }],
