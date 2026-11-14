@@ -101,6 +101,14 @@ export function retryRoom(game: Game, areaId: string, entry: string | null): voi
   st.hp = hpMax(st);
   st.mp = mpMax(st);
   const temple = AREAS[areaId]?.temple;
+  // Fallen at a guardian: straight back at its door, at the end of the quiet
+  // way in, a few steps from the grille – not the whole temple again.
+  const here = AREAS[areaId];
+  if (here?.hush) {
+    const y = here.tiles.findIndex((r) => r.includes('A'));
+    goToArea(game, areaId, { x: (here.hush - 3) * 16 + 3, y: (y + 1) * 16 - 22, facing: 1 });
+    return;
+  }
   if (temple) {
     const cp = st.checkpoint;
     if (cp && AREAS[cp.area]?.temple === temple) {

@@ -101,13 +101,25 @@ describe('lives', () => {
       return s.loc.area;
     };
     const s = newGame();
-    expect(where(s, 'krypta_4')).toBe(TEMPLES.find((x) => x.id === 'krypta')!.entryArea);
+    expect(where(s, 'krypta_3')).toBe(TEMPLES.find((x) => x.id === 'krypta')!.entryArea);
     s.checkpoint = { area: 'krypta_2', x: 40, y: 100 };
-    expect(where(s, 'krypta_4')).toBe('krypta_2');
+    expect(where(s, 'krypta_3')).toBe('krypta_2');
     // A candle in another temple does not count.
     expect(where(s, 'gruvan_3')).toBe(TEMPLES.find((x) => x.id === 'gruvan')!.entryArea);
     // Outside the temples: the same room.
     expect(where(s, 'bjorkhagen')).toBe('bjorkhagen');
+  });
+
+  it('fallen at a guardian, the retry is at its door, a few steps from the grille – in every temple', () => {
+    for (const t of TEMPLES) {
+      const boss = Object.values(AREAS).find((a) => a.temple === t.id && a.hush)!;
+      const s = newGame();
+      s.checkpoint = { area: t.entryArea!, x: 40, y: 100 };
+      const g = { ...fakeGame(s), transition: (fn: () => void) => { try { fn(); } catch { /* no scene in tests */ } } } as unknown as Game;
+      retryRoom(g, boss.id, 'A');
+      expect(s.loc.area, t.id).toBe(boss.id);
+      expect(Math.floor(s.loc.x / 16), t.id).toBe(boss.hush! - 3);
+    }
   });
 
   it('with lives left in a temple, there is a retry (or waking in the village)', () => {

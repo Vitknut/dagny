@@ -161,6 +161,8 @@ Dagny starts with 8 health (four bars), so the crypt must not drain it faster th
 Code: `GameOverOverlay` (`src/game/menus.ts`), `retryRoom` and
 `gameOver` (`src/game/flow.ts`). Tests: `tests/lives.test.ts`.
 
+- **Fallen at a guardian**, the retry is in its room, at the end of the quiet way in, a few steps from the grille (`AreaDef.hush`): the fight again, not the whole temple.
+
 ## The order of the temples (decided: fixed)
 
 The order is **fixed: 1 → 2 → 3 → 4 → 5 → 6 → 7**. Each region needs the
