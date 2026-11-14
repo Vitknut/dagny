@@ -203,6 +203,18 @@ export class Game {
     if (this.toasts.length > 3) this.toasts.shift();
   }
 
+  /**
+   * A line that explains how something works: shown the first time only
+   * (remembered in the save as `sett_<key>`). After that the sound and what
+   * happens on screen say it.
+   */
+  toastOnce(key: string, text: string, seconds = 1.6): void {
+    const s = this.state;
+    if (!s || s.flags.includes(`sett_${key}`)) return;
+    s.flags.push(`sett_${key}`);
+    this.toast(text, seconds);
+  }
+
   vibrate(ms: number | number[]): void {
     vibrate(ms);
   }

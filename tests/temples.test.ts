@@ -157,3 +157,15 @@ describe('the mill: high water and low (fas 4, Kvarnen)', () => {
     expect(Object.values(AREAS).some((a) => a.temple === 'kvarnen' && Object.keys(a.doors ?? {}).length >= 2)).toBe(false);
   });
 });
+
+describe('a candle before every guardian', () => {
+  it('the room that leads into the guardian\'s has a candle, so a fall there starts close by', () => {
+    for (const t of TEMPLES) {
+      const boss = Object.values(AREAS).find((a) => a.temple === t.id && a.tiles.some((r) => r.includes('B')));
+      expect(boss, t.id).toBeDefined();
+      const before = boss!.left?.to;
+      expect(before, t.id).toBeDefined();
+      expect(AREAS[before!].tiles.some((r) => r.includes('c')), `${t.id}: ${before}`).toBe(true);
+    }
+  });
+});

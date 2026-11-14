@@ -76,7 +76,10 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
   }
   renderLightPaths(ctx, sc.lightCells, sc.grid.w, camX, camY, sc.lit(), f);
   // The mill's sluice wheel.
-  if (sc.area.sluice) drawSprite(ctx, 'ratt', 0, sc.area.sluice.tx * TILE - camX, sc.area.sluice.ty * TILE - camY);
+  if (sc.area.sluice) {
+    const sl = sc.area.sluice;
+    drawSprite(ctx, 'ratt', sc.sluiceSpin > 0 ? 1 + (Math.floor(sc.sluiceSpin / 4) % 2) : 0, sl.tx * TILE - 8 - camX, (sl.ty - 1) * TILE - camY);
+  }
   // Mill water while it is high; a dark, wet bed when it has been let out.
   for (const i of sc.waterCells) {
     const x = (i % sc.grid.w) * TILE - camX;

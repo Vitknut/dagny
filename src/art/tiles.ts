@@ -700,25 +700,12 @@ export const tileSprites: Record<string, SpriteDef> = {
     'kBBBBBBkBBBBBBBk',
     'kkkkkkkkkkkkkkkk',
   ]),
-  /** The sluice wheel of the mill (Kvarnen): Up at it lets the water out or in. */
-  ratt: t([
-    '................',
-    '.....bbbbbb.....',
-    '...bbB....Bbb...',
-    '..bB..B..B..Bb..',
-    '..b....BB....b..',
-    '.bB...BbbB...Bb.',
-    '.b...BbBBbB...b.',
-    '.bBBBbBkkBbBBBb.',
-    '.b...BbBBbB...b.',
-    '.bB...BbbB...Bb.',
-    '..b....BB....b..',
-    '..bB..B..B..Bb..',
-    '...bbB.gg.Bbb...',
-    '.....bbggbb.....',
-    '.......gg.......',
-    '.....gggggg.....',
-  ]),
+  /** The sluice wheel of the mill (Kvarnen): a big iron wheel on a post; Up beside it lets the water out or in. */
+  ratt: { w: 32, h: 32, frames: [
+    ['...............Y................', '...............y................', '...........kkkkGGkkkk...........', '..........kGWGGGGGGWGk..........', '........kkWGGkkkkkkkGWkk........', '.......kkWGWG.......WGWkk.......', '.....Y.kWkkWWG.....WWkkWk.Y.....', '.....ykWGk..WW....WWG.kGWky.....', '.....kGGk....WG...WG...kGGk.....', '.....kWk.....WW..WW.....kWk.....', '.....kGk.....kkkkkk.....kGk.....', '.....kGk.....kYYYYk.....kGk.....', '.....GGGWWWWWkYyyYkWWWWWWGG.....', '.....GGWW....kYyyYkGGGGGGGG.....', '.....kGk.....kYYYYk.....kGk.....', '.....kGk.....kkkkkk.....kGk.....', '.....kWk.....WWKKWW.....kWk.....', '.....kGGk...GWKKKGW....kGGk.....', '.....ykWGk.GWWKKKKWW..kGWky.....', '.....Y.kWkkGWkKKKKGWWkkWk.Y.....', '.......kkWGW.kKKKKkGWGWkk.......', '........kkWGkkkkkkkGGWkk........', '..........kGWGGGGGGWGk..........', '...........kkkkGGkkkk...........', '.............kKKyKk.............', '.............kKKYKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '........kggggggggggggggk........', '........kggggggggggggggk........', '........kkkkkkkkkkkkkkkk........'],
+    ['................................', '....................Y...........', '...........kkkkGGkkkk...........', '.......Yy.kGWGGGGGGWGk..........', '........kkWGkkWGkkkkGWkk........', '.......kkWGk..WG....kGWkk.......', '.......kWkk...WG.....kkWk.......', '......kWGk....WW.....WWGWk......', '.....kGGk......W....WWGkGGk.....', '.....kWWGG.....WG..WWG..kWk.....', '.....kGWWWWGGkkkkkkWG...kGkyY...', '.....kGk..WWWkYYYYkG....kGk.....', '.....GGk.....kYyyYk.....kGG.....', '.....GGk.....kYyyYk.....kGG.....', '.....kGk....GkYYYYkWWW..kGk.....', '...YykGk...GWkkkkkkGGWWWWGk.....', '.....kWk..GWWkKGWKk...GGWWk.....', '.....kGGkGWW.kKKWKk....kGGk.....', '......kWGWW..kKKWWk...kGWk......', '.......kWkk..kKKGWk..kkWk.......', '.......kkWGk.kKKGWk.kGWkk.......', '........kkWGkkkkGWkkGWkk........', '..........kGWGGGGGGWGk.yY.......', '...........kkkkGGkkkk...........', '...........Y.kKKKKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '........kggggggggggggggk........', '........kggggggggggggggk........', '........kkkkkkkkkkkkkkkk........'],
+    ['................................', '...........Y....................', '...........kkkkGGkkkk...........', '..........kGWGGGGGGWGk.yY.......', '........kkWGkkkkkWGkGWkk........', '.......kkWGk.....WG.kGWkk.......', '.......kWGk......W...kkWk.......', '......kWGWW.....WW....kGWk......', '.....kGGk.WWG...WG.....kGGk.....', '.....kWk...WWG..WG......WWk.....', '...YykGk....Wkkkkkk..WWWWGk.....', '.....kGk.....kYYYYkWWWGGkGk.....', '.....GGk.....kYyyYkGG...kGG.....', '.....GGk...GGkYyyYk.....kGG.....', '.....kGkGGWWWkYYYYk.....kGk.....', '.....kGWWWW..kkkkkkW....kGkyY...', '.....kWW.....kGWKKGWW...kWk.....', '.....kGGk....kGWKKkGWW.kGGk.....', '......kWGk...kWWKKk..WWGWk......', '.......kWkk..kWKKKk..kGWk.......', '.......kkWGk.GWKKKk.kGWkk.......', '........kkWGkGWkkkkkGWkk........', '.......Yy.kGWGGGGGGWGk..........', '...........kkkkGGkkkk...........', '.............kKKKKk.Y...........', '.............kKKKKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '........kggggggggggggggk........', '........kggggggggggggggk........', '........kkkkkkkkkkkkkkkk........']
+  ] },
   /** The mill race's bed once the water is let out: wet mud and stones. */
   mudBed: t([
     '................',

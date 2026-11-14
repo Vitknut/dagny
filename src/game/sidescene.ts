@@ -129,6 +129,8 @@ export class SideScene implements Scene, WorldApi {
   flashT = 0;
   /** The grille between the quiet way in and the arena is down (side/render.ts). */
   gateShut = false;
+  /** Steps left of the sluice wheel's turning (drawn spinning). */
+  sluiceSpin = 0;
   private lockMsgT = 0;
   deadT = 0;
   spell: SpellTimers = { skydd: 0, hopp: 0, lyse: 0, eld: 0, hamn: 0 };
@@ -417,6 +419,7 @@ export class SideScene implements Scene, WorldApi {
     const p = this.player;
     if (this.nameT > 0) this.nameT--;
     if (this.flashT > 0) this.flashT--;
+    if (this.sluiceSpin > 0) this.sluiceSpin--;
     if (this.lockMsgT > 0) this.lockMsgT--;
     if (this.shakeT > 0) this.shakeT--;
 
@@ -637,7 +640,7 @@ export class SideScene implements Scene, WorldApi {
         if (!s.opened.includes(cp.pid)) s.opened.push(cp.pid);
         s.checkpoint = { area: this.area.id, x: cp.tx * TILE + 3, y: (cp.ty + 1) * TILE - STAND_H };
         this.sfx('checkpoint');
-        g.toast(STR.checkpoint);
+        g.toastOnce('ljus', STR.checkpoint);
         this.game.save();
       }
     }
@@ -766,16 +769,17 @@ export class SideScene implements Scene, WorldApi {
     const sl = this.area.sluice;
     if (!sl) return;
     const p = this.player;
-    const on = overlaps(p, { x: sl.tx * TILE, y: sl.ty * TILE, w: TILE, h: TILE });
+    const on = overlaps(p, { x: sl.tx * TILE - 10, y: (sl.ty - 1) * TILE, w: 2 * TILE + 4, h: 2 * TILE });
     if (!on) return;
-    if (!this.prompt) this.prompt = { x: sl.tx * TILE + 8, y: sl.ty * TILE - 22 };
+    if (!this.prompt) this.prompt = { x: sl.tx * TILE + 8, y: (sl.ty - 1) * TILE - 10 };
     if (!up) return;
     if (this.lowWater) this.s.flags = this.s.flags.filter((f) => f !== 'kvarn_lagvatten');
     else setFlag(this.s, 'kvarn_lagvatten');
     this.applyWater();
     this.sfx('door');
     this.shake(24, 2);
-    this.game.toast(this.lowWater ? STR.sluiceOut : STR.sluiceIn, 3);
+    this.game.toastOnce(this.lowWater ? 'damm_ut' : 'damm_in', this.lowWater ? STR.sluiceOut : STR.sluiceIn, 3);
+    this.sluiceSpin = 40;
     this.game.save();
   }
 
@@ -843,7 +847,7 @@ export class SideScene implements Scene, WorldApi {
       this.game.save();
     } else if (this.lockMsgT === 0) {
       this.lockMsgT = 120;
-      this.game.toast(DialogOverlay.get('nyckel_saknas').pages[0]);
+      this.game.toastOnce('nyckel_saknas', DialogOverlay.get('nyckel_saknas').pages[0]);
     }
   }
 
@@ -1017,7 +1021,7 @@ export class SideScene implements Scene, WorldApi {
       for (const fd of this.area.finds ?? []) if (fd.after === `${this.area.id}_rensad`) placeFind(this, fd.item, fd.tx, fd.ty);
       g.audio.playMusic(this.music());
       this.sfx('unlock');
-      g.toast(STR.sealOpen, 3);
+      g.toastOnce('vagen_fri', STR.sealOpen, 3);
       g.save();
     }
   }

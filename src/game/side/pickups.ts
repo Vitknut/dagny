@@ -32,7 +32,7 @@ export function collect(sc: SideScene, pk: Pickup): void {
       s.keys[t] = (s.keys[t] ?? 0) + 1;
       if (pk.pid && !s.opened.includes(pk.pid)) s.opened.push(pk.pid);
       sc.sfx('key');
-      g.toast(STR.gotKey);
+      g.toastOnce('nyckel', STR.gotKey);
       g.save();
       break;
     }

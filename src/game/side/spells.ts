@@ -121,7 +121,7 @@ export function blowLur(sc: SideScene): void {
   const p = sc.player;
   sc.helpers.push({ x: p.x - p.facing * 20, y: p.y + p.h - 12, vx: 0, vy: -2, onGround: false, w: 10, h: 12, life: 12 * 60, cd: 0, facing: p.facing });
   sc.puff(p.x - p.facing * 16, p.y + p.h - 6, 'moss');
-  g.toast(DialogOverlay.get('lur_blast').pages[0], 2.5);
+  g.toastOnce('lur', DialogOverlay.get('lur_blast').pages[0], 2.5);
 }
 
 export function updateHelpers(sc: SideScene): void {
