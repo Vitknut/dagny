@@ -93,6 +93,8 @@ export class SideScene implements Scene, WorldApi {
   beatCells: Array<{ i: number; tx: number; ty: number; group: '%' | '&' }> = [];
   /** Light-path cells ('-'): ledges only there while Lyse burns (side/obstacles.ts). */
   lightCells: number[] = [];
+  /** Mill-water cells (']'): deep or dry with the sluice (kvarn_lagvatten). */
+  waterCells: number[] = [];
   private lightOn = false;
   lastBeat = -1;
 
@@ -153,6 +155,7 @@ export class SideScene implements Scene, WorldApi {
       wallRight: !area.right,
     };
     build(this);
+    this.applyWater();
     this.staticLayer = renderStatic(this);
     this.frontLayer = renderFront(this);
     this.placePlayer();
@@ -460,6 +463,14 @@ export class SideScene implements Scene, WorldApi {
     const waiting = p.onGround && !rider ? p.x + p.w / 2 : null;
     // A lift that needs the crank stands still without it.
     for (const pl of this.platforms) {
+      // A log on the mill's water rises and sinks with it.
+      if (pl.def.float !== undefined) {
+        const target = ((this.lowWater ? pl.def.float : pl.def.ty) + 1) * TILE;
+        pl.dx = 0;
+        pl.dy = Math.max(-0.8, Math.min(0.8, target - pl.y));
+        pl.y += pl.dy;
+        continue;
+      }
       if (pl.def.needs && !hasItem(this.s, pl.def.needs)) {
         pl.dx = 0;
         pl.dy = 0;
@@ -537,9 +548,10 @@ export class SideScene implements Scene, WorldApi {
     // --- Interact (Up or a tap on the NPC/door) ---
     this.updateInteract();
 
+    const up = p.onGround && p.state === 'normal' && g.input.pressed(Act.Up) && !g.modal;
+    this.trySluice(up);
     // --- A trial of candles ---
     if (this.trial) {
-      const up = p.onGround && p.state === 'normal' && g.input.pressed(Act.Up) && !g.modal;
       const ev = updateTrial(this.trial, this.area, s, p, p.state !== 'bird', up);
       // The candle she stands at shows that Up lights it.
       const near = this.trial.candles[this.trial.near];
@@ -736,6 +748,35 @@ export class SideScene implements Scene, WorldApi {
         this.openCells([i], 'door');
       }
     }
+  }
+
+  /** The mill's water has been let out at the sluice. */
+  get lowWater(): boolean {
+    return hasFlag(this.s, 'kvarn_lagvatten');
+  }
+
+  /** Mill water as it stands now: deep (a hazard) or a dry bed. */
+  applyWater(): void {
+    const kind = this.lowWater ? Kind.Empty : Kind.Hazard;
+    for (const i of this.waterCells) this.grid.kinds[i] = kind;
+  }
+
+  /** Up at the sluice wheel: the water goes out of the race, or back in. */
+  private trySluice(up: boolean): void {
+    const sl = this.area.sluice;
+    if (!sl) return;
+    const p = this.player;
+    const on = overlaps(p, { x: sl.tx * TILE, y: sl.ty * TILE, w: TILE, h: TILE });
+    if (!on) return;
+    if (!this.prompt) this.prompt = { x: sl.tx * TILE + 8, y: sl.ty * TILE - 22 };
+    if (!up) return;
+    if (this.lowWater) this.s.flags = this.s.flags.filter((f) => f !== 'kvarn_lagvatten');
+    else setFlag(this.s, 'kvarn_lagvatten');
+    this.applyWater();
+    this.sfx('door');
+    this.shake(24, 2);
+    this.game.toast(this.lowWater ? STR.sluiceOut : STR.sluiceIn, 3);
+    this.game.save();
   }
 
   /** Opens shut cells for good (a hatch, rotten boards, roots, a lantern gate): kept in the save. */

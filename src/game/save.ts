@@ -46,6 +46,10 @@ function loc(x: unknown, d: Location): Location {
 const MOVED_KEYS: Readonly<Record<string, string>> = {
   'krypta_2:39,3': 'krypta_benhus:34,9',
   'gruvan_2:20,11': 'gruvan_malm:33,9',
+  // Kvarnstugan's locked door moved up onto the mill floor (fas 4, Kvarnen).
+  'kvarnen_2:58,7': 'kvarnen_2:57,4',
+  'kvarnen_2:58,8': 'kvarnen_2:57,5',
+  'kvarnen_2:58,9': 'kvarnen_2:57,6',
 };
 
 /** Old formats → current. Version 0 = before versioning (never released). */

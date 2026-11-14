@@ -243,3 +243,10 @@ describe('Jättegrytan rebuilt (3.1b)', () => {
     expect(f.state.containers).toEqual(['magi:jattegrytan:44,3']);
   });
 });
+
+describe('the mill rebuilt (fas 4, Kvarnen)', () => {
+  it('Kvarnstugan\'s door, opened where it used to be, is open where it is now', () => {
+    const f = deserialize(JSON.stringify({ v: 7, savedAt: 0, state: { ...newGame(), opened: ['kvarnen_2:58,7', 'kvarnen_2:58,8', 'kvarnen_2:58,9'] } }))!;
+    for (const pid of ['kvarnen_2:57,4', 'kvarnen_2:57,5', 'kvarnen_2:57,6']) expect(f.state.opened).toContain(pid);
+  });
+});

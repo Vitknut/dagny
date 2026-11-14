@@ -21,7 +21,7 @@ import { wrap } from '../src/engine/text';
 import { INPUT_SOURCES, fillButtons } from '../src/data/buttons';
 import type { DialogAction } from '../src/data/types';
 
-const KNOWN_TILE = new Set(['.', '#', '=', '^', '~', 'n', 'L', 'k', 'c', 'X', '@', 'q', '%', '&', '?', ...Object.keys(ENEMY_CHARS), ...Object.keys(PICKUP_CHARS), 'B', 'M', 'h', 'p', '+', '!', '_', '(', '[', '-', '}']);
+const KNOWN_TILE = new Set(['.', '#', '=', '^', '~', 'n', 'L', 'k', 'c', 'X', '@', 'q', '%', '&', '?', ...Object.keys(ENEMY_CHARS), ...Object.keys(PICKUP_CHARS), 'B', 'M', 'h', 'p', '+', '!', '_', '(', '[', '-', '}', ']']);
 
 describe('palette', () => {
   it('has about 32 colours and no pure black', () => {

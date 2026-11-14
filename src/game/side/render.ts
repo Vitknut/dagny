@@ -75,6 +75,17 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
     }
   }
   renderLightPaths(ctx, sc.lightCells, sc.grid.w, camX, camY, sc.lit(), f);
+  // The mill's sluice wheel.
+  if (sc.area.sluice) drawSprite(ctx, 'ratt', 0, sc.area.sluice.tx * TILE - camX, sc.area.sluice.ty * TILE - camY);
+  // Mill water while it is high; a dark, wet bed when it has been let out.
+  for (const i of sc.waterCells) {
+    const x = (i % sc.grid.w) * TILE - camX;
+    const y = Math.floor(i / sc.grid.w) * TILE - camY;
+    if (x < -TILE || x > VIEW_W || y < -TILE || y > VIEW_H) continue;
+    const top = i < sc.grid.w || !sc.waterCells.includes(i - sc.grid.w);
+    if (!sc.lowWater) drawSprite(ctx, top ? 'water' : 'waterDeep', Math.floor((f + i * 7) / 20), x, y);
+    else if (!sc.waterCells.includes(i + sc.grid.w)) drawSprite(ctx, 'mudBed', 0, x, y);
+  }
   // The cave-in's rubble behind its front.
   if (sc.caveX !== null) {
     const front = sc.caveX - camX;

@@ -86,14 +86,14 @@ test('thunder opens a gate of dead lanterns (fyren_3)', async ({ page }) => {
 });
 
 test('the light path is there only in the light (kvarnen_2)', async ({ page }) => {
-  const dark = await play(page, 'kvarnen_2', 40, 9, 1, '', [], 5, [[42, 8], [45, 6]]);
+  const dark = await play(page, 'kvarnen_2', 15, 9, 1, '', [], 5, [[17, 8], [20, 6]]);
   expect(dark.open, 'dark').toEqual([true, true]);
   const lit = await page.evaluate(() => {
     const sc = (window as unknown as { dagny: { scene: { spell: { lyse: number }; grid: { w: number; kinds: Uint8Array } } ; update(): void } }).dagny;
     sc.scene.spell.lyse = 600;
     sc.update();
     const g = sc.scene.grid;
-    return [g.kinds[8 * g.w + 42], g.kinds[6 * g.w + 45]];
+    return [g.kinds[8 * g.w + 17], g.kinds[6 * g.w + 20]];
   });
   // Kind.OneWay is 2.
   expect(lit).toEqual([2, 2]);
@@ -386,7 +386,8 @@ test('every door in every room takes Dagny where it says (Up at the door)', asyn
         const y = a.tiles.findIndex((r) => r.includes(ch));
         const x = a.tiles[y].indexOf(ch);
         const s = newGame();
-        s.flags.push('intro_done');
+        // The mill's cellar door lies in the race: with the water let out it can be reached.
+        s.flags.push('intro_done', 'kvarn_lagvatten');
         g.state = s;
         g.overlays.length = 0;
         const sc = new SideScene(g as never, a.id, { x: x * 16 + 3, y: (y + 1) * 16 - 22 });
@@ -412,4 +413,48 @@ test('every door in every room takes Dagny where it says (Up at the door)', asyn
     return out;
   });
   expect(bad).toEqual([]);
+});
+
+test('the sluice wheel lets the mill race out and in: the way to the cellar opens, the logs sink and rise (kvarnen_2)', async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const { SideScene } = await import('/src/game/sidescene.ts');
+    const { newGame } = await import('/src/game/state.ts');
+    const g = (window as unknown as { dagny: Record<string, unknown> }).dagny as unknown as {
+      state: ReturnType<typeof newGame>;
+      overlays: unknown[];
+      input: { keyboard: boolean[] };
+      setScene(s: unknown): void;
+      update(): void;
+    };
+    const s = newGame();
+    s.flags.push('intro_done');
+    g.state = s;
+    g.overlays.length = 0;
+    const sc = new SideScene(g as never, 'kvarnen_2', { x: 4 * 16 + 3, y: 10 * 16 - 22 });
+    g.setScene(sc);
+    for (const e of sc.enemies) e.dead = true;
+    const step = (n: number, keys: number[] = []): void => {
+      for (let i = 0; i < n; i++) {
+        for (let k = 0; k < 10; k++) g.input.keyboard[k] = keys.includes(k);
+        g.update();
+        g.overlays.length = 0;
+      }
+    };
+    const tunnel = (): number => sc.grid.kinds[10 * sc.grid.w + 44];
+    const logY = (): number => sc.platforms[0].y;
+    step(40);
+    const high = { tunnel: tunnel(), log: logY(), low: s.flags.includes('kvarn_lagvatten') };
+    step(1, [2]);
+    step(120);
+    const low = { tunnel: tunnel(), log: logY(), low: s.flags.includes('kvarn_lagvatten') };
+    step(40);
+    step(1, [2]);
+    step(120);
+    const back = { tunnel: tunnel(), log: logY(), low: s.flags.includes('kvarn_lagvatten') };
+    return { high, low, back };
+  });
+  // Kind.Hazard is 3, Kind.Empty 0.
+  expect(r.high).toEqual({ tunnel: 3, log: 128, low: false });
+  expect(r.low).toEqual({ tunnel: 0, log: 176, low: true });
+  expect(r.back).toEqual({ tunnel: 3, log: 128, low: false });
 });

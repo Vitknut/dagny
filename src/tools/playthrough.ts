@@ -46,6 +46,8 @@ export interface Has {
   skills: ReadonlySet<string>;
   /** A locked door in this column has been opened. */
   unlocked: (col: number) => boolean;
+  /** Flags set (the mill's sluice let out: `kvarn_ratt_hittad`). */
+  flags?: ReadonlySet<string>;
 }
 
 /**
@@ -65,6 +67,8 @@ export function blocks(a: AreaDef, x: number, y: number, has: Has): boolean {
   if (ch === '_') return !has.skills.has('nedatstot');
   if (ch === '(') return !has.spells.has('eld');
   if (ch === '[') return !has.spells.has('aska');
+  // Mill water: only crossed once the sluice has been found (it can be let out; logs carry her while it is high).
+  if (ch === ']') return !has.flags?.has('kvarn_ratt_hittad');
   // Loose masonry comes down to the crowbar (the crypt's tool).
   if (ch === '}') return !has.items.has('spett');
   // A place only an ability reaches (a high ledge, a narrow hole, a path in the light).
@@ -248,7 +252,7 @@ export function playthrough(opts: Options = {}): Playthrough {
 
   // --- Rooms ------------------------------------------------------------------------------
 
-  const solid = (a: AreaDef, x: number, y: number): boolean => blocks(a, x, y, { items, spells, skills, unlocked: (col) => done.has(`${a.id}:col${col}`) });
+  const solid = (a: AreaDef, x: number, y: number): boolean => blocks(a, x, y, { items, spells, skills, flags, unlocked: (col) => done.has(`${a.id}:col${col}`) });
 
   const spawnCell = (a: AreaDef, entry: string | undefined, at?: Cell): Cell => {
     if (at) return at;
@@ -344,6 +348,8 @@ export function playthrough(opts: Options = {}): Playthrough {
         log('container', key);
       }
     }
+    // The mill's sluice: once found, its water can be let out (and in again).
+    if (a.sluice && reached(a.sluice.tx, a.sluice.ty)) setFlag('kvarn_ratt_hittad');
     for (const ls of a.lampSecrets ?? []) {
       if (!items.has(ls.item) || !reached(ls.tx, ls.ty)) continue;
       const key = ls.container ? `${ls.container}:${a.id}:${ls.tx},${ls.ty}` : '';

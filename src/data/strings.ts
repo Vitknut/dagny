@@ -85,6 +85,8 @@ export const STR = {
   restartMountain: 'Börja om vid bergets fot',
   extraLife: 'Ett extra liv!',
   sealOpen: 'Vägen är fri',
+  sluiceOut: 'Dammluckan öppnas. Vattnet rinner ur rännan.',
+  sluiceIn: 'Dammluckan stängs. Vattnet stiger i rännan igen.',
   meetingShut: 'Vägen tillbaka är stängd. Bara framåt.',
   mapKeyTemple: 'Tempel',
   mapKeyVillage: 'By',

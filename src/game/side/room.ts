@@ -65,6 +65,10 @@ export function build(sc: SideScene): void {
           // Nettle tops stick up above the ground so the patch reads as a hazard.
           if (at(tx, ty - 1) !== 'n') sc.anim.push({ x: tx * TILE, y: (ty - 1) * TILE, sprite: 'nettleTops', offset: tx });
           break;
+        case ']':
+          // Mill water: drawn and made deep or dry by the sluice (SideScene.applyWater).
+          sc.waterCells.push(i);
+          break;
         case '~':
           if (at(tx, ty - 1) === '~') sc.tileSprite[i] = 'waterDeep';
           else sc.anim.push({ x: tx * TILE, y: ty * TILE, sprite: 'water', offset: tx });

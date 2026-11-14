@@ -135,3 +135,25 @@ describe('extra lives are earned (3.1b)', () => {
     expect(jg.tiles.join('').split('j').length - 1, 'sjörå shooters').toBeGreaterThanOrEqual(2);
   }, 60_000);
 });
+
+describe('the mill: high water and low (fas 4, Kvarnen)', () => {
+  it('the cellar and its key are reached only once the sluice is found, and the mill is not passed without them', () => {
+    const all = playthrough();
+    expect(all.areas.has('kvarnen_kallare')).toBe(true);
+    const at = (kind: string, what: string): number => all.steps.findIndex((s) => s.kind === kind && s.what === what);
+    expect(at('area', 'kvarnen_kallare')).toBeLessThan(at('area', 'kvarnen_3'));
+    const noSluice = playthrough({ withholdFlags: ['kvarn_ratt_hittad'] });
+    expect(noSluice.areas.has('kvarnen_2')).toBe(true);
+    expect(noSluice.areas.has('kvarnen_kallare')).toBe(false);
+    expect(noSluice.areas.has('kvarnen_3')).toBe(false);
+  }, 60_000);
+
+  it('Kvarnstugan has the sluice, the race and the floating logs; no hall with side rooms like the crypt and the mine', () => {
+    const k = AREAS.kvarnen_2;
+    expect(k.sluice).toBeDefined();
+    expect(k.tiles.some((r) => r.includes(']'))).toBe(true);
+    expect((k.platforms ?? []).filter((p) => p.float !== undefined).length).toBeGreaterThanOrEqual(2);
+    // Variation between temples: the mill has no three-way hall.
+    expect(Object.values(AREAS).some((a) => a.temple === 'kvarnen' && Object.keys(a.doors ?? {}).length >= 2)).toBe(false);
+  });
+});

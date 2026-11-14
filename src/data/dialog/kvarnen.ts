@@ -13,6 +13,10 @@ export const KVARNEN: Record<string, DialogDef> = {
     pages: ['En skylt vid bäcken:\n"BADA EJ I FORSEN. FÖLJ EJ EFTER VITA HÄSTAR."\nNågon har strukit under sista raden.'],
   },
 
+  kvarnen_dammlucka: {
+    pages: ['Ratten till dammluckan, nött blank av många händer. Den släpper vattnet ur rännan – eller in igen.'],
+  },
+
   kvarnen_skylt2: {
     pages: ['Inristat i kvarnstenen: en sol, och under den ett namn som någon har försökt skrapa bort.'],
   },

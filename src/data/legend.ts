@@ -25,6 +25,7 @@ import { Kind, type TileKind } from '../engine/collision';
  *  (  dry roots: solid until a fireball (Eld) burns them (opened once)
  *  [  a gate of dead lanterns: solid until Åska thunders in the room (opened once)
  *  -  a light path: a one-way ledge that is only there while Lyse burns
+ *  ]  mill water: deep (a hazard) while the mill's water is high, a dry bed when the sluice lets it out
  *  }  loose masonry: solid until struck while Dagny carries the crowbar (opened once)
  *  0  Klockaren, the crypt's lesser guardian
  *  (see game/side/obstacles.ts)
@@ -106,6 +107,7 @@ export function kindOf(ch: string): TileKind {
     case '=':
       return Kind.OneWay;
     case '^':
+    case ']':
     case '~':
     case 'n':
       return Kind.Hazard;

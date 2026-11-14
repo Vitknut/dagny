@@ -307,6 +307,20 @@ den skada Dagny väntas ha, från tempel 3. Tempel 1–2 är orörda.*
 
 ### Fas 4 – Templen blir nät (V2, V5)
 
+*Rättelse 14 november: variation mellan templen.* Kryptan och Gruvan byggdes med samma planlösning (ett nav med två sidorum), och det bryter mot kravet på variation. Alla templen är fortfarande tempel i Zelda II:s mening, med nycklar, ljus, en väktare och en skatt, men varje tempel har sin egen form:
+
+| Tempel | Form | Eget kännetecken |
+|---|---|---|
+| Kryptan | Nav med grenar | Spettet, muren av lösa stenar |
+| Gruvan | Nedstigning, våning för våning (byggs om igen) | Hissveven |
+| Kvarnen | Två lägen i samma rum: högt och lågt vatten | Ratten vid dammluckan, stockar som flyter, rännan som töms |
+| Fyren | Tornet, en lång klättring | Järnringar |
+| Folkparken | Öppet nöjesfält i valfri ordning | Plattformar som kräver något |
+| Fäbodskogen | Irrgång | Korna som broar när skällan ljuder |
+| Trollberget | Examen, allt kombinerat | — |
+
+*Kvarnen byggd 14 november:* i Kvarnstugan står ratten till dammluckan. Med högt vatten bär flytande stockar över rännan till kvarnens upphöjda golv och den låsta dörren. Med lågt vatten är rännan en torr fåra, och den översvämmade gången under golvet leder ner till Kvarnkällaren och nyckeln. Man vrider ratten två gånger för att komma vidare.
+
 Planen från 9 november gäller: varje tempel blir 6–7 rum med en hall och två
 eller tre vägar, och ett eget föremål som hittas halvvägs och öppnar resten.
 

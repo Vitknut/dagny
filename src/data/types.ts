@@ -314,6 +314,8 @@ export interface PlatformDef {
   speed?: number;
   /** Stands still (at tx, ty) until Dagny carries this item (a mine lift and its crank). */
   needs?: string;
+  /** Floats on the mill's water: at ty while the water is high, sunk to this row when it is let out (the sluice). */
+  float?: number;
 }
 
 export interface AreaDef {
@@ -414,6 +416,12 @@ export interface AreaDef {
    * tiles past it, and the way back shuts there.
    */
   hush?: number;
+  /**
+   * The sluice wheel of the mill (fas 4, Kvarnen): Up at it lets the water out
+   * or in again (flag `kvarn_lagvatten`). Mill water (`]`) is deep while the
+   * water is high and a dry bed when it is low; floating logs rise and sink with it.
+   */
+  sluice?: { tx: number; ty: number };
   /** Drapes along the arena's roof, the sign of a guardian ahead (sprite id; side/render.ts). */
   drapes?: string;
   /**
