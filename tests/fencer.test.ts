@@ -52,3 +52,36 @@ describe('the tomtenisse fences instead of rushing', () => {
     expect(e.takeHit(3, 100, 'high', wd)).toBe('hit');
   });
 });
+
+describe('every fencer fences: the tomtenisse and the later ones', () => {
+  const fencers = Object.values(ENEMIES).filter((e) => e.behavior === 'parrier');
+
+  it('there is one in each later temple, each quicker than the one before', () => {
+    for (const id of ['gast', 'kavaljer', 'vittra', 'drabant']) expect(fencers.map((f) => f.id)).toContain(id);
+    const later = ['gast', 'kavaljer', 'vittra', 'drabant'].map((id) => ENEMIES[id]);
+    for (let i = 1; i < later.length; i++) {
+      expect(later[i].speed).toBeGreaterThan(later[i - 1].speed);
+      expect(later[i].guardDelay!).toBeLessThan(later[i - 1].guardDelay!);
+    }
+  });
+
+  for (const def of fencers) {
+    it(`${def.id}: parries a blow at its guard height, is open while it thrusts, and can be beaten`, () => {
+      const wd = world();
+      const e = new Enemy(def, 120, 176);
+      e.update(wd);
+      expect(e.takeHit(1, 100, e.guard, wd)).toBe('blocked');
+      for (let i = 0; i < 400 && e.mode !== 2; i++) e.update(wd);
+      expect(e.mode).toBe(2);
+      let hits = 0;
+      while (!e.dead && hits < 50) {
+        e.iframes = 0;
+        e.mode = 2;
+        e.takeHit(3, 100, 'high', wd);
+        hits++;
+      }
+      expect(e.dead).toBe(true);
+    });
+  }
+});
+

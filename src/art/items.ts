@@ -343,6 +343,8 @@ export const itemSprites: Record<string, SpriteDef> = {
       '.........WWWWW..................',
     ]],
   },
+  /** Rowan (decor): the birch's shape with grey bark, darker leaves and red berry clusters. */
+  rowan: { base: 'birch', w: 32, h: 40, frames: [], recolor: { W: 'G', l: 'M', M: 'R' } },
   /** Spruce (decor). 24×40 */
   spruce: {
     w: 24, h: 28,
@@ -445,6 +447,10 @@ export const itemSprites: Record<string, SpriteDef> = {
     ]],
   },
   /** Iron ore (8×8). */
+  /** The crowbar (the crypt's tool, fas 4). */
+  spett: { w: 10, h: 10, outline: 'k', frames: [['........gG', '.......gG.', '......gG..', '.....gG...', '....gG....', '...gG.....', '..gG......', '.gG.......', 'gGG.......', '.g........']] },
+  /** The lift crank (Gruvan's tool, fas 4): an iron crank with a wooden handle. */
+  hissvev: { w: 10, h: 10, outline: 'k', frames: [['......BB..', '......BB..', '......gG..', '......gG..', '..gGGGGG..', '..gG......', '.GGGG.....', '.GgGG.....', '.GGGG.....', '..........']] },
   malm: { w: 8, h: 8, outline: 'k', frames: [['..gggg..', '.gGGrGg.', 'gGrGGGGg', 'gGGGGrGg', 'gGGrGGGg', 'gGGGGGGg', '.gGGrGg.', '..gggg..']] },
   /** The thunderstone: glassy, still glowing (8×8). */
   askstenen: { w: 8, h: 8, outline: 'k', frames: [['...ccc..', '..cWCcc.', '.cCWcCc.', 'cCcWWcCc', 'cCCcWCcc', '.cCCcWc.', '..cCCc..', '...cc...']] },

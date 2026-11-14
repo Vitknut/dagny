@@ -3,6 +3,7 @@ import { Act } from '../engine/input';
 import { VIEW_W, VIEW_H } from '../engine/screen';
 import { AREAS } from '../data/areas';
 import { ENEMIES } from '../data/enemies';
+import { lifeAtTier } from '../data/progression';
 import { kindOf } from '../data/legend';
 import { NPCS } from '../data/npcs';
 import { PALETTE } from '../data/palettes';
@@ -23,14 +24,18 @@ import * as flow from './flow';
 import { beatIndex, squareActive } from './beat';
 import { LevelUpOverlay, GameOverOverlay } from './menus';
 
+import { updateCritters, type Critter } from './side/critters';
+import { Follower } from './side/follower';
+import { updateTrial, type Trial } from './side/trial';
 import { compact, nearestFreeSpot, tmpA, type Checkpoint, type Marker, type SpellTimers } from './side/shared';
 
 export { nearestFreeSpot } from './side/shared';
-import { build, refreshRoom, spawnAfterBoss, spawnTreasure, renderStatic, renderFront } from './side/room';
+import { build, placeFind, refreshRoom, spawnAfterBoss, spawnTreasure, renderStatic, renderFront, roomTier, templeBonus } from './side/room';
 import { shieldBlocks, damagePlayer, combat, killEnemy } from './side/combat';
 import { collect } from './side/pickups';
 import { renderScene } from './side/render';
 import { tickSpells, castSpell, blowLur, updateHelpers, shootFire } from './side/spells';
+import { LOOSE, setLightPaths, shutCellsIn, spread } from './side/obstacles';
 /** Steps after a dialog closes before Up or a tap can start another (half a second). */
 const INTERACT_PAUSE = 30;
 /** Steps before the same person or sign starts again while Dagny stays put (three seconds). */
@@ -43,6 +48,8 @@ export interface Spawn {
   x?: number;
   y?: number;
   facing?: 1 | -1;
+  /** A meeting on the map: the tier of the region it started in (game/reach.ts, tierAt). */
+  tier?: number;
 }
 
 /**
@@ -65,6 +72,12 @@ export class SideScene implements Scene, WorldApi {
   signs: Array<Marker & { dialog: string }> = [];
   /** Glints where a lamp reveals a secret. */
   lampGlints: Array<{ x: number; y: number }> = [];
+  /** A trial of candles (side/trial.ts), in rooms that have one. */
+  trial: Trial | null = null;
+  /** Someone following Dagny out of a dark place (side/follower.ts). */
+  follower: Follower | null = null;
+  /** Small harmless animals: birds, hens, a squirrel, a hare, ducks (side/critters.ts). */
+  critters: Critter[] = [];
   checkpoints: Checkpoint[] = [];
   altar: Marker | null = null;
   readonly player = new Player();
@@ -78,6 +91,11 @@ export class SideScene implements Scene, WorldApi {
   helpers: Array<{ x: number; y: number; vx: number; vy: number; onGround: boolean; w: number; h: number; life: number; cd: number; facing: 1 | -1 }> = [];
   lurCooldown = 0;
   beatCells: Array<{ i: number; tx: number; ty: number; group: '%' | '&' }> = [];
+  /** Light-path cells ('-'): ledges only there while Lyse burns (side/obstacles.ts). */
+  lightCells: number[] = [];
+  /** Mill-water cells (']'): deep or dry with the sluice (kvarn_lagvatten). */
+  waterCells: number[] = [];
+  private lightOn = false;
   lastBeat = -1;
 
   /** The dance floor's light strings are lit (always, unless the room waits for Åska). */
@@ -100,18 +118,30 @@ export class SideScene implements Scene, WorldApi {
   bossOutro = 0;
   /** Steps after a hazard respawn during which hazards don't hurt again. */
   private hazardGrace = 0;
+  /** The frame Dagny arrived in this room, and whether Up has been let go since. */
+  private arrivedAt = -1000;
+  private upArmed = true;
   /** The last thing Dagny talked to or read, where she stood and when. */
   private lastTalk: { key: string; x: number; at: number } | null = null;
   /** Sealed room: 0 not sealed / cleared, 1 waiting for Dagny, 2 shut until the room is cleared, 3 a meeting with the way back shut. */
   seal = 0;
   nameT = 0;
   flashT = 0;
+  /** The grille between the quiet way in and the arena is down (side/render.ts). */
+  gateShut = false;
+  /** Steps left of the sluice wheel's turning (drawn spinning). */
+  sluiceSpin = 0;
   private lockMsgT = 0;
   deadT = 0;
   spell: SpellTimers = { skydd: 0, hopp: 0, lyse: 0, eld: 0, hamn: 0 };
   dark: HTMLCanvasElement | null = null;
   private exiting = false;
   prompt: { x: number; y: number } | null = null;
+
+  /** The tier a meeting was started at (Spawn.tier). */
+  get spawnTier(): number | undefined {
+    return this.spawn.tier;
+  }
 
   constructor(readonly game: Game, areaId: string, private readonly spawn: Spawn) {
     const area = AREAS[areaId];
@@ -127,6 +157,7 @@ export class SideScene implements Scene, WorldApi {
       wallRight: !area.right,
     };
     build(this);
+    this.applyWater();
     this.staticLayer = renderStatic(this);
     this.frontLayer = renderFront(this);
     this.placePlayer();
@@ -187,6 +218,8 @@ export class SideScene implements Scene, WorldApi {
     if (this.boss && this.boss.awake && !this.boss.dead) {
       return templeById(this.area.temple ?? '')?.bossMusic ?? 'boss';
     }
+    // Before the guardian wakes: no temple tune, only the waiting.
+    if (this.boss && !this.boss.dead && this.area.hush) return 'vantan';
     if (this.seal === 2 && this.area.sealed?.music) return this.area.sealed.music;
     // A village whose place has woken plays its tune brighter.
     const village = VILLAGES.find((v) => v.area === this.area.id);
@@ -196,6 +229,12 @@ export class SideScene implements Scene, WorldApi {
 
   enter(): void {
     const a = this.area;
+    // Stepping out of a door must not lead straight back in: Up is not heard
+    // until it has been let go after arriving, and not for a moment at all.
+    this.arrivedAt = this.game.frame;
+    this.upArmed = false;
+    // Whoever was following waits again where they were lost (a retry, a new visit).
+    if (a.lostChild) this.s.flags = this.s.flags.filter((f) => f !== `${a.lostChild!.npc}_folger`);
     if (a.showName) this.nameT = 150;
     if (a.kind === 'village') this.s.lastVillage = a.id;
     // Autosave on every area change (encounters save the overworld spot instead).
@@ -289,10 +328,16 @@ export class SideScene implements Scene, WorldApi {
     const def = ENEMIES[id];
     if (!def || this.minions() >= 2) return false;
     const e = new Enemy(def, px, py);
+    e.scaleTo(lifeAtTier(def, roomTier(this)));
+    e.bonusDamage = templeBonus(this.area.temple);
     e.facing = px < this.player.x ? 1 : -1;
     this.enemies.push(e);
     this.puff(px, py - 8, 'mist');
     return true;
+  }
+
+  diveBusy(self: unknown): boolean {
+    return this.enemies.some((e) => e !== self && !e.dead && e.def.behavior === 'diver' && (e.mode === 1 || e.mode === 3));
   }
 
   minions(): number {
@@ -374,6 +419,7 @@ export class SideScene implements Scene, WorldApi {
     const p = this.player;
     if (this.nameT > 0) this.nameT--;
     if (this.flashT > 0) this.flashT--;
+    if (this.sluiceSpin > 0) this.sluiceSpin--;
     if (this.lockMsgT > 0) this.lockMsgT--;
     if (this.shakeT > 0) this.shakeT--;
 
@@ -418,7 +464,23 @@ export class SideScene implements Scene, WorldApi {
     // Platforms move first and carry whoever stands on them.
     const rider = this.riding;
     const waiting = p.onGround && !rider ? p.x + p.w / 2 : null;
-    for (const pl of this.platforms) pl.update(pl === rider && p.onGround, waiting);
+    // A lift that needs the crank stands still without it.
+    for (const pl of this.platforms) {
+      // A log on the mill's water rises and sinks with it.
+      if (pl.def.float !== undefined) {
+        const target = ((this.lowWater ? pl.def.float : pl.def.ty) + 1) * TILE;
+        pl.dx = 0;
+        pl.dy = Math.max(-0.8, Math.min(0.8, target - pl.y));
+        pl.y += pl.dy;
+        continue;
+      }
+      if (pl.def.needs && !hasItem(this.s, pl.def.needs)) {
+        pl.dx = 0;
+        pl.dy = 0;
+        continue;
+      }
+      pl.update(pl === rider && p.onGround, waiting);
+    }
     if (rider && p.onGround) {
       const ox = p.x;
       p.x += rider.dx;
@@ -459,7 +521,13 @@ export class SideScene implements Scene, WorldApi {
       // Only one hurt per fall: a held stick can't send Dagny straight back in.
       if (this.hazardGrace === 0) damagePlayer(this, 2, p.x + p.w / 2 - p.facing, true);
       this.hazardGrace = 50;
-      if (this.s.hp > 0) {
+      if (this.s.hp > 0 && p.state === 'bird') {
+        // The bird stays a bird, back where Dagny last stood (feet on the same spot).
+        p.x = p.safeX;
+        p.y = p.safeY + STAND_H - p.h;
+        p.vx = 0;
+        p.vy = 0;
+      } else if (this.s.hp > 0) {
         p.state = 'normal';
         p.place(p.safeX, p.safeY);
       }
@@ -468,6 +536,7 @@ export class SideScene implements Scene, WorldApi {
     // Locked doors: push against them with a key.
     this.tryDoors();
     this.tryHatch();
+    this.tryObstacles();
     this.updateCavein();
 
     // --- Sealed room ---
@@ -482,6 +551,31 @@ export class SideScene implements Scene, WorldApi {
     // --- Interact (Up or a tap on the NPC/door) ---
     this.updateInteract();
 
+    const up = p.onGround && p.state === 'normal' && g.input.pressed(Act.Up) && !g.modal;
+    this.trySluice(up);
+    // --- A trial of candles ---
+    if (this.trial) {
+      const ev = updateTrial(this.trial, this.area, s, p, p.state !== 'bird', up);
+      // The candle she stands at shows that Up lights it.
+      const near = this.trial.candles[this.trial.near];
+      if (near && !this.prompt) this.prompt = { x: near.tx * TILE + 8, y: near.ty * TILE - 22 };
+      if (ev === 'lit') this.sfx('checkpoint');
+      else if (ev === 'wrong') {
+        this.sfx('puff');
+        for (const c of this.trial.candles) this.puff(c.tx * TILE + 8, c.ty * TILE + 4, 'mist');
+      } else if (ev === 'done') {
+        this.sfx('select');
+        g.pushOverlay(new DialogOverlay(g, this.area.candleTrial!.dialog, () => this.afterDialog()));
+        this.game.save();
+      }
+    }
+
+    // --- Someone following ---
+    if (this.follower) this.follower.update({ x: p.x + p.w / 2, y: p.y + p.h }, p.state !== 'bird', this.enemies);
+
+    // --- Small animals ---
+    if (this.critters.length) updateCritters(this.critters, this.grid, this.playerCenter(), this.camY);
+
     // --- Enemies ---
     for (const e of this.enemies) e.update(this);
     combat(this);
@@ -490,6 +584,14 @@ export class SideScene implements Scene, WorldApi {
     // --- Projectiles ---
     const solidAt = (x: number, y: number): boolean => isSolidAt(this.grid, x, y);
     for (const pr of this.projectiles) {
+      // A fireball sets dry roots alight before the wall stops it.
+      if (pr.fromPlayer && pr.sprite === 'fireball' && !pr.dead && pr.delay <= 0) {
+        const roots = shutCellsIn(this, '(', { x: pr.x + Math.min(0, pr.vx), y: pr.y, w: pr.w + Math.abs(pr.vx), h: pr.h });
+        if (roots.length) {
+          pr.dead = true;
+          this.openCells(spread(this, '(', roots), 'fire');
+        }
+      }
       pr.update(this.grid, solidAt);
       if (pr.dead || pr.delay > 0) continue;
       if (pr.fromPlayer) {
@@ -497,7 +599,7 @@ export class SideScene implements Scene, WorldApi {
         for (const e of this.enemies) {
           if (e.dead || !overlaps(pr.box, e.box(tmpA))) continue;
           const resist = pr.sprite === 'fireball' ? e.def.fireResist ?? 1 : 1;
-          const r = e.takeHit(Math.max(1, Math.ceil(pr.damage * resist)), pr.x, 'magic', this);
+          const r = e.takeHit(Math.max(1, Math.ceil(pr.damage * resist)), pr.x, 'fire', this);
           if (r !== 'none') {
             pr.dead = true;
             if (r === 'dead') killEnemy(this, e);
@@ -538,7 +640,7 @@ export class SideScene implements Scene, WorldApi {
         if (!s.opened.includes(cp.pid)) s.opened.push(cp.pid);
         s.checkpoint = { area: this.area.id, x: cp.tx * TILE + 3, y: (cp.ty + 1) * TILE - STAND_H };
         this.sfx('checkpoint');
-        g.toast(STR.checkpoint);
+        g.toastOnce('ljus', STR.checkpoint);
         this.game.save();
       }
     }
@@ -622,6 +724,17 @@ export class SideScene implements Scene, WorldApi {
     if (p.x < this.caveX + 4) {
       if (p.invuln === 0) damagePlayer(this, 2, this.caveX - 20);
       p.x = this.caveX + 4;
+      // Shoved against a pillar: the rubble lifts her up onto it, never into the rock.
+      if (rectHitsSolid(this.grid, p)) {
+        let up = TILE / 2;
+        while (up <= 4 * TILE && rectHitsSolid(this.grid, { x: p.x, y: p.y - up, w: p.w, h: p.h })) up += TILE / 2;
+        if (up <= 4 * TILE) p.y -= up;
+        else {
+          const free = nearestFreeSpot(this.grid, p.x, p.y, p.w, p.h);
+          if (free) p.place(free.x, free.y);
+        }
+        p.vy = 0;
+      }
     }
     if (this.caveX > (this.grid.w - 3) * TILE) this.caveX = null;
   }
@@ -635,15 +748,75 @@ export class SideScene implements Scene, WorldApi {
       for (let tx = Math.floor(b.x / TILE); tx <= Math.floor((b.x + b.w) / TILE); tx++) {
         const i = ty * this.grid.w + tx;
         if (this.area.tiles[ty]?.[tx] !== '!' || this.grid.kinds[i] !== Kind.Solid) continue;
-        this.grid.kinds[i] = Kind.Empty;
-        this.tileSprite[i] = null;
-        this.s.opened.push(this.pid(tx, ty));
-        this.puff(tx * TILE + 8, ty * TILE + 8, 'mist');
-        this.sfx('door');
-        this.shake(8, 2);
-        this.staticLayer = renderStatic(this);
-        this.game.save();
+        this.openCells([i], 'door');
       }
+    }
+  }
+
+  /** The mill's water has been let out at the sluice. */
+  get lowWater(): boolean {
+    return hasFlag(this.s, 'kvarn_lagvatten');
+  }
+
+  /** Mill water as it stands now: deep (a hazard) or a dry bed. */
+  applyWater(): void {
+    const kind = this.lowWater ? Kind.Empty : Kind.Hazard;
+    for (const i of this.waterCells) this.grid.kinds[i] = kind;
+  }
+
+  /** Up at the sluice wheel: the water goes out of the race, or back in. */
+  private trySluice(up: boolean): void {
+    const sl = this.area.sluice;
+    if (!sl) return;
+    const p = this.player;
+    const on = overlaps(p, { x: sl.tx * TILE - 10, y: (sl.ty - 1) * TILE, w: 2 * TILE + 4, h: 2 * TILE });
+    if (!on) return;
+    if (!this.prompt) this.prompt = { x: sl.tx * TILE + 8, y: (sl.ty - 1) * TILE - 10 };
+    if (!up) return;
+    if (this.lowWater) this.s.flags = this.s.flags.filter((f) => f !== 'kvarn_lagvatten');
+    else setFlag(this.s, 'kvarn_lagvatten');
+    this.applyWater();
+    this.sfx('door');
+    this.shake(24, 2);
+    this.game.toastOnce(this.lowWater ? 'damm_ut' : 'damm_in', this.lowWater ? STR.sluiceOut : STR.sluiceIn, 3);
+    this.sluiceSpin = 40;
+    this.game.save();
+  }
+
+  /** Opens shut cells for good (a hatch, rotten boards, roots, a lantern gate): kept in the save. */
+  openCells(cells: readonly number[], sound: string): void {
+    if (!cells.length) return;
+    for (const i of cells) {
+      const tx = i % this.grid.w;
+      const ty = Math.floor(i / this.grid.w);
+      this.grid.kinds[i] = Kind.Empty;
+      this.tileSprite[i] = null;
+      this.s.opened.push(this.pid(tx, ty));
+      this.puff(tx * TILE + 8, ty * TILE + 8, 'mist');
+    }
+    this.sfx(sound);
+    this.shake(8, 2);
+    this.staticLayer = renderStatic(this);
+    this.game.save();
+  }
+
+  /** A thrust from above breaks rotten boards; the crowbar brings down loose stones; the light path comes and goes with Lyse. */
+  private tryObstacles(): void {
+    const p = this.player;
+    if (p.swordActive && hasItem(this.s, LOOSE.item)) {
+      const hit = shutCellsIn(this, LOOSE.ch, p.swordBox({ x: 0, y: 0, w: 0, h: 0 }));
+      if (hit.length) this.openCells(spread(this, LOOSE.ch, hit), 'door');
+    }
+    if (p.downThrust) {
+      const hit = shutCellsIn(this, '_', p.swordBox({ x: 0, y: 0, w: 0, h: 0 }));
+      if (hit.length) {
+        this.openCells(hit, 'door');
+        p.bounce();
+      }
+    }
+    if (this.lightCells.length && this.lit() !== this.lightOn) {
+      this.lightOn = this.lit();
+      setLightPaths(this, this.lightCells, this.lightOn);
     }
   }
 
@@ -674,7 +847,7 @@ export class SideScene implements Scene, WorldApi {
       this.game.save();
     } else if (this.lockMsgT === 0) {
       this.lockMsgT = 120;
-      this.game.toast(DialogOverlay.get('nyckel_saknas').pages[0]);
+      this.game.toastOnce('nyckel_saknas', DialogOverlay.get('nyckel_saknas').pages[0]);
     }
   }
 
@@ -682,12 +855,17 @@ export class SideScene implements Scene, WorldApi {
     const p = this.player;
     const g = this.game;
     this.prompt = null;
-    if (p.state !== 'normal' || !p.onGround) return;
+    // A bird can fly out through a door (but not talk or read).
+    const bird = p.state === 'bird';
+    if (!bird && (p.state !== 'normal' || !p.onGround)) return;
     const pc = p.x + p.w / 2;
     // Right after a dialog closes, the presses and taps that closed it (and the
     // ones mashed after) must not start a talk again at once.
-    const calm = g.frame - g.overlayClosedAt >= INTERACT_PAUSE;
-    const up = calm && g.input.pressed(Act.Up);
+    // The same goes for the moment after arriving through a door.
+    const settled = g.frame - this.arrivedAt >= INTERACT_PAUSE;
+    if (settled && !g.input.held(Act.Up)) this.upArmed = true;
+    const calm = settled && g.frame - g.overlayClosedAt >= INTERACT_PAUSE;
+    const up = calm && this.upArmed && g.input.pressed(Act.Up);
     const taps = calm ? g.input.taps : [];
     const tapped = (r: Rect): boolean =>
       taps.some((t) => t.x + this.camX >= r.x - 6 && t.x + this.camX <= r.x + r.w + 6 && t.y + this.camY >= r.y - 6 && t.y + this.camY <= r.y + r.h + 6);
@@ -703,7 +881,7 @@ export class SideScene implements Scene, WorldApi {
     // NPCs
     let best: Npc | null = null;
     let bestD = 26;
-    for (const n of this.npcs) {
+    for (const n of bird ? [] : this.npcs) {
       // Things with nothing to say (a glowing charcoal stack) give no prompt.
       if (!n.def.talk.some((t) => g.check(t.if))) continue;
       const d = Math.abs(n.x + n.box.w / 2 - pc);
@@ -742,6 +920,7 @@ export class SideScene implements Scene, WorldApi {
       }
       return;
     }
+    if (bird) return;
     for (const sgn of this.signs) {
       const r = { x: sgn.tx * TILE - 4, y: sgn.ty * TILE - 16, w: TILE + 8, h: 32 };
       if (!overlaps(r, p)) continue;
@@ -778,6 +957,15 @@ export class SideScene implements Scene, WorldApi {
     const s = this.s;
     this.applySkills();
     refreshRoom(this);
+    // Someone lost asked to follow: from now on they walk where Dagny walks.
+    const lost = this.area.lostChild;
+    if (lost && !this.follower && hasFlag(s, `${lost.npc}_folger`)) {
+      const n = this.npcs.find((x) => x.def.id === lost.npc);
+      if (n) {
+        this.npcs = this.npcs.filter((x) => x !== n);
+        this.follower = new Follower(n.def.sprite, n.x + n.w / 2, n.y + n.h);
+      }
+    }
     // Spawn Murre when he is home.
     if (hasFlag(s, 'murre_hemma') && !this.npcs.some((n) => n.def.id === 'murre')) {
       const a = this.area;
@@ -829,9 +1017,11 @@ export class SideScene implements Scene, WorldApi {
       this.seal = 0;
       edge(true);
       setFlag(this.s, `${this.area.id}_rensad`);
+      // What the guard stood over shows now (the mine's crank).
+      for (const fd of this.area.finds ?? []) if (fd.after === `${this.area.id}_rensad`) placeFind(this, fd.item, fd.tx, fd.ty);
       g.audio.playMusic(this.music());
       this.sfx('unlock');
-      g.toast(STR.sealOpen, 3);
+      g.toastOnce('vagen_fri', STR.sealOpen, 3);
       g.save();
     }
   }
@@ -843,6 +1033,15 @@ export class SideScene implements Scene, WorldApi {
     if (this.area.cavein && exit === this.area.right) setFlag(this.s, this.area.cavein.flag);
     if (this.area.opens && exit === this.area.right) setFlag(this.s, this.area.opens);
     const g = this.game;
+    const lost = this.area.lostChild;
+    if (lost && this.follower) {
+      const p = this.player;
+      this.s.flags = this.s.flags.filter((f) => f !== `${lost.npc}_folger`);
+      if (this.follower.near(p.x + p.w / 2, p.y + p.h)) {
+        setFlag(this.s, lost.home);
+        g.toast(STR.followerHome, 3);
+      } else g.toast(STR.followerLeft, 3);
+    }
     if (exit.to === 'overworld') {
       if (exit.ow) this.s.ow = { ...exit.ow };
       flow.goToOverworld(g);
@@ -854,12 +1053,25 @@ export class SideScene implements Scene, WorldApi {
   private updateBoss(): void {
     const b = this.boss;
     if (!b) return;
+    if (this.area.hush && b.x < (this.area.hush + 1) * TILE) {
+      b.x = (this.area.hush + 1) * TILE;
+      if (b.vx < 0) b.vx = 0;
+    }
     const g = this.game;
-    if (!b.awake && !b.dead && this.player.x > 5 * TILE) {
+    const gate = this.area.hush ?? 0;
+    if (!b.awake && !b.dead && this.player.x > (gate + 5) * TILE) {
       b.awake = true;
       this.grid.wallLeft = true;
-      // Block the passage back while the fight lasts.
-      for (let y = 0; y < this.grid.h; y++) if (this.grid.kinds[y * this.grid.w] === Kind.Empty) this.grid.kinds[y * this.grid.w] = Kind.Solid;
+      // Block the passage back while the fight lasts (where the quiet way in meets the arena).
+      for (let y = 0; y < this.grid.h; y++) if (this.grid.kinds[y * this.grid.w + gate] === Kind.Empty) this.grid.kinds[y * this.grid.w + gate] = Kind.Solid;
+      // An iron grille comes down there, so the wall is seen.
+      if (this.area.hush) {
+        this.gateShut = true;
+        this.sfx('door');
+      }
+      // The guardian steps out of nothing: mist where it will stand.
+      for (let i = 0; i < 10; i++) this.puff(b.x + Math.random() * b.w, b.y + Math.random() * b.h, 'mist');
+      this.flashT = 12;
       this.sfx('roar');
       this.shake(20, 2);
       g.pushOverlay(new DialogOverlay(g, b.boss?.introDialog ?? 'boss_vaknar', () => g.audio.playMusic(this.music())));
@@ -873,10 +1085,12 @@ export class SideScene implements Scene, WorldApi {
       if (this.bossOutro === 90) {
         const temple = this.area.temple ?? '';
         setFlag(this.s, `${temple}_boss`);
-        // Re-open the way back.
+        // Re-open the way back (where the quiet way in meets the arena): the grille goes up.
+        const gate = this.area.hush ?? 0;
         for (let y = 0; y < this.grid.h; y++) {
-          if (this.area.tiles[y][0] !== '#') this.grid.kinds[y * this.grid.w] = Kind.Empty;
+          if (this.area.tiles[y][gate] !== '#') this.grid.kinds[y * this.grid.w + gate] = Kind.Empty;
         }
+        this.gateShut = false;
         g.audio.playMusic(this.area.music);
         const dlg = (b.boss?.defeatDialog) ?? 'boss_forlikad';
         g.pushOverlay(new DialogOverlay(g, dlg, () => {

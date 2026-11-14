@@ -31,7 +31,7 @@ export const gruvra: Behavior = {
       world.spawnProjectile({
         x: Math.max(minX, Math.min(maxX, p.x - 4 + ((e.t * 37) % 60) - 30)),
         y: 34, vx: 0, vy: 0.6, w: 8, h: 8, sprite: 'stone',
-        damage: 2, fromPlayer: false, life: 160, gravity: 0.14,
+        damage: 2 + e.bonusDamage, fromPlayer: false, life: 160, gravity: 0.14,
       });
       world.sfx('land');
     }
@@ -73,7 +73,7 @@ export const gruvra: Behavior = {
             x: fx, y: e.y + 4,
             vx: Math.max(-3, Math.min(3, (p.x - fx) / flight)),
             vy: -3.4, w: 8, h: 8, sprite: 'stone',
-            damage: e.def.damage, fromPlayer: false, life: 140, gravity: 0.15,
+            damage: e.damage, fromPlayer: false, life: 140, gravity: 0.15,
           });
           world.sfx('sword');
         }

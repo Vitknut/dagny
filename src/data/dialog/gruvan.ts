@@ -6,6 +6,14 @@ export const GRUVAN: Record<string, DialogDef> = {
     pages: ['En emaljskylt, rostig i kanterna:\n"STOLL NR 3 – STÄNGD 1951. OBEHÖRIGA ÄGA EJ TILLTRÄDE."'],
   },
 
+  gruvan_hallskylt: {
+    pages: ['En svart tavla med krita, nästan bortnött:\n"HISSARNA VEVAS FÖR HAND. VEVEN HÄNGER I VERKSTADEN."'],
+  },
+
+  verkstaden_stangs: {
+    pages: ['Något reser sig mellan arbetsbänkarna, tungt som berget självt. Bakom Dagny rasar gången igen.'],
+  },
+
   gruvan_skylt2: {
     pages: ['Någon har ristat i en stötta: "Hälsa på rået när du går in, tacka henne när du går ut."'],
   },

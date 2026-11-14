@@ -111,7 +111,21 @@ export const VINDAR: Record<string, AreaDef> = {
     ambience: ['dust'],
     npcs: { '2': 'prosten' },
     doors: { Y: { to: 'kyrkbyn', entry: 'Y' } },
-    props: [{ sprite: 'fyrLogg', tx: 7, ty: 4 }, { sprite: 'kryptaGravsten', tx: 12, ty: 9 }],
+    // Prosten's trial before Eld: light the candles in the order of his verse.
+    candleTrial: {
+      requires: 'eld_prov',
+      flag: 'ljusprov_klart',
+      dialog: 'prosten_lar',
+      order: ['sol', 'kors', 'hjarta', 'stjarna', 'mane'],
+      candles: [
+        { tx: 10, ty: 4, sign: 'stjarna' },
+        { tx: 19, ty: 4, sign: 'sol' },
+        { tx: 7, ty: 9, sign: 'hjarta' },
+        { tx: 13, ty: 9, sign: 'mane' },
+        { tx: 20, ty: 9, sign: 'kors' },
+      ],
+    },
+    props: [{ sprite: 'fyrLogg', tx: 7, ty: 4 }],
     tiles: [
       "########################",
       "########################",
@@ -130,7 +144,7 @@ export const VINDAR: Record<string, AreaDef> = {
       "........................",
       "........................",
       ".bbbbbbbbbbbbbbbbbbbxbb.",
-      ".bCbbbCbbCbbsbbbbbbbbbb.",
+      ".bbbbbbbbbbbsbbbbbbbbbb.",
       ".bbbbbbbbbbbbbbbbbbbbbb.",
       "...............bb.......",
       ".WWWWWWWWWWWWWWWWWWWWWW.",

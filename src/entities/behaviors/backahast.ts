@@ -43,7 +43,9 @@ export const backahast: Behavior = {
         e.x = poolMid;
         e.y = e.homeY + 20;
         if (--e.timer <= 0) {
-          if (e.phase === 1 && e.t % 2 === 0) {
+          // Phase two takes turns: spit from the surface, then leap out (and
+          // so stand open to the blade), never the same twice in a row.
+          if (e.phase === 1 && e.cycle++ % 2 === 0) {
             e.mode = 4;
             e.timer = 90;
             e.y = e.homeY + 8;
@@ -69,7 +71,7 @@ export const backahast: Behavior = {
           world.spawnProjectile({
             x: sx, y: e.y + 2,
             vx: e.facing * 2, vy: ((high ? p.y - 8 : p.y + 6) - (e.y + 2)) / 60,
-            w: 6, h: 6, sprite: 'droplet', damage: 2, fromPlayer: false, life: 150,
+            w: 6, h: 6, sprite: 'droplet', damage: 2 + e.bonusDamage, fromPlayer: false, life: 150,
           });
           world.sfx('water');
         }
@@ -104,7 +106,7 @@ export const backahast: Behavior = {
               world.spawnProjectile({
                 x: dir === 1 ? e.x + e.w : e.x - 14, y: e.homeY + e.h - 8,
                 vx: dir * 2.2, vy: 0, w: 14, h: 8, sprite: 'wave',
-                damage: 2, fromPlayer: false, life: 120, ghost: true,
+                damage: 2 + e.bonusDamage, fromPlayer: false, life: 120, ghost: true,
               });
             }
           }

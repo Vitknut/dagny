@@ -91,6 +91,13 @@ export const SFX: Record<string, SfxStep[]> = {
     { wave: 'triangle', from: 587, dur: 0.15, vol: 0.4, at: 0.12 },
     { wave: 'triangle', from: 784, dur: 0.3, vol: 0.4, at: 0.24 },
   ],
+  /** Trollberget rumbling far off: a long, deep roll that swells and dies away. */
+  rumble: [
+    { wave: 'noise', from: 180, to: 50, dur: 1.8, vol: 0.9 },
+    { wave: 'sawtooth', from: 55, to: 32, dur: 2.0, vol: 0.5 },
+    { wave: 'noise', from: 260, to: 70, dur: 1.0, vol: 0.6, at: 0.7 },
+    { wave: 'sine', from: 40, to: 28, dur: 1.6, vol: 0.6, at: 0.3 },
+  ],
   roar: [
     { wave: 'sawtooth', from: 140, to: 60, dur: 0.8, vol: 0.5 },
     { wave: 'noise', from: 500, to: 120, dur: 0.8, vol: 0.4 },
@@ -129,7 +136,12 @@ export const SFX: Record<string, SfxStep[]> = {
   ],
   wind: [{ wave: 'noise', from: 600, to: 1400, dur: 0.6, vol: 0.25 }],
   // The radio's static, louder the closer a secret is.
-  static: [{ wave: 'noise', from: 2400, to: 900, dur: 0.12, vol: 0.18 }],
+  // The radio's static: a crackle of three grains, loud enough to hear over the music.
+  static: [
+    { wave: 'noise', from: 3200, to: 1200, dur: 0.07, vol: 0.55 },
+    { wave: 'noise', from: 2200, to: 700, dur: 0.09, vol: 0.45, at: 0.08 },
+    { wave: 'noise', from: 2800, to: 1000, dur: 0.06, vol: 0.4, at: 0.19 },
+  ],
   // Heard through the night forest: a fiddle at the dance (an own little run) and the train.
   fiddle: [
     { wave: 'triangle', from: 587, dur: 0.18, vol: 0.3 },

@@ -20,7 +20,7 @@ export const shooter: Behavior = {
           w: 6,
           h: 6,
           sprite: e.def.shot ?? 'droplet',
-          damage: e.def.damage,
+          damage: e.damage,
           fromPlayer: false,
           life: 180,
           ghost: !!e.def.shot,

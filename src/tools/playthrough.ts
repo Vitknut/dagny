@@ -32,10 +32,50 @@ import { newGame } from '../game/state';
 
 export interface Step {
   wave: number;
-  kind: 'area' | 'talk' | 'burn' | 'item' | 'lose' | 'flag' | 'spell' | 'skill' | 'boss' | 'container' | 'life' | 'key' | 'door' | 'scene';
+  /** 'hear': a dialog heard for the first time (its id), for checks on what is said when. */
+  kind: 'area' | 'talk' | 'hear' | 'burn' | 'item' | 'lose' | 'flag' | 'spell' | 'skill' | 'boss' | 'container' | 'life' | 'key' | 'door' | 'scene';
   what: string;
   /** Where it happened (area id, or 'overworld'). */
   where: string;
+}
+
+/** What Dagny has, for whether a cell keeps her out. */
+export interface Has {
+  items: ReadonlySet<string>;
+  spells: ReadonlySet<string>;
+  skills: ReadonlySet<string>;
+  /** A locked door in this column has been opened. */
+  unlocked: (col: number) => boolean;
+  /** Flags set (the mill's sluice let out: `kvarn_ratt_hittad`). */
+  flags?: ReadonlySet<string>;
+}
+
+/**
+ * Whether a cell keeps Dagny out, given what she has: rock, a door still
+ * locked, a hidden passage without the radio, a hatch, rotten boards, roots
+ * or a lantern gate she can't open yet, or a place only an ability reaches
+ * (AreaDef.needs). Gravity is not modelled; `needs` stands in for it.
+ */
+export function blocks(a: AreaDef, x: number, y: number, has: Has): boolean {
+  const ch = a.tiles[y]?.[x];
+  if (ch === undefined || ch === '#') return true;
+  if (ch === '?') return !has.items.has('radio');
+  if (ch === 'L') return !has.unlocked(x);
+  // A hatch opens to an up-thrust from below.
+  if (ch === '!') return !has.skills.has('uppatstot');
+  // Rotten boards, dry roots and dead lanterns (game/side/obstacles.ts).
+  if (ch === '_') return !has.skills.has('nedatstot');
+  if (ch === '(') return !has.spells.has('eld');
+  if (ch === '[') return !has.spells.has('aska');
+  // Mill water: only crossed once the sluice has been found (it can be let out; logs carry her while it is high).
+  if (ch === ']') return !has.flags?.has('kvarn_ratt_hittad');
+  // Loose masonry comes down to the crowbar (the crypt's tool).
+  if (ch === '}') return !has.items.has('spett');
+  // A place only an ability reaches (a high ledge, a narrow hole, a path in the light).
+  for (const n of a.needs ?? []) if (x >= n.x0 && x <= n.x1 && y >= n.y0 && y <= n.y1 && !has.spells.has(n.ability) && !has.skills.has(n.ability)) return true;
+  // A place only a temple's tool gets her to (a lift that runs only with the crank).
+  for (const n of a.needsItem ?? []) if (x >= n.x0 && x <= n.x1 && y >= n.y0 && y <= n.y1 && !has.items.has(n.item)) return true;
+  return false;
 }
 
 export interface Options {
@@ -45,6 +85,8 @@ export interface Options {
   withholdSkills?: readonly string[];
   /** Readings (spells) she never learns. */
   withholdSpells?: readonly string[];
+  /** Flags that are never set (to check what each one opens). */
+  withholdFlags?: readonly string[];
   /** Also take the random meetings on the overworld (friendly ones and fights). */
   meetings?: boolean;
   /** Stop after this many waves. */
@@ -117,7 +159,7 @@ export function playthrough(opts: Options = {}): Playthrough {
     });
 
   const setFlag = (f: string): void => {
-    if (flags.has(f)) return;
+    if (flags.has(f) || (opts.withholdFlags ?? []).includes(f)) return;
     flags.add(f);
     log('flag', f);
   };
@@ -198,6 +240,7 @@ export function playthrough(opts: Options = {}): Playthrough {
     if (!dialogs.has(id)) {
       dialogs.add(id);
       changed = true;
+      log('hear', id);
     }
     for (const a of d.actions ?? []) run(a, id);
     for (const c of d.choices ?? []) {
@@ -209,17 +252,7 @@ export function playthrough(opts: Options = {}): Playthrough {
 
   // --- Rooms ------------------------------------------------------------------------------
 
-  const solid = (a: AreaDef, x: number, y: number): boolean => {
-    const ch = a.tiles[y]?.[x];
-    if (ch === undefined || ch === '#') return true;
-    if (ch === '?') return !items.has('radio');
-    if (ch === 'L') return !done.has(`${a.id}:col${x}`);
-    // A hatch opens to an up-thrust from below.
-    if (ch === '!') return !skills.has('uppatstot');
-    // A ledge only a reading reaches.
-    for (const n of a.needsSpell ?? []) if (x >= n.x0 && x <= n.x1 && y >= n.y0 && y <= n.y1 && !spells.has(n.spell)) return true;
-    return false;
-  };
+  const solid = (a: AreaDef, x: number, y: number): boolean => blocks(a, x, y, { items, spells, skills, flags, unlocked: (col) => done.has(`${a.id}:col${col}`) });
 
   const spawnCell = (a: AreaDef, entry: string | undefined, at?: Cell): Cell => {
     if (at) return at;
@@ -275,6 +308,13 @@ export function playthrough(opts: Options = {}): Playthrough {
         if (a.signs?.[ch]) talk(a.signs[ch]);
       }
     }
+    // A trial of candles is lit once its teacher has asked (side/trial.ts); then the teacher speaks.
+    if (a.candleTrial && flags.has(a.candleTrial.requires) && !flags.has(a.candleTrial.flag)) {
+      setFlag(a.candleTrial.flag);
+      talk(a.candleTrial.dialog);
+    }
+    // Someone lost who asked to follow is taken home (side/follower.ts): they walk where Dagny walks.
+    if (a.lostChild && flags.has(`${a.lostChild.npc}_folger`) && !flags.has(a.lostChild.home)) setFlag(a.lostChild.home);
     // – then the creatures and what lies about.
     for (const [x, y, ch] of cells) {
       const pid = `${a.id}:${x},${y}`;
@@ -308,6 +348,8 @@ export function playthrough(opts: Options = {}): Playthrough {
         log('container', key);
       }
     }
+    // The mill's sluice: once found, its water can be let out (and in again).
+    if (a.sluice && reached(a.sluice.tx, a.sluice.ty)) setFlag('kvarn_ratt_hittad');
     for (const ls of a.lampSecrets ?? []) {
       if (!items.has(ls.item) || !reached(ls.tx, ls.ty)) continue;
       const key = ls.container ? `${ls.container}:${a.id}:${ls.tx},${ls.ty}` : '';
@@ -321,7 +363,7 @@ export function playthrough(opts: Options = {}): Playthrough {
     // The guardian, then its treasure on the altar and whoever waited behind it.
     const t = TEMPLES.find((x) => x.id === a.temple);
     const guarded = a.tiles.some((r) => r.includes('B'));
-    if (bossCell && t && !flags.has(`${t.id}_boss`)) {
+    if (bossCell && t && !flags.has(`${t.id}_boss`) && (!BOSSES[t.boss]?.needs || skills.has(BOSSES[t.boss].needs!))) {
       const b = BOSSES[t.boss];
       if (!b) problems.push(`temple ${t.id} has no guardian ${t.boss}`);
       log('boss', t.boss);
@@ -420,7 +462,19 @@ export function playthrough(opts: Options = {}): Playthrough {
     if (ending) outside = explore({ area: 'epilog', entry: 'W' }) || outside;
     if (outside) {
       where = 'overworld';
-      const tiles = reachableTiles([...items]);
+      // A reading cast beside what it answers to on the map opens it (game/overworld.ts, castOnMap).
+      for (let open = true; open; ) {
+        open = false;
+        const near = reachableTiles([...items], undefined, flags);
+        for (const m of OVERWORLD.mended ?? []) {
+          if (!m.spell || flags.has(m.flag) || !spells.has(m.spell) || (opts.withholdFlags ?? []).includes(m.flag)) continue;
+          if ([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => near.has(`${m.x + dx},${m.y + dy}`))) {
+            setFlag(m.flag);
+            open = true;
+          }
+        }
+      }
+      const tiles = reachableTiles([...items], undefined, flags);
       for (const p of OVERWORLD.places) {
         if (!tiles.has(`${p.x},${p.y}`)) continue;
         if ((p.hidden === 'radio' || p.radio) && !items.has('radio')) continue;
@@ -441,8 +495,7 @@ export function playthrough(opts: Options = {}): Playthrough {
         for (const ty of types) {
           for (const o of ENCOUNTER_TABLES[ty as keyof typeof ENCOUNTER_TABLES]) {
             where = 'overworld';
-            if ('area' in o) explore({ area: o.area });
-            else talk(o.dialog);
+            explore({ area: o.area });
           }
         }
       }
@@ -518,7 +571,7 @@ export function walkthroughMarkdown(r: Playthrough): string {
   const waves = [...new Set(r.steps.map((s) => s.wave))];
   for (const w of waves) {
     out.push(`## ${w}`, '');
-    const here = r.steps.filter((s) => s.wave === w && s.kind !== 'flag');
+    const here = r.steps.filter((s) => s.wave === w && s.kind !== 'flag' && s.kind !== 'hear');
     const places = [...new Set(here.map((s) => s.where))];
     for (const p of places) {
       const at = here.filter((s) => s.where === p);

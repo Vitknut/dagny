@@ -18,9 +18,10 @@ import { SONGS } from '../src/audio/songs';
 import { SFX } from '../src/audio/sfx';
 import { parseNotes } from '../src/engine/audio';
 import { wrap } from '../src/engine/text';
+import { INPUT_SOURCES, fillButtons } from '../src/data/buttons';
 import type { DialogAction } from '../src/data/types';
 
-const KNOWN_TILE = new Set(['.', '#', '=', '^', '~', 'n', 'L', 'k', 'c', 'X', '@', 'q', '%', '&', '?', ...Object.keys(ENEMY_CHARS), ...Object.keys(PICKUP_CHARS), 'B', 'M', 'h', 'p', '+', '!']);
+const KNOWN_TILE = new Set(['.', '#', '=', '^', '~', 'n', 'L', 'k', 'c', 'X', '@', 'q', '%', '&', '?', ...Object.keys(ENEMY_CHARS), ...Object.keys(PICKUP_CHARS), 'B', 'M', 'h', 'p', '+', '!', '_', '(', '[', '-', '}', ']']);
 
 describe('palette', () => {
   it('has about 32 colours and no pure black', () => {
@@ -139,15 +140,19 @@ describe('areas', () => {
         if (chars.includes('k') || chars.includes('L')) expect(a.temple, 'keys and locks need a temple').toBeDefined();
       });
 
-      it('has as many keys as locked doors', () => {
-        const keys = (a.tiles.join('').match(/k/g) ?? []).length;
+      it('has as many keys as locked doors (in a temple: across the temple, as keys are kept per temple)', () => {
+        const rooms = a.temple ? Object.values(AREAS).filter((r) => r.temple === a.temple) : [a];
+        let keys = 0;
         let doors = 0;
-        const w = a.tiles[0].length;
-        for (let x = 0; x < w; x++) {
-          let inDoor = false;
-          for (const row of a.tiles) {
-            if (row[x] === 'L' && !inDoor) doors++;
-            inDoor = row[x] === 'L';
+        for (const r of rooms) {
+          keys += (r.tiles.join('').match(/k/g) ?? []).length;
+          const w = r.tiles[0].length;
+          for (let x = 0; x < w; x++) {
+            let inDoor = false;
+            for (const row of r.tiles) {
+              if (row[x] === 'L' && !inDoor) doors++;
+              inDoor = row[x] === 'L';
+            }
           }
         }
         expect(keys).toBeGreaterThanOrEqual(doors);
@@ -195,7 +200,9 @@ describe('creatures, temples, spells', () => {
 describe('dialog and text', () => {
   const allText: string[] = [];
   for (const d of Object.values(DIALOG)) {
-    allText.push(...d.pages, ...(d.choices ?? []).map((c) => c.text));
+    // Every way the page can read: one per kind of control.
+    for (const src of INPUT_SOURCES) allText.push(...d.pages.map((p) => fillButtons(p, src)));
+    allText.push(...(d.choices ?? []).map((c) => c.text));
     if (d.speaker) allText.push(d.speaker);
   }
   const collect = (v: unknown): void => {
@@ -218,7 +225,9 @@ describe('dialog and text', () => {
 
   it('every dialog page fits on the postcard (4 lines)', () => {
     for (const [id, d] of Object.entries(DIALOG)) {
-      for (const page of d.pages) expect(wrap(page, 272).length, `${id}: "${page.slice(0, 30)}…"`).toBeLessThanOrEqual(4);
+      for (const page of d.pages) {
+        for (const src of INPUT_SOURCES) expect(wrap(fillButtons(page, src), 272).length, `${id} (${src}): "${page.slice(0, 30)}…"`).toBeLessThanOrEqual(4);
+      }
     }
   });
 
@@ -338,10 +347,11 @@ describe('the ending', () => {
     Object.keys(DIALOG).flatMap((id) => actionsOf(id).flatMap((a) => (a.type === 'flag' ? [a.flag] : []))),
   );
 
-  it('Trollberget opens only when the six other places are restored', () => {
+  it('Trollberget opens only when the six other places are restored, and Hulda has told everything', () => {
     const troll = OVERWORLD.places.find((p) => p.name === 'Trollberget')!;
     expect(troll.area).toBe('troll_1');
-    expect(troll.requires).toHaveLength(6);
+    expect(troll.requires).toHaveLength(7);
+    expect(troll.requires).toContain('hulda_efter_fabodskogen');
     for (const t of TEMPLES.filter((x) => x.id !== 'trollberget')) {
       expect(troll.requires).toContain(`${t.id}_klar`);
       expect(flagsSet.has(`${t.id}_klar`), `${t.id}_klar is set by some dialog`).toBe(true);
@@ -395,7 +405,8 @@ describe('music and sound', () => {
 
   it('every song is used somewhere', () => {
     const used = new Set([...Object.values(AREAS).flatMap((a) => [a.music, a.sealed?.music]), ...TEMPLES.flatMap((t) => [t.music, t.bossMusic])]);
-    const elsewhere = ['titel', 'karta', 'seger', 'somnar', 'soluppgang', 'midsommar', 'fynd', 'lara'];
+    // 'vantan' plays in a guardian's room until it wakes (SideScene.music).
+    const elsewhere = ['titel', 'karta', 'seger', 'somnar', 'soluppgang', 'midsommar', 'fynd', 'lara', 'vantan'];
     // A village's brighter tune plays once its place has woken (SideScene.music).
     const bright = (id: string): boolean => id.endsWith('_ljus') && used.has(id.slice(0, -5));
     // An intro's loop plays when the intro ends.
@@ -428,7 +439,7 @@ describe('dialog pages', () => {
   it('every page fits the dialog box (four lines)', () => {
     // The box is VIEW_W - 48 px wide inside its margins; longer pages are cut off.
     for (const [id, d] of Object.entries(DIALOG)) {
-      d.pages.forEach((p, i) => expect(wrap(p, 272).length, `${id}[${i}]`).toBeLessThanOrEqual(4));
+      d.pages.forEach((p, i) => INPUT_SOURCES.forEach((src) => expect(wrap(fillButtons(p, src), 272).length, `${id}[${i}] ${src}`).toBeLessThanOrEqual(4)));
     }
   });
 

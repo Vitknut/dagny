@@ -33,7 +33,17 @@ export const BRUKSORTEN: Record<string, DialogDef> = {
 
   holm_vantar: {
     speaker: 'Smeden Holm',
-    pages: ['Rönnen står vid kvarnen vid forsen. Mjölnarn litade på den.'],
+    pages: ['Rönnen står på andra sidan forsen, mitt emot kvarnen. Mjölnarn litade på den.'],
+  },
+
+  holm_hittat: {
+    speaker: 'Smeden Holm',
+    pages: [
+      'Upp på loftet, du? Här är det varmt, ässjan står rakt under.',
+      'Vad har du där i handen? Rönn! Vet du vad den är bra för? Inte? Då ska jag visa dig.',
+    ],
+    actions: [{ type: 'flag', flag: 'ronnkvist_uppdrag' }],
+    next: 'holm_lar',
   },
 
   holm_lar: {

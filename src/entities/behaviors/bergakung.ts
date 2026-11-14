@@ -50,7 +50,7 @@ export const bergakung: Behavior = {
     const boulder = (dir: number, speed: number, delay = 0): void =>
       world.spawnProjectile({
         x: dir === 1 ? e.x + e.w - 4 : e.x - 10, y: floorY - 14, vx: dir * speed, vy: 0,
-        w: 14, h: 14, sprite: 'boulder', damage: 3, fromPlayer: false, life: 420, delay,
+        w: 14, h: 14, sprite: 'boulder', damage: 3 + e.bonusDamage, fromPlayer: false, life: 420, delay,
       });
     switch (e.mode) {
       case 0: { // lumber towards Dagny
@@ -77,13 +77,13 @@ export const bergakung: Behavior = {
             const x = Math.max(20, Math.min(gw - 28, p.x - 4 + (i - (n - 1) / 2) * 34));
             world.spawnProjectile({
               x, y: 18, vx: 0, vy: 0.4, w: 8, h: 8, sprite: 'stone',
-              damage: 2, fromPlayer: false, life: 200, gravity: 0.13, delay: 10 + i * 9, ghost: true,
+              damage: 2 + e.bonusDamage, fromPlayer: false, life: 200, gravity: 0.13, delay: 10 + i * 9, ghost: true,
             });
           }
           for (const dir of [-1, 1]) {
             world.spawnProjectile({
               x: dir === 1 ? e.x + e.w : e.x - 14, y: floorY - 8, vx: dir * 2, vy: 0,
-              w: 14, h: 8, sprite: 'wave', damage: 2, fromPlayer: false, life: 140, ghost: true,
+              w: 14, h: 8, sprite: 'wave', damage: 2 + e.bonusDamage, fromPlayer: false, life: 140, ghost: true,
             });
           }
           e.stun = e.phase === 1 ? 50 : 70;
@@ -109,7 +109,7 @@ export const bergakung: Behavior = {
             const sx = e.x + e.w / 2;
             world.spawnProjectile({
               x: sx, y: e.y, vx: (tx - sx) / flight, vy: -3.8 - i * 0.25,
-              w: 8, h: 8, sprite: 'stone', damage: 2, fromPlayer: false, life: 160, gravity: 0.14,
+              w: 8, h: 8, sprite: 'stone', damage: 2 + e.bonusDamage, fromPlayer: false, life: 160, gravity: 0.14,
             });
           }
           world.sfx('sword');

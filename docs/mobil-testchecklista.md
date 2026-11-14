@@ -1,6 +1,6 @@
 # Mobiltest – checklista
 
-Den här checklistan bockar en människa av på **en billig Android-telefon** (Chrome) och **en iPhone** (Safari). Gå igenom den både i webbläsaren (https://samanakbarian.github.io/dagny/) och som installerad app (PWA, eller TWA från Google Play). Skriv telefonmodell och datum överst.
+Den här checklistan bockar en människa av på **en billig Android-telefon** (Chrome) och **en iPhone** (Safari). Gå igenom den både i webbläsaren (https://vitknut.github.io/dagny/) och som installerad app (PWA, eller TWA från Google Play). Skriv telefonmodell och datum överst.
 
 Telefon / OS / webbläsare: ______________________  Datum: __________
 

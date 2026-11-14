@@ -90,15 +90,37 @@ export function wakeAtVillage(game: Game): void {
 }
 
 /**
- * After a defeat with lives left: try again from the door of the room Dagny
- * fell in – anywhere, as in the old games; in a guardian's hall, that is right
- * at the guardian, with full health and magic.
+ * After a defeat with lives left, with full health and magic. Out in the world
+ * Dagny tries again from the door of the room she fell in. In a temple, as in
+ * Zelda II, she goes back: to the last candle she lit in that temple, or else
+ * to the temple's entrance.
  */
 export function retryRoom(game: Game, areaId: string, entry: string | null): void {
   const st = game.state;
   if (!st) return;
   st.hp = hpMax(st);
   st.mp = mpMax(st);
+  const temple = AREAS[areaId]?.temple;
+  // Fallen at a guardian: straight back at its door, at the end of the quiet
+  // way in, a few steps from the grille – not the whole temple again.
+  const here = AREAS[areaId];
+  if (here?.hush) {
+    const y = here.tiles.findIndex((r) => r.includes('A'));
+    goToArea(game, areaId, { x: (here.hush - 3) * 16 + 3, y: (y + 1) * 16 - 22, facing: 1 });
+    return;
+  }
+  if (temple) {
+    const cp = st.checkpoint;
+    if (cp && AREAS[cp.area]?.temple === temple) {
+      goToArea(game, cp.area, { x: cp.x, y: cp.y, facing: 1 });
+      return;
+    }
+    const start = templeById(temple)?.entryArea;
+    if (start) {
+      goToArea(game, start, { entry: 'A', facing: 1 });
+      return;
+    }
+  }
   goToArea(game, areaId, { entry: entry ?? undefined });
 }
 

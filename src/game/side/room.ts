@@ -3,6 +3,11 @@ import { drawSprite, frameCount, spriteSize } from '../../engine/sprites';
 import { BOSSES, ENEMIES } from '../../data/enemies';
 import { ENEMY_CHARS, PICKUP_CHARS, THEMES, DECO, FRONT, kindOf } from '../../data/legend';
 import { NPCS } from '../../data/npcs';
+import { spawnCritters } from './critters';
+import { makeTrial } from './trial';
+import { LOOSE, OBSTACLES, isBarrier } from './obstacles';
+import { TEMPLE_BOSS_DAMAGE, TEMPLE_ENEMY_BONUS, lifeAtTier } from '../../data/progression';
+import { areaTier } from '../reach';
 import { ITEMS } from '../../data/items';
 import { templeById } from '../../data/temples';
 import { Enemy } from '../../entities/enemy';
@@ -60,6 +65,10 @@ export function build(sc: SideScene): void {
           // Nettle tops stick up above the ground so the patch reads as a hazard.
           if (at(tx, ty - 1) !== 'n') sc.anim.push({ x: tx * TILE, y: (ty - 1) * TILE, sprite: 'nettleTops', offset: tx });
           break;
+        case ']':
+          // Mill water: drawn and made deep or dry by the sluice (SideScene.applyWater).
+          sc.waterCells.push(i);
+          break;
         case '~':
           if (at(tx, ty - 1) === '~') sc.tileSprite[i] = 'waterDeep';
           else sc.anim.push({ x: tx * TILE, y: ty * TILE, sprite: 'water', offset: tx });
@@ -71,6 +80,20 @@ export function build(sc: SideScene): void {
         case '!':
           if (s.opened.includes(sc.pid(tx, ty))) kind = Kind.Empty;
           else sc.tileSprite[i] = 'hatch';
+          break;
+        case '_':
+        case '(':
+        case '[':
+          // Rotten boards, dry roots, dead lanterns (side/obstacles.ts).
+          if (s.opened.includes(sc.pid(tx, ty))) kind = Kind.Empty;
+          else sc.tileSprite[i] = OBSTACLES[ch].sprite;
+          break;
+        case '-':
+          sc.lightCells.push(i);
+          break;
+        case '}':
+          if (s.opened.includes(sc.pid(tx, ty))) kind = Kind.Empty;
+          else sc.tileSprite[i] = LOOSE.sprite;
           break;
         case 'k':
           if (!s.opened.includes(sc.pid(tx, ty))) {
@@ -121,6 +144,7 @@ export function build(sc: SideScene): void {
             const def = BOSSES[bossId];
             if (def) {
               sc.boss = new Enemy(def, px, py);
+              sc.boss.bonusDamage = bossBonus(a.temple, def.damage);
               sc.enemies.push(sc.boss);
             }
           }
@@ -132,7 +156,8 @@ export function build(sc: SideScene): void {
             // A cleared sealed room stays empty.
             if (def && !(a.sealed && hasFlag(s, `${a.id}_rensad`))) {
               const e = new Enemy(def, px, py);
-              if (a.hard) e.harden();
+              e.scaleTo(lifeAtTier(def, roomTier(sc)));
+              e.bonusDamage = templeBonus(a.temple);
               sc.enemies.push(e);
               // A meeting on the map shuts the way back (game/sidescene.ts, updateSeal).
               if (a.sealed || a.kind === 'encounter') sc.seal = 1;
@@ -170,6 +195,9 @@ export function build(sc: SideScene): void {
   if (a.afterBoss && a.temple && hasFlag(s, `${a.temple}_boss`)) spawnAfterBoss(sc);
   // A thing someone asked for shows only once they have asked (`after`).
   for (const fd of a.finds ?? []) if (!fd.after || hasFlag(s, fd.after)) placeFind(sc, fd.item, fd.tx, fd.ty);
+  sc.trial = makeTrial(a, s);
+  // Small animals: by hand, or set out by the ground.
+  sc.critters = spawnCritters(a, sc.grid, [...sc.entries.values(), ...sc.npcs.map((n) => ({ tx: Math.floor(n.x / TILE), ty: Math.floor(n.y / TILE) })), ...sc.doors]);
   // Secrets only the lamps reveal.
   for (const ls of a.lampSecrets ?? []) {
     if (!hasItem(s, ls.item)) continue;
@@ -204,8 +232,9 @@ export function build(sc: SideScene): void {
 export function sealHiddenRooms(sc: SideScene, fill: (x: number, y: number) => string): void {
   const { w, h } = sc.grid;
   const tiles = sc.area.tiles;
-  // A hatch is a way through, not a hidden wall: what lies above it shows.
-  const open = (x: number, y: number): boolean => x >= 0 && y >= 0 && x < w && y < h && (sc.grid.kinds[y * w + x] !== Kind.Solid || tiles[y][x] === '!');
+  // A hatch, rotten boards, roots or a lantern gate are ways through, not hidden walls: what lies behind shows.
+  const open = (x: number, y: number): boolean =>
+    x >= 0 && y >= 0 && x < w && y < h && (sc.grid.kinds[y * w + x] !== Kind.Solid || tiles[y][x] === '!' || isBarrier(tiles[y][x]));
   const seen = new Uint8Array(w * h);
   const stack: number[] = [];
   for (let y = 0; y < h; y++) {
@@ -341,3 +370,21 @@ export function refreshRoom(sc: SideScene): void {
     sc.pickups.push(new Pickup('container', px - 6, py - 13, r.kind === 'liv' ? 'livbehallare' : 'magibehallare', false, key));
   }
 }
+
+/** Extra damage for the creatures of a temple: the deeper in the game, the harder they hit. */
+export function templeBonus(temple: string | undefined): number {
+  const n = temple ? templeById(temple)?.number : undefined;
+  return n ? TEMPLE_ENEMY_BONUS[n - 1] ?? 0 : 0;
+}
+
+/** What a temple's guardian adds to its own damage to hit as hard as TEMPLE_BOSS_DAMAGE says. */
+export function bossBonus(temple: string | undefined, base: number): number {
+  const n = temple ? templeById(temple)?.number : undefined;
+  return n ? Math.max(0, (TEMPLE_BOSS_DAMAGE[n - 1] ?? base) - base) : 0;
+}
+
+/** How deep in the game this room is (1–7): a meeting takes the region it started in, other rooms their own (game/reach.ts). */
+export function roomTier(sc: SideScene): number {
+  return sc.area.kind === 'encounter' ? sc.spawnTier ?? 1 : areaTier(sc.area.id);
+}
+

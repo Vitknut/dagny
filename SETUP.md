@@ -5,7 +5,7 @@ automatiskt när `master` uppdateras.
 
 | | Vad | Tid | Kostnad |
 |---|---|---|---|
-| A | Webbversionen på GitHub Pages | 5 min | gratis |
+| A | Webbversionen på vitknut.github.io | 10 min | gratis |
 | B | Signeringsnyckel och GitHub-secrets | 15 min | gratis |
 | C | Bygga Android-appen | 5 min | gratis |
 | D | Google Play Console och stängt test | 1–2 h, plus testperioden | 25 USD en gång |
@@ -16,18 +16,21 @@ Detaljer och felsökning för Android finns i [`android/README.md`](android/READ
 
 ---
 
-## A. Webbversionen på GitHub Pages
+## A. Webbversionen på vitknut.github.io
 
-1. Gå till **github.com/samanakbarian/dagny → Settings → Pages**.
-2. Under *Build and deployment*, välj **Source: GitHub Actions**.
-3. Gå till **Actions → Publicera på GitHub Pages → Run workflow** (eller pusha något till `master`).
-4. Vänta tills körningen är grön (ca 1 min) och öppna **https://samanakbarian.github.io/dagny/**.
+Spelet publiceras inte från det här repot utan i Vitknuts publika sajtrepo, så att källkoden kan
+vara privat. Hela upplägget och felsökning: [`docs/publicering.md`](docs/publicering.md).
+
+1. Slå på Pages i **Vitknut/vitknut.github.io → Settings → Pages**: *Deploy from a branch*, `main`, `/ (root)`.
+2. Skapa token och secret `SITE_TOKEN` (stegen i `docs/publicering.md`).
+3. Gå till **Actions → Publicera på vitknut.github.io → Run workflow** (eller pusha något till `master`).
+4. Vänta tills körningen är grön (ca 1 min) och öppna **https://vitknut.github.io/dagny/**.
 
 Kontrollera:
 - [ ] Spelet startar på datorn.
 - [ ] Spelet startar på telefonen i liggande läge.
 - [ ] Det går att lägga till spelet på hemskärmen och starta det i flygplansläge.
-- [ ] https://samanakbarian.github.io/dagny/integritet.html visas. Play behöver den adressen.
+- [ ] https://vitknut.github.io/dagny/integritet.html visas. Play behöver den adressen.
 
 ## B. Signeringsnyckel och GitHub-secrets
 
@@ -71,7 +74,7 @@ appskalet ändras (namn, ikon, färger). Spelets innehåll uppdateras via webben
    kan ta några dagar). Välj *personligt konto* om du inte har ett företag.
 2. **Skapa app**: namn *Dagnys äventyr*, standardspråk svenska, typ **Spel**, **Gratis**.
 3. **Konfigurera appen** (instrumentpanelens checklista):
-   - **Integritetspolicy:** `https://samanakbarian.github.io/dagny/integritet.html`
+   - **Integritetspolicy:** `https://vitknut.github.io/dagny/integritet.html`
    - **Appåtkomst:** alla funktioner är tillgängliga utan inloggning.
    - **Annonser:** innehåller inte annonser.
    - **Innehållsklassning:** fyll i formuläret. Svara att det finns tecknat fantasyvåld utan blod och
@@ -100,11 +103,9 @@ Utan detta visar appen en adressrad överst. Gör steget när appen har laddats 
    ```bash
    node scripts/assetlinks.mjs <SHA-256 app signing> <SHA-256 upload> > assetlinks.json
    ```
-3. Filen måste ligga på `https://samanakbarian.github.io/.well-known/assetlinks.json`, alltså i roten av
-   din GitHub-domän och inte under `/dagny/`:
-   1. Skapa ett nytt **publikt** repo som heter exakt `samanakbarian.github.io`.
-   2. Lägg filen som `.well-known/assetlinks.json` och en tom fil `.nojekyll` i roten.
-   3. I det repots **Settings → Pages**: *Deploy from a branch*, `main`, `/ (root)`.
+3. Filen måste ligga på `https://vitknut.github.io/.well-known/assetlinks.json`, alltså i roten av
+   domänen och inte under `/dagny/`. Lägg den som `.well-known/assetlinks.json` i repot
+   **Vitknut/vitknut.github.io** (där finns redan `.nojekyll`, så mappen publiceras).
 4. Kontrollera att adressen ovan visar JSON i webbläsaren. Avinstallera och installera om appen från
    testlänken. Adressraden ska nu vara borta.
 

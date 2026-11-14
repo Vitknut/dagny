@@ -1,0 +1,38 @@
+# A random player in every room (e2e/monkey.spec.ts): too slow for every push,
+# so it runs each night and by hand ("Run workflow"). A failure names the room,
+# the form (girl or bird) and the seed, so it can be run again locally with
+#   MONKEY_SEED=<seed> npm run e2e:monkey
+name: Slumpspelare
+
+on:
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: 'Frö (tomt = dagens datum)'
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  monkey:
+    # Pinned: Playwright 1.56 has no browser for Ubuntu 26.04 (ubuntu-latest).
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Only the browser: the runner already has its system libraries, and
+      # apt's mirrors have failed us mid-install.
+      - run: npx playwright install chromium
+      # A new seed each night, so the player tries new things over time.
+      - run: echo "MONKEY_SEED=${{ inputs.seed || '' }}" >> "$GITHUB_ENV"
+      - run: '[ -n "$MONKEY_SEED" ] || echo "MONKEY_SEED=$(date +%Y%m%d)" >> "$GITHUB_ENV"'
+      - run: echo "Frö $MONKEY_SEED"
+      - run: npm run e2e:monkey

@@ -17,31 +17,31 @@ export const VASEN: Readonly<Record<string, VasenEntry>> = {
     folktro:
       'När en kyrka byggdes sades det att man grävde ner ett levande djur under den – ett lamm under koret, en häst eller ett svin på kyrkogården. Djurets ande blev kyrkogrimmen, som vaktade kyrkan och de döda. Den som mötte grimmen om natten kunde få ett dödsvarsel.',
     berattelse:
-      'Kyrkogrimmen har vaktat Stenkyrkans krypta längre än någon minns. När ingen längre tände ljusen där nere blev vakten bitter. Hulda tände dem en gång varje midsommar – det är hennes namn som står halvt bortnött i stenen.',
+      'Kyrkogrimmen har vaktat Stenkyrkans krypta längre än någon minns. När ingen längre tände ljusen där nere blev vakten bitter. Väktaren tände dem varje midsommar. Hennes namn står halvt bortnött i stenen.',
   },
   gruvraet: {
     folktro:
       'Gruvrået, eller gruvfrun, rådde över malmen i berget. Hon visade sig som en vacker kvinna, ofta klädd i grått. Gruvdrängar som hälsade henne och höll ordning fick rika malmådror och kunde varnas för ras. Den som svor eller visslade i gruvan kunde råka illa ut.',
     berattelse:
-      'Gruvrået minns kvinnan som kom med sin lampa varje vår och hälsade. Lampan märkt H.D. hängde kvar på sin spik i arton år – den var Huldas, buren av Dagmar.',
+      'Gruvrået minns kvinnan som kom med sin lampa varje vår och hälsade. Lampan märkt H.D. hängde kvar på sin spik i arton år.',
   },
   backahasten: {
     folktro:
       'Bäckahästen visade sig som en vacker vit häst vid bäckar och åar. Barn som satte sig på dess rygg fick se ryggen växa, så att fler fick plats – och så sprang hästen ner i vattnet. Det sades att den försvann om någon sa dess namn högt.',
     berattelse:
-      'Väktarna sa Bäckahästens namn högt vid forsen varje sommar. När ingen gjorde det längre blev den vild. Vid dammen lämnade Dagmar sina stövlar – de som Hulda köpt åt henne 1945.',
+      'Väktarna sa Bäckahästens namn högt vid forsen varje sommar. När ingen gjorde det längre blev den vild. Vid dammen lämnade den förra Väktaren sina stövlar.',
   },
   havsfrun: {
     folktro:
       'Havsfrun var havets rå: vacker framifrån, men ibland med fisksjärt eller en rygg som drivved. Fiskare som såg henne visste att storm var på väg. Den som visade henne respekt kunde få god fångst; den som hånade henne kunde bli kvar på havet.',
     berattelse:
-      'Havsfrun drog stormen kring fyren när ljuset slocknade. Fyrvaktaren skrev i loggboken att signalen från stranden tystnade midsommarnatten 1946 – det var Dagmars lampa som slutade blinka.',
+      'Havsfrun drog stormen kring fyren när ljuset slocknade. Fyrvaktaren skrev i loggboken att signalen från stranden tystnade midsommarnatten 1946. Lampan på stranden blinkade aldrig mer.',
   },
   spelmannen: {
     folktro:
       'Spelmän som ville bli riktigt skickliga sades gå till Näcken vid ett vattenfall, på torsdagskvällar, och offra något – brännvin eller en svart katt. Den som lärde sig av Näcken kunde spela så att folk inte kunde sluta dansa, ibland inte ens spelmannen själv.',
     berattelse:
-      'Spelmannen vid dansbanan lärde sig sin konst av något i vattnet och kunde aldrig sluta. På ett fotografi från midsommar 1945 dansar en kvinna med kopparfärgat hår till hans fiol – Dagmar, som skrattar.',
+      'Spelmannen vid dansbanan lärde sig sin konst av något i vattnet och kunde aldrig sluta. På ett fotografi från midsommar 1945 dansar en kvinna med kopparfärgat hår till hans fiol. Hon skrattar.',
   },
   skogsraet: {
     folktro:
@@ -73,13 +73,55 @@ export const VASEN: Readonly<Record<string, VasenEntry>> = {
     folktro:
       'Lyktgubbar, eller irrbloss, var små ljus som rörde sig över myrar och ängar om natten. Det sades att de var själar efter döda – ofta någon som i livet flyttat en gränssten och nu måste vandra med sin lykta. Den som följde ljuset kunde gå vilse eller hamna i myren.',
     berattelse:
-      'Irrblossen lockar Dagny mot gungflyet på myren. På fotografiet från dansbanan dansar Dagmar med ett av dem.',
+      'Irrblossen lockar Dagny mot gungflyet på myren. På fotografiet från dansbanan dansar en kvinna med kopparhår med ett av dem.',
   },
   nisse: {
     folktro:
       'Tomten, eller nissen, vakade över gården och djuren och höll ordning om natten. Han var liten men stark, och skulle ha sin gröt med smör i på julafton. Glömde man den, eller retade honom, kunde han ta hämnd – eller flytta till grannen och ta lyckan med sig.',
     berattelse:
       'Tomtenissarna i kryptan har ingen gård kvar att vakta och har tagit till svärd i stället. De fäktas, men rusar inte – de vill bara bli lämnade i fred.',
+  },
+  grytvatte: {
+    folktro:
+      'Vättarna bodde under golv och i jorden runt gården. Den som hällde ut hett vatten utan att varna dem skållade dem, och de glömde aldrig. Den här vätten är spelets egen: den har satt en järngryta på huvudet för att aldrig skållas igen.',
+    berattelse:
+      'Grytvätten i kvarnen tål svärdet från sidan. Grytan klingar och klingan studsar. Men ovanifrån är den inte så säker.',
+  },
+  bjara: {
+    folktro:
+      'Bjäran, eller mjölkharen, var ett väsen som en trollkunnig tillverkade av stickor och garn och väckte med tre droppar blod. Den sög mjölk ur grannens kor och spydde den i ägarens kärna. Kulor bet inte på den; bara eld, eller en kula av arvsilver.',
+    berattelse:
+      'Bjärorna i Fäbodskogen har ingen ägare kvar och stjäl mjölk åt ingen. Svärdet går rakt igenom stickorna. Bara eld biter.',
+  },
+  mara: {
+    folktro:
+      'Maran red människor och djur om natten: hon satte sig på bröstet på den som sov, så att han inte kunde andas. Hästar som hon ridit stod svettiga på morgonen med flätad man. Ett ljus som brann hela natten höll henne borta.',
+    berattelse:
+      'Maran i folkparken syns knappt i mörkret, och svärdet går rakt igenom henne. Hon ser Dagny, men Dagny ser henne inte. Inte förrän något lyser.',
+  },
+  gast: {
+    folktro:
+      'En gast var den oroliga anden efter någon som drunknat och aldrig fått en grav i vigd jord. Längs kusten hördes gastar ropa i stormen, och det sades att de ville ha sällskap ner i djupet.',
+    berattelse:
+      'Gastarna i fyren går vakt med båtshakar, som fyrfolket en gång. De fäktas som tomtenissarna, men snabbare. Stormen har gjort dem otåliga.',
+  },
+  kavaljer: {
+    folktro:
+      'Det berättades om en främling som kom till dansen, fint klädd och den bästa dansaren av alla. Den som dansade med honom kunde inte sluta. Under byxbenet stack en hästhov fram, och då var det för sent.',
+    berattelse:
+      'Kavaljererna i folkparken bjuder upp med svärd i stället för en hand. De följer varje steg Dagny tar, högt och lågt, och slutar aldrig dansa.',
+  },
+  vittra: {
+    folktro:
+      'Vittrorna var underjordsfolket i norr. De levde som människor under marken, vallade sina egna kor i skogen och flyttade till fäbodarna om somrarna. Den som hällde ut hett vatten på deras tak eller byggde på deras stig fick deras vrede över sig.',
+    berattelse:
+      'Vittrorna vallar sina kor genom Fäbodskogen som de alltid gjort, men ingen har frågat om lov på länge. De fäktas snabbt och tyst.',
+  },
+  drabant: {
+    folktro:
+      'Bergakungen hade ett helt hov inne i berget: guld, tjänare och livvakter av troll. Den som blev bergtagen kunde se dem stå på rad vid hans tron.',
+    berattelse:
+      'Drabanterna vaktar vägen till Bergakungens sal. De är de snabbaste fäktarna i berget och slår hårdast. Byt höjd fortare än de hinner följa.',
   },
   myrkatt: {
     folktro:
@@ -98,6 +140,18 @@ export const VASEN: Readonly<Record<string, VasenEntry>> = {
       'Stenknektar kallas stenväktarna i Stenkyrkans krypta. Folktron förklarade gärna stora stenblock: de var troll som solen hunnit ifatt, eller stenar som jättar kastat efter kyrkorna när klockorna störde dem.',
     berattelse:
       'Stenknektarna är kryptans gamla stenväktare. I mörkret är de svåra att se – och svåra att stoppa.',
+  },
+  klockaren: {
+    folktro:
+      'Klockaren ringde i kyrkklockorna och höll ordning i kyrkan. Det sades att en klockare som dog i tjänsten aldrig riktigt lämnade den: han gick sina rundor om nätterna, och den som rörde kyrkans saker fick svara honom.',
+    berattelse:
+      'I Stenkyrkans sakristia vaktar en gammal klockare det han en gång fick ansvar för. Han fäktas som han levde – noga, och utan brådska.',
+  },
+  malmjatte: {
+    folktro:
+      'I gruvbygderna sades att berget självt vaktade sin malm. Den som tog för mycket, eller tog utan att tacka, kunde möta något i orterna som var tyngre än en människa och långsammare än en häst.',
+    berattelse:
+      'Malmjätten står i gruvans verkstad, bland gammalt verktyg, och släpper ingen förbi. Den är byggd av samma sten som berget runt den.',
   },
   sjora: {
     folktro:

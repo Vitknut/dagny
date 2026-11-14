@@ -1,3 +1,4 @@
+import { fillButtons } from '../data/buttons';
 import { DIALOG } from '../data/dialog';
 import type { DialogDef } from '../data/types';
 import { Act } from '../engine/input';
@@ -37,7 +38,7 @@ export class DialogOverlay implements Overlay {
   }
 
   private layout(): void {
-    const text = this.def.pages[this.page] ?? '';
+    const text = fillButtons(this.def.pages[this.page] ?? '', this.game.input.lastSource);
     this.lines = wrap(text, TEXT_W).slice(0, LINES + 1);
     this.total = this.lines.reduce((a, l) => a + [...l].length, 0);
     this.shown = 0;

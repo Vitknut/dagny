@@ -30,26 +30,26 @@ export const OVERWORLD: OverworldDef = {
     '^^l.ll0Zlll.llllllllllkkff^^^kkkk^kkkk^^XXXXX%%0T%%XXXXXXXX^^^^^^^^h........hfffffffffffwfffff^^',
     '^^lllll----+llllllllllkkkkkkkkkkkkkkkkkEEkkXXXXXXXXXXXXXXXX^^^^^^^hh.........fffffffff0wfffff.^^',
     '^^llllllllf++lllllllllkkkkkkkk^kkkkkkkkXXkkkXXXXXXXXXXXXXXX^^^^^^^.........h.ffffff+--Qwffff..^^',
-    '^^llllllssff|lllllllllkkkkkkk^^^kkkkkkkXXkkkkXXXXXXXXCk%%XX^^^^^^^.........h..fff+-+...=.fff..^^',
-    '^^lllllssssf|llllullllkkkkkkk^^^kkkkkkkXXkkkkCXXXXXXXX%%%XX^^^^^^^^..u.......yf+-+h....w..f...^^',
+    '^^llllllssff|lllllllllkkkkkkk7^^kkkkkkkXXkkkkXXXXXXXXCk%%XX^^^^^^^.........h..fff+-+...=.fff..^^',
+    '^^lllllssssf|llllullllkkkkkkk^^^kkkkkkkXXkkkkCXXXXXXXX%%%XX^^^^^^^^..u.......yf+-+h....w..f.5.^^',
     '^^llllsssssf++llllll...lllllll.^kkkkkkkkXkkkkXXXXXXXCk%%%XX^^^^^^^....+--------+hhh.....w.....^^',
     '^^llllssssfff|llllll....lllllu.^^kkkkkkkXXkkXXXXXXXXXk%%%XX^^^^^^^....|.h....hhhhh......w....^^^',
     '^^llll.llffff|.lllll.....lllll.^^^kkkkkkXXXXXXXXXXXXXX%C%XX^^^^^^^....|..ggf.hhhhh.....~~~~..^^^',
     '^^lulllllffff+------B...ffflllk^^^^kkkk^XXXXXXXXXXXXXXXXXX^^^^^^^^^...|..ggffhhhhh.....~~~~..^^^',
     '^^lllllllffff|...lllll..ffff.lkk^^^^kkk^XXXXX^^^....XffffX.Da^^^^^....|ggggff....hh.........^^^^',
     '^^lllllllfff++..lllllll.fff..^^^^^^^^^^^^^^^^.......ffffff......^^....|.gggf.........u.......^^^',
-    '^^lllllllfff|ff.llllllllfff..^^^^^^^^^^^h.^^.hhhh....fff0hhhh.^^^^^..h|..g...................^^^',
+    '^^lllllllfff|ff.llllllllfff..^^^^^^^^^^^h.6^.hhhh....fff0hhhh.^^^^^..h|..g...................^^^',
     '^^llll...fff|fffflllllllfff..^^^^^.hh^^hh.+------------+M+---.D^^^D.--B.....................hh^^',
-    '^^lllll..ff.t.fffllllllllfl.l^^^^..hhhhhh.|.hhhhhh..hhh+-+hhh.^^^^^..h|......................h^^',
+    '^^lllll..ff.t.fffllllllllfl.l^^6[..hhhhhh.|.hhhhhh..hhh+-+hhh.^^^^^..h|......................h^^',
     '^^llllll.fff.ffffllll.lllfll^^^^^hhhh+----B.hhhh..fhhhh......^^^^^^^.h|.....................u.^^',
     '^^^lllll..fffffffllll..lllll^^^^hhhhh|hh....hhh...hhhhh......^^^^^^^.h|.............h.........^^',
     '^^^lllFl..fffffffllll..lllll^^^^^hhhh|h.....dddd...hhhh.......a^^^^..h|.............h.........^^',
-    '^^^^lFFF....fffffllFFFFFulll^^^^^....t......dddd...h.fffffff..^^^^^..h+------+......h........h^^',
-    '^^^^FFFFF.....lllFFFFFFFFlll^^^^^f__........dddd..hh_______ff^^^^^^ffffffffff+--xhhhhhhhh...hh^^',
+    '^^^^lFFF....fffffllFF{FFulll^^^^^....t......dddd...h.fffffff..^^^^^..h+------+......h........h^^',
+    '^^^^FFFFF.....lllFFFFcFFFlll^^^^^f__........dddd..hh_______ff^^^^^^ffffffffff+--xhhhhhhhh...hh^^',
     '^^^^FFFFFFFFFHFFFFFFFFFFFFl^^^^^^^~~_._____..dd...hh~~~_~~~_f^^^^ffffffffffff...hhh...hhh...h^^^',
     '^^^FFFFFFFFFFHFFFFFFFFFFFFFFF^^FF~~~~_~~~~~__j____~~~~~~~~~~^^^^fffffffffffff....h.....h^^^^^^^^',
-    '^^^FFFFFFFFFFHFFFFFFFFFFFFFFFFFFF~~~~~~~~~~~~~_~~~~~~~~~~~~~^^^y.......hh.ffvv........vv^^^^^^^^',
-    '^^^FFFFFFFFFFHFFFFFFFFFFFFFFFFFF~~~~~~~__~~~~~~~~~~~~~~~~~~~^^^........vvvvvvvvv....fvvv^^^^^^^^',
+    '^^^FFFFFFFFFFHFFFFoFFFFFFFFFFFFFF~~~~~~~~~~~~~_~~~~~~~~~~~~~^^^y.......hh.ffvv........vv^^^^^^^^',
+    '^^^FFFFFFFFFFHFFFF{FFFFFFFFFFFFF~~~~~~~__~~~~~~~~~~~~~~~~~~~^^^........vvvvvvvvv....fvvv^^^^^^^^',
     '^^^FFFFFFFFFFHFFF...FFFmFFFFFFFF~~~~~~_.._~~~~~~~~~~~~~~~~~~v^^...hsvvvvvvvvvvvvvsvfvvvv^^^^^^^^',
     '^^^u..^...FFFmmmmm.U....mFFFFFFF~~~~~~_ft._~~~~~~~~~~~~~~~~~vvvvvvvsvvvvvvvvvvvvvsvvvvvvv^^^^^^^',
     '^^^...........mmm......mm.FFFFF_~~~~~~_f._~~~~~~~~~~~~~~~~~~vvvvssssvvsssssssevvvssssesvv^^^^^^^',
@@ -70,8 +70,8 @@ export const OVERWORLD: OverworldDef = {
     '^^^.ffffmm|...mmmmmffffffffff...mjzzzzzn~~~~~~~~~~~~~RRR_O_RR.vvvvvvvvvvsvvvvvvvvvvffff.u^~~~~^^',
     '^^^^....mm|...mmmmm.ffffffff..y.m__zzznnn~~~~~~~~~~~~RRR___RR.vvvvvv.....vvvvmmm..vmmm.._~~~~^^^',
     '^^^.....mm|..fmmmmm..mfffffm....m_zzznnnn~~~~^^^^^~~^^^RRRRR^^...mmm..y.mmsssmmm...mmm..._~~~^^^',
-    '^^^.....mm|.ffffmmy..mmffff......_zznn^nn~~~^^^^^^^^^^^^^RRR^^...mmmmm...mmmmmm.....mm..m_~~~^^^',
-    '^^^u......|.ffffffmmmmmffff......_zw^^^^^^^^^^^^^..mN^^N^^^^^^...mmmmmm.+-----------O..mm_~~^^^^',
+    '^^^.....mm|.ffffmmy..mmffff......_zznn^nn~~~^^O^^^^^^^^^^RRR^^...mmmmm...mmmmmm.....mm..m_~~~^^^',
+    '^^^u......|.ffffffmmmmmffff......_zw^^^^^^^^^^]^^..mN^^N^^^^^^...mmmmmm.+-----------O..mm_~~^^^^',
     '^^^^m.....|m:fffffmmmmmffff......^ww^^^^...^.......mNN^NNN^^^^^..mmmmmm.|..............mm_~~~^^^',
     '^^^.......|:::.f.mmmmmmffff.....www^^...............N^^^NNNNNN^^..mmmmm.|..............m_~~~~^^^',
     '^^^......:|::::mm.....fffff.....ww^^^..............NN^^^^^NNNNNN........|.....m......mmm_~~~~^^^',
@@ -81,8 +81,8 @@ export const OVERWORLD: OverworldDef = {
     '^^^m......|.:....t..............ww........|.mm......NNNNNNNNNNNNNNmm......mmmmmmmmm......_~~~^^^',
     '^^^mm....mV.....................bb^....mmm|.mm......NNNNNNNNNNNNNNmm....mmmmmmmmmmm.....u__~^^^^',
     '^^^^mmmmmm|...mmm............ffwww....mmmm|..m......NNNNNNNNNNNNN.......mmmmmmmmff......._~~~^^^',
-    '^^^mmmmmmm|...mfm.......mm...ffwww....mmmm|..m.......NNNNNNNNNNNN.........mmmmmmff.mm...__~~~^^^',
-    '^^^mmm.mmm|...mmm............ffwwwm....mm.|...........NNNNNNNNNN...........mymffff....__~~~~~^^^',
+    '^^^mmmmmmm|...mfm.......mm...ffwww....mmmm|..m.......NNNNNNNNNNNN.........mmmmmmff.mm...__~U~^^^',
+    '^^^mmm.mmm|...mmm............ffwwwm....mm.|...........NNNNNNNNNN...........mymffff....__~~~_~^^^',
     '^^^.....mm|...mmm...mmm.......^wwwmmm....0P............NNNNNNNNu....mm......mmffff..._~~~~~~^^^^',
     '^^^......m|...mmm...mmm.......mwwwmmmm...00::......m..NNNNNNNNNmm...mmm....mmmfffff.._~~_0_~~^^^',
     '^^^......m|..........m.........wwwwfff.....::::f.....NNNNNNNNNNf....mm.....mmmmffffff_~~_Y_~~^^^',
@@ -99,6 +99,19 @@ export const OVERWORLD: OverworldDef = {
   tone: 'karta',
   needs: NEEDS,
   blocked: BLOCKED_CHARS,
+  // Once Folkparken is done the villagers rebuild the washed-away bridge over the rapids
+  // and clear the rocks at its far end: a short way home from the park plain.
+  mended: [
+    { x: 32, y: 58, flag: 'folkparken_klar', ch: '=' },
+    { x: 33, y: 58, flag: 'folkparken_klar', ch: '=' },
+    { x: 34, y: 58, flag: 'folkparken_klar', ch: '.' },
+    // Shut until Dagny opens them with a reading, standing beside them (fas 3.2):
+    // two dry thickets (Eld), a dark cleft (Lyse), a great boulder (Åska).
+    { x: 18, y: 28, flag: 'snar_1_brant', ch: '.', spell: 'eld' },
+    { x: 21, y: 23, flag: 'snar_2_brant', ch: '.', spell: 'eld' },
+    { x: 32, y: 19, flag: 'klyftan_lyst', ch: '.', spell: 'lyse' },
+    { x: 46, y: 50, flag: 'bumlingen_kluven', ch: '.', spell: 'aska' },
+  ],
   places: [
     { x: 10, y: 58, name: 'Mormors by', area: 'mormors_by', entry: 'W' },
     { x: 29, y: 37, name: 'Kyrkbyn', area: 'kyrkbyn', entry: 'W' },
@@ -118,7 +131,9 @@ export const OVERWORLD: OverworldDef = {
     { x: 7, y: 6, name: 'Fäbodskogen', area: 'fabod_1', entry: 'A' },
     {
       x: 48, y: 6, name: 'Trollberget', area: 'troll_1', entry: 'A', dialog: 'trollberget_sover',
-      requires: ['krypta_klar', 'gruvan_klar', 'kvarnen_klar', 'fyren_klar', 'folkparken_klar', 'fabodskogen_klar'],
+      requires: ['krypta_klar', 'gruvan_klar', 'kvarnen_klar', 'fyren_klar', 'folkparken_klar', 'fabodskogen_klar', 'hulda_efter_fabodskogen'],
+      // The six places are awake, but Hulda has not told her part yet.
+      dialogWhen: [{ missing: 'hulda_efter_fabodskogen', dialog: 'trollberget_vantar' }],
     },
     { x: 88, y: 2, name: 'Fallgrottan', area: 'fallgrottan', entry: 'A', hidden: 'near' },
     { x: 39, y: 7, name: 'Väktarkammaren', area: 'vaktarkammaren', entry: 'A', hidden: 'radio', leadsTo: { x: 41, y: 7 } },
@@ -142,9 +157,16 @@ export const OVERWORLD: OverworldDef = {
     { x: 12, y: 19, name: 'Fäbodtorpet', area: 'fabodtorpet', entry: 'A' },
     // Passages: the way through is a side-view stretch, entered from either end.
     // The lake (kapitel 1–2): a viewpoint, two islands and the far shore.
+    // Behind what a reading opens (mended, with `spell`).
+    { x: 18, y: 27, name: 'Offerkällan', dialog: 'offerkallan', doneFlag: 'offerkallan_sedd' },
+    { x: 21, y: 24, name: 'Jordkällaren', dialog: 'jordkallaren', doneFlag: 'jordkallaren_sedd' },
+    { x: 31, y: 19, name: 'Den mörka orten', dialog: 'morka_orten', doneFlag: 'morka_orten_sedd' },
+    { x: 46, y: 49, name: 'Den kluvna stenen', dialog: 'kluvna_stenen', doneFlag: 'kluvna_stenen_sedd' },
     { x: 19, y: 30, name: 'Kyrkbacken', view: 24, dialog: 'kyrkbacken_utsikt', doneFlag: 'kyrkbacken_sedd' },
     { x: 40, y: 30, name: 'Eremitholmen', area: 'eremitholmen', entry: 'A' },
     { x: 57, y: 46, name: 'Måsskäret', area: 'masskaret', entry: 'A' },
+    // A skerry with an old cairn in the sound north of the lighthouse: wagtails nest there (Viola's feather).
+    { x: 91, y: 60, name: 'Ärlskäret', area: 'arlskaret', entry: 'A' },
     // A sea cave in the cliff south-east of the lighthouse, seen only from a boat right beside it.
     { x: 95, y: 69, name: 'Havsgrottan', area: 'havsgrottan', entry: 'A', hidden: 'near', sprite: 'owSeaCave' },
     { x: 62, y: 37, name: 'Signalstranden', area: 'signalstranden', entry: 'A' },
@@ -152,6 +174,10 @@ export const OVERWORLD: OverworldDef = {
     // The far mouth and the side gallery open only from inside: one way in, through the cave-in.
     { x: 66, y: 18, name: 'Gamla stollen', area: 'stollen_2', entry: 'E', requires: ['stollen_rasat'], dialog: 'stollen_ost_stangd', leadsTo: { x: 61, y: 18 } },
     { x: 17, y: 57, name: 'Gamla smedjan', area: 'gamla_smedjan', entry: 'A' },
+    // Where the teachers' things lie: out in the world, never inside a temple (as in Zelda II).
+    { x: 92, y: 10, name: 'Rönnen vid forsen', area: 'ronnen', entry: 'A' },
+    { x: 42, y: 17, name: 'Övergivna orten', nameAfter: { flag: 'hulda_efter_folkparken', name: 'Dagmars ort' }, area: 'dagmars_ort', entry: 'A' },
+    { x: 29, y: 9, name: 'Uvberget', area: 'uvberget', entry: 'A' },
     { x: 59, y: 15, name: 'Sidoorten', area: 'stollen_gomd', entry: 'E', requires: ['sidoorten_oppen'], dialog: 'sidoorten_stangd' },
   ],
   encounters: [

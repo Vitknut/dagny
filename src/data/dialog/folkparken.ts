@@ -31,7 +31,8 @@ export const FOLKPARKEN: Record<string, DialogDef> = {
     pages: [
       'Dagny fick TRANSISTORRADION!\nVäggar som surrar i bruset går nu att gå igenom.',
       'Ljusslingorna tänds över dansbanan, en efter en. En bit till av sommarljuset har kommit tillbaka.',
-      'I berget norr om Mormors by finns ett pass som inte syns. Men radion brusar när man kommer nära. Där uppe ligger fäbodarna.',
+      'Långt norr om Mormors by, i den täta granskogen, finns en stig som inte syns. Men radion brusar när man kommer nära. Där uppe ligger fäbodarna.',
+      'Nere vid forsen hörs hammarslag. Folk från byarna lagar den gamla bron som spolades bort.',
     ],
     actions: [{ type: 'flag', flag: 'folkparken_klar' }],
   },

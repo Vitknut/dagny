@@ -2,6 +2,10 @@ import type { DialogDef } from '../types';
 
 /** The small places on the map, each with a little task: the churchyard, the charcoal croft, the plague cross, the stone ship, the milestone, the summer-farm croft. */
 export const SMAPLATSER: Record<string, DialogDef> = {
+  dagmars_ort_ristning: {
+    pages: ['Längst in har någon ristat i berget: ett D, och under det en liten sol.'],
+  },
+
   // --- Gamla kyrkogården: read the stones, move the right one ------------------------------
   kyrkogarden_grind: {
     pages: [

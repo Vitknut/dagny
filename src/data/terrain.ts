@@ -97,6 +97,10 @@ export const TERRAIN: Readonly<Record<string, TerrainDef>> = {
   // Ground a temple's landmark stands on (it is drawn over two by two tiles): never walked.
   '0': { name: 'under ett tempel', sprite: 'owGrass', map: 'M', blocked: true },
   w: { name: 'fors', sprite: 'owRapids', map: 'c', blocked: true },
+  // Shut until a reading opens them for good (OverworldDef.mended with `spell`): fas 3.2.
+  '{': { name: 'torrt snår', sprite: 'owThicket', map: 'B', blocked: true },
+  '[': { name: 'mörk klyfta', sprite: 'owDarkCleft', map: 'g', blocked: true },
+  ']': { name: 'bumling', sprite: 'owBoulder', map: 'G', blocked: true },
   b: { name: 'bortspolad bro', sprite: 'owBrokenBridge', map: 'B', blocked: true },
   X: { name: 'stup', sprite: 'owCliff', map: 'g', blocked: true },
   a: { name: 'igenrasad gruvort', sprite: 'owAdit', map: 'g', blocked: true },
@@ -104,6 +108,9 @@ export const TERRAIN: Readonly<Record<string, TerrainDef>> = {
 
   // --- Landmarks: forgotten things along the way --------------------------------------
   u: { name: 'riven gärdsgård', sprite: 'owWallBroken', map: 'M', encounter: 'ang', landmark: true },
+  '5': { name: 'rönnen', sprite: 'owRowan', map: 'M', encounter: 'skog', landmark: true, visitable: true },
+  '7': { name: 'uvberget', sprite: 'owCliff', map: 'g', encounter: 'fjall', landmark: true, visitable: true },
+  '6': { name: 'gammal ort', sprite: 'owAdit', map: 'M', encounter: 'skog', landmark: true, visitable: true },
   o: { name: 'offerkälla', sprite: 'owSpring', map: 'M', encounter: 'ang', landmark: true, visitable: true },
   t: { name: 'ödetorp', sprite: 'owCroft', map: 'M', encounter: 'odetorp', landmark: true, visitable: true },
   c: { name: 'jordkällare', sprite: 'owCellar', map: 'M', encounter: 'ang', landmark: true, visitable: true },

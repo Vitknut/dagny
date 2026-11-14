@@ -43,8 +43,22 @@ export const ENEMIES: Readonly<Record<string, EnemyDef>> = {
   stenknekt: {
     id: 'stenknekt', name: 'Stenknekt', sprite: 'stenknekt', behavior: 'tank',
     hp: 18, damage: 2, xp: 30, speed: 0.25,
-    box: { x: 1, y: 1, w: 13, h: 23 }, puff: 'moss', heavy: true,
+    box: { x: 1, y: 1, w: 13, h: 23 }, puff: 'moss', heavy: true, nudge: 1.8,
     drops: { lingon: 0.4, termos: 0.3 },
+  },
+  // The lesser guardian in the crypt's sacristy (fas 4): the dead bell-ringer, a fencer.
+  klockaren: {
+    id: 'klockaren', name: 'Klockaren', sprite: 'gast', behavior: 'parrier',
+    hp: 40, damage: 3, xp: 150, speed: 0.7, guardDelay: 10, thrustRest: 40, guard: true,
+    box: { x: 3, y: 4, w: 10, h: 20 }, puff: 'mist',
+    drops: { lingon: 1 },
+  },
+  // The lesser guardian in the mine's workshop (fas 4): a stone knight grown big on ore.
+  malmjatte: {
+    id: 'malmjatte', name: 'Malmjätten', sprite: 'stenknekt', behavior: 'tank',
+    hp: 44, damage: 3, xp: 180, speed: 0.36, guard: true,
+    box: { x: 1, y: 1, w: 13, h: 23 }, puff: 'moss', heavy: true, nudge: 1.2,
+    drops: { lingon: 1 },
   },
   sjora: {
     id: 'sjora', name: 'Sjörå-skott', sprite: 'sjora', behavior: 'shooter',
@@ -117,10 +131,56 @@ export const ENEMIES: Readonly<Record<string, EnemyDef>> = {
     box: { x: 2, y: 3, w: 12, h: 21 }, puff: 'moss', heavy: true,
     drops: { lingon: 0.4, termos: 0.3 },
   },
+  // --- Creatures with their own answer: only one kind of blow bites ---
+  grytvatte: {
+    id: 'grytvatte', name: 'Grytvätten', sprite: 'grytvatte', behavior: 'walker',
+    hp: 6, damage: 2, xp: 16, speed: 0.5, only: 'down',
+    box: { x: 3, y: 4, w: 10, h: 12 }, puff: 'moss',
+    drops: { bulle: 0.3 },
+  },
+  bjara: {
+    id: 'bjara', name: 'Bjäran', sprite: 'bjara', behavior: 'hopper',
+    hp: 6, damage: 2, xp: 22, speed: 1.2, only: 'fire',
+    box: { x: 2, y: 4, w: 12, h: 8 }, puff: 'leaf',
+    drops: { lingon: 0.3 },
+  },
+  mara: {
+    id: 'mara', name: 'Maran', sprite: 'mara', behavior: 'floater',
+    hp: 5, damage: 2, xp: 24, speed: 0.6, veiledUnlessLit: true,
+    box: { x: 2, y: 2, w: 8, h: 8 }, puff: 'mist', flying: true,
+    drops: { termos: 0.3 },
+  },
+  // --- Fencers for the later temples: the tomtenisse's way of fighting, quicker each time ---
+  gast: {
+    id: 'gast', name: 'Gasten', sprite: 'gast', behavior: 'parrier',
+    hp: 9, damage: 2, xp: 26, speed: 0.6, guardDelay: 18, thrustRest: 60,
+    box: { x: 3, y: 4, w: 10, h: 20 }, puff: 'mist',
+    drops: { termos: 0.3 },
+  },
+  kavaljer: {
+    id: 'kavaljer', name: 'Kavaljeren', sprite: 'kavaljer', behavior: 'parrier',
+    hp: 10, damage: 2, xp: 30, speed: 0.65, guardDelay: 15, thrustRest: 52,
+    box: { x: 3, y: 4, w: 10, h: 20 }, puff: 'mist',
+    drops: { termos: 0.3, bulle: 0.2 },
+  },
+  vittra: {
+    id: 'vittra', name: 'Vittran', sprite: 'vittra', behavior: 'parrier',
+    hp: 11, damage: 2, xp: 34, speed: 0.7, guardDelay: 13, thrustRest: 46,
+    box: { x: 3, y: 4, w: 10, h: 20 }, puff: 'leaf',
+    drops: { lingon: 0.3, bulle: 0.2 },
+    befriend: 'Vittran lyfter på huvudet, lockar på sina kor och försvinner in under en sten.',
+  },
+  drabant: {
+    id: 'drabant', name: 'Drabanten', sprite: 'drabant', behavior: 'parrier',
+    hp: 14, damage: 3, xp: 40, speed: 0.8, guardDelay: 11, thrustRest: 40,
+    box: { x: 3, y: 4, w: 10, h: 20 }, puff: 'moss',
+    drops: { lingon: 0.35, termos: 0.25 },
+  },
   /** Skuggan – Dagny's own shadow, torn loose in the mountain. Mirrors her guard. */
   skuggan: {
     id: 'skuggan', name: 'Skuggan', sprite: 'skuggan', behavior: 'shadow',
-    hp: 30, damage: 3, xp: 250, speed: 1.0,
+    // 45: what she had when Trollberget made every creature 1.5 × as tough (the staircase leaves her as she is).
+    hp: 45, damage: 3, xp: 250, speed: 1.0,
     box: { x: 3, y: 2, w: 10, h: 22 }, puff: 'mist',
     drops: { lingon: 1 },
   },
@@ -141,8 +201,10 @@ export const BOSSES: Readonly<Record<string, BossDef>> = {
     box: { x: 4, y: 12, w: 26, h: 20 }, puff: 'mist', heavy: true,
     phases: [
       { atHpFraction: 1, sprite: 'grim', speed: 1.7, attackEvery: 2.2 },
-      { atHpFraction: 0.5, sprite: 'grimSpirit', speed: 1.1, attackEvery: 1.7 },
+      // Floating high, the spirit is struck only from above (Nedåtstöt, from smeden Algot).
+      { atHpFraction: 0.5, sprite: 'grimSpirit', speed: 1.1, attackEvery: 1.7, only: 'down' },
     ],
+    needs: 'nedatstot',
     introDialog: 'grim_vaknar',
     defeatDialog: 'grim_forlikad',
   },

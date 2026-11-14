@@ -1,3 +1,6 @@
+import { renderLightPaths } from './obstacles';
+import { renderCritters } from './critters';
+import { renderTrial } from './trial';
 import { TILE } from '../../engine/collision';
 import { VIEW_W, VIEW_H } from '../../engine/screen';
 import { drawSprite, spriteSize } from '../../engine/sprites';
@@ -9,8 +12,8 @@ import { SPELLS } from '../../data/spells';
 import type { SpellId } from '../../data/types';
 import { Particles } from '../../entities/misc';
 import { drawBackdrop } from '../backdrop';
-import { drawHud } from '../hud';
-import { hasItem } from '../state';
+import { drawHud, spellLines } from '../hud';
+import { hasItem, shownName } from '../state';
 import { squareActive, stepsToSwap } from '../beat';
 import { lightDisc } from './shared';
 import type { SideScene } from '../sidescene';
@@ -45,12 +48,19 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
   // Static tiles and decor.
   ctx.drawImage(sc.staticLayer, camX, camY, VIEW_W, VIEW_H, 0, 0, VIEW_W, VIEW_H);
   renderGrass(sc, ctx, camX, camY);
+  renderDrapes(sc, ctx, camX, camY);
+  // The grille that shuts the arena while the guardian fights.
+  if (sc.gateShut && sc.area.hush) {
+    const gx = sc.area.hush * TILE - camX;
+    for (let y = 0; y < sc.grid.h; y++) if (sc.area.tiles[y][sc.area.hush] !== '#') drawSprite(ctx, 'galler', 0, gx, y * TILE - camY);
+  }
 
   // Animated tiles.
   for (const a of sc.anim) {
     if (a.x + TILE < camX || a.x > camX + VIEW_W || a.y + TILE < camY || a.y > camY + VIEW_H) continue;
     drawSprite(ctx, a.sprite, Math.floor((f + a.offset * 7) / 20), a.x - camX, a.y - camY);
   }
+  renderCritters(sc.critters, ctx, camX, camY);
   // Dance-floor squares.
   if (sc.beatCells.length && sc.area.beat) {
     const period = sc.area.beat.period;
@@ -63,6 +73,21 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
       const id = !on ? 'beatOff' : warn && Math.floor(f / 4) % 2 === 0 ? 'beatWarn' : 'beatOn';
       drawSprite(ctx, id, (c.tx + c.ty) % 2, x, y);
     }
+  }
+  renderLightPaths(ctx, sc.lightCells, sc.grid.w, camX, camY, sc.lit(), f);
+  // The mill's sluice wheel.
+  if (sc.area.sluice) {
+    const sl = sc.area.sluice;
+    drawSprite(ctx, 'ratt', sc.sluiceSpin > 0 ? 1 + (Math.floor(sc.sluiceSpin / 4) % 2) : 0, sl.tx * TILE - 8 - camX, (sl.ty - 1) * TILE - camY);
+  }
+  // Mill water while it is high; a dark, wet bed when it has been let out.
+  for (const i of sc.waterCells) {
+    const x = (i % sc.grid.w) * TILE - camX;
+    const y = Math.floor(i / sc.grid.w) * TILE - camY;
+    if (x < -TILE || x > VIEW_W || y < -TILE || y > VIEW_H) continue;
+    const top = i < sc.grid.w || !sc.waterCells.includes(i - sc.grid.w);
+    if (!sc.lowWater) drawSprite(ctx, top ? 'water' : 'waterDeep', Math.floor((f + i * 7) / 20), x, y);
+    else if (!sc.waterCells.includes(i + sc.grid.w)) drawSprite(ctx, 'mudBed', 0, x, y);
   }
   // The cave-in's rubble behind its front.
   if (sc.caveX !== null) {
@@ -88,13 +113,16 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
   for (const cp of sc.checkpoints) {
     drawSprite(ctx, cp.lit ? 'candle' : 'candleOff', Math.floor((f + cp.tx * 5) / 18), cp.tx * TILE - camX, cp.ty * TILE - camY);
   }
+  if (sc.trial) renderTrial(sc.trial, ctx, camX, camY, f);
 
   renderProps(sc, ctx, camX, camY, false);
   for (const pl of sc.platforms) pl.render(ctx, camX, camY);
   for (const pl of sc.platforms) pl.renderHub(ctx, camX, camY);
   for (const pk of sc.pickups) pk.render(ctx, camX, camY);
   for (const n of sc.npcs) n.render(ctx, camX, camY);
-  for (const e of sc.enemies) e.render(ctx, camX, camY);
+  sc.follower?.render(ctx, camX, camY);
+  // A guardian is not seen before it wakes (the hush before it).
+  for (const e of sc.enemies) if (!(e.boss && !e.awake && sc.area.hush)) e.render(ctx, camX, camY);
   renderPlayerAura(sc, ctx, camX, camY);
   for (const h of sc.helpers) {
     if (h.life > 90 || Math.floor(h.life / 4) % 2 === 0) drawSprite(ctx, 'vatte', Math.floor(f / 10) % 2, h.x - 3 - camX, h.y - 4 - camY, h.facing === -1);
@@ -128,7 +156,7 @@ export function renderScene(sc: SideScene, ctx: CanvasRenderingContext2D): void 
   }
 
   if (!sc.game.hudHidden && sc.game.state) {
-    drawHud(ctx, sc.game.state, { keys: sc.area.temple ? sc.s.keys[sc.area.temple] ?? 0 : undefined, frame: f });
+    drawHud(ctx, sc.game.state, { keys: sc.area.temple ? sc.s.keys[sc.area.temple] ?? 0 : undefined, frame: f, active: activeSpells(sc) });
     renderSpellIcons(sc, ctx);
   }
   renderBossBar(sc, ctx);
@@ -229,6 +257,7 @@ export function renderDarkness(sc: SideScene, ctx: CanvasRenderingContext2D, cam
   if (hasItem(sc.s, 'ficklampa')) light(pc.x + sc.player.facing * 70 - camX, pc.y - camY, 46);
   for (const pr of sc.projectiles) if (pr.sprite === 'bolt' && pr.delay === 0) light(pr.x + 4 - camX, pr.y + pr.h - 10 - camY, 70);
   for (const cp of sc.checkpoints) if (cp.lit) light(cp.tx * TILE + 8 - camX, cp.ty * TILE + 4 - camY, 40 + flicker);
+  for (const c of sc.trial?.candles ?? []) if (c.lit) light(c.tx * TILE + 8 - camX, c.ty * TILE + 4 - camY, 34 + flicker);
   for (const a of sc.anim) {
     if (a.x + TILE + 80 < camX || a.x - 80 > camX + VIEW_W || a.y + TILE + 80 < camY || a.y - 80 > camY + VIEW_H) continue;
     if (a.sprite === 'bulbs') light(a.x + 8 - camX, a.y + 5 - camY, 36);
@@ -238,7 +267,7 @@ export function renderDarkness(sc: SideScene, ctx: CanvasRenderingContext2D, cam
     else if (a.sprite === 'lens') light(a.x + 8 - camX, a.y + 8 - camY, 64 + flicker * 2);
   }
   for (const e of sc.enemies) {
-    if (e.dead) continue;
+    if (e.dead || (e.boss && !e.awake && sc.area.hush)) continue;
     if (e.def.id === 'lyktgubbe') light(e.x + e.w / 2 - camX, e.y + e.h / 2 - camY, 26);
     // Gruvrået carries her own carbide lantern.
     else if (e.def.behavior === 'boss_bergakung' && e.phase === 1) light(e.x + e.w / 2 - camX, e.y + 8 - camY, 50);
@@ -277,13 +306,18 @@ export function renderDarkness(sc: SideScene, ctx: CanvasRenderingContext2D, cam
   ctx.globalAlpha = 1;
 }
 
+/** The readings burning in this room. */
+function activeSpells(sc: SideScene): SpellId[] {
+  return Object.entries(sc.spell).filter(([, t]) => t > 0).map(([k]) => k as SpellId);
+}
+
 export function renderSpellIcons(sc: SideScene, ctx: CanvasRenderingContext2D): void {
   let x = 14;
   const y = 33;
-  for (const [k, t] of Object.entries(sc.spell)) {
-    if (t <= 0) continue;
+  // The selected reading is shown (lit) on the line above; only the others here.
+  for (const k of spellLines(sc.s.selectedSpell, activeSpells(sc)).others) {
     // It lasts the room out: just the name, no countdown.
-    const txt = SPELLS[k as SpellId].name;
+    const txt = SPELLS[k].name;
     drawText(ctx, txt, x, y, 'c', { shadow: 'k' });
     x += measure(txt) + 6;
   }
@@ -307,7 +341,7 @@ export function renderBossBar(sc: SideScene, ctx: CanvasRenderingContext2D): voi
 export function renderName(sc: SideScene, ctx: CanvasRenderingContext2D): void {
   const a = Math.min(1, sc.nameT / 30, (150 - sc.nameT) / 20);
   ctx.globalAlpha = Math.max(0, a);
-  const name = sc.area.name;
+  const name = shownName(sc.s, sc.area);
   const w = measure(name) + 24;
   const x = Math.round((VIEW_W - w) / 2);
   const y = 46;
@@ -318,4 +352,23 @@ export function renderName(sc: SideScene, ctx: CanvasRenderingContext2D): void {
   ctx.fillRect(x + 2, y + 14, w - 4, 1);
   drawText(ctx, name, VIEW_W / 2, y + 4, 'W', { align: 'center' });
   ctx.globalAlpha = 1;
+}
+
+/**
+ * Drapes along the roof of a guardian's arena (AreaDef.drapes): the sign,
+ * as in Zelda II, that the guardian waits ahead. They hang from the first
+ * open row from the top, over the arena only (past the quiet way in).
+ */
+function renderDrapes(sc: SideScene, ctx: CanvasRenderingContext2D, camX: number, camY: number): void {
+  const id = sc.area.drapes;
+  if (!id) return;
+  const tiles = sc.area.tiles;
+  for (let x = sc.area.hush ?? 0; x < sc.grid.w; x++) {
+    let y = 0;
+    while (y < tiles.length && tiles[y][x] === '#') y++;
+    if (y > 6) continue;
+    const px = x * TILE - camX;
+    if (px < -TILE || px > VIEW_W) continue;
+    drawSprite(ctx, id, x % 2, px, y * TILE - camY);
+  }
 }

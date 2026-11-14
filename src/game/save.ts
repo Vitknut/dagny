@@ -10,7 +10,7 @@ import { markExplored } from './explored';
 import { TEMPLES } from '../data/temples';
 
 /** Bump when the format changes, and add a migration below. */
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 7;
 export const SAVE_KEY = 'dagny.save';
 
 export interface SaveFile {
@@ -29,6 +29,8 @@ const MOVED_CONTAINERS: Readonly<Record<string, string>> = {
   'liv:kyrkogarden': 'liv:kyrkogarden:21,9',
   'magi:kolartorpet': 'magi:kolartorpet:17,9',
   'liv:fabodtorpet': 'liv:fabodtorpet:17,9',
+  // Jättegrytan was rebuilt deeper (3.1b): its hidden magic container moved.
+  'magi:jattegrytan:26,5': 'magi:jattegrytan:44,3',
 };
 
 const isObj = (x: unknown): x is Record<string, unknown> => typeof x === 'object' && x !== null && !Array.isArray(x);
@@ -39,6 +41,16 @@ function loc(x: unknown, d: Location): Location {
   if (!isObj(x) || typeof x.area !== 'string') return d;
   return { area: x.area, x: num(x.x, d.x), y: num(x.y, d.y) };
 }
+
+/** Temple keys moved by fas 4 (old place → new place, as "area:x,y"). */
+const MOVED_KEYS: Readonly<Record<string, string>> = {
+  'krypta_2:39,3': 'krypta_benhus:34,9',
+  'gruvan_2:20,11': 'gruvan_malm:33,9',
+  // Kvarnstugan's locked door moved up onto the mill floor (fas 4, Kvarnen).
+  'kvarnen_2:58,7': 'kvarnen_2:57,4',
+  'kvarnen_2:58,8': 'kvarnen_2:57,5',
+  'kvarnen_2:58,9': 'kvarnen_2:57,6',
+};
 
 /** Old formats → current. Version 0 = before versioning (never released). */
 function migrate(file: Record<string, unknown>): Record<string, unknown> {
@@ -60,6 +72,36 @@ function migrate(file: Record<string, unknown>): Record<string, unknown> {
     st.ow = spot;
     if (isObj(st.loc) && st.loc.area === 'overworld') st.loc = { area: 'overworld', x: spot.x, y: spot.y };
     delete st.explored;
+  }
+  // Version 5 (fas 4): the mine became a net, and its lifts run only with the
+  // crank from the workshop. A save already past the landing (or the mine
+  // done) gets the crank, so nobody is left at a dead lift.
+  if (v < 5 && isObj(file.state)) {
+    const st = file.state;
+    const items = Array.isArray(st.items) ? st.items : (st.items = []);
+    const at = isObj(st.loc) && typeof st.loc.area === 'string' ? st.loc.area : '';
+    if (['gruvan_2', 'gruvan_3', 'gruvan_4'].includes(at) && !items.includes('hissvev')) items.push('hissvev');
+  }
+  // Version 6 (fas 4): the crypt became a net, with a wall of loose stones
+  // that only the crowbar from the sacristy brings down. Likewise.
+  if (v < 6 && isObj(file.state)) {
+    const st = file.state;
+    const items = Array.isArray(st.items) ? st.items : (st.items = []);
+    const at = isObj(st.loc) && typeof st.loc.area === 'string' ? st.loc.area : '';
+    if (['krypta_2', 'krypta_3', 'krypta_4'].includes(at) && !items.includes('spett')) items.push('spett');
+  }
+  // Version 7 (3.1b): dry roots now close the way into the mine, and only Eld
+  // burns them. A save inside without Eld would be shut in: it is put outside
+  // the mine's entrance on the map, and a candle lit in there is forgotten.
+  if (v < 7 && isObj(file.state)) {
+    const st = file.state;
+    const spells = Array.isArray(st.spells) ? st.spells : [];
+    const at = isObj(st.loc) && typeof st.loc.area === 'string' ? st.loc.area : '';
+    if (at.startsWith('gruvan') && !spells.includes('eld')) {
+      st.loc = { area: 'overworld', x: 55, y: 18 };
+      st.ow = { x: 55, y: 18 };
+      if (isObj(st.checkpoint) && typeof st.checkpoint.area === 'string' && st.checkpoint.area.startsWith('gruvan')) st.checkpoint = null;
+    }
   }
   return file;
 }
@@ -121,6 +163,11 @@ export function deserialize(text: string | null): SaveFile | null {
   };
   state.hp = Math.max(1, Math.min(hpMax(state), num(s.hp, d.hp)));
   state.mp = Math.max(0, Math.min(mpMax(state), num(s.mp, d.mp)));
+  // Keys that moved when a temple became a net (fas 4): one already taken where
+  // it used to lie counts as taken where it lies now, or it would be had twice.
+  for (const [was, now] of Object.entries(MOVED_KEYS)) if (state.opened.includes(was) && !state.opened.includes(now)) state.opened.push(now);
+  // A temple done before it got its tool (fas 4): the tool is hers, as if found.
+  for (const t of TEMPLES) if (t.tool && state.flags.includes(`${t.id}_klar`) && !state.items.includes(t.tool)) state.items.push(t.tool);
   // Never leave Dagny where she can't get out with what she carries.
   repairReach(state);
   // Saves from before the map remembered what Dagny had seen: count where

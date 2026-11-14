@@ -15,13 +15,13 @@ or a hidden place. At the start she has only the blade Mormor gives her.
 |---|---|---|---|
 | Läkning | Gamle Sven | Mormors by | Fetch **johannesört** from the high ledges in Björkhagen (nettles, crows, jumps) |
 | Nedåtstöt | Smeden Algot | Mormors by | Fetch his **tongs** from Gamla smedjan, east of the village – before the crypt, which he warns against entering without it (Grimmen hovers high) |
-| Lyse | Gamla Elin | Gruvsamhället | Dagmar's **solsten**, deep in the old mine (the next temple) |
-| Eld | Prosten | Kyrkbyn | After the crypt |
-| Skydd | Smeden Holm | Bruksorten | A **rönnkvist** from the rowan by the mill – rowan was planted by mills and water against Bäckahästen |
+| Lyse | Gamla Elin | Gruvsamhället | **Rescue:** her grandson Gösta went into Dagmars ort, an old adit above the village, for Dagmar's sun stone and never came out. Dagny finds him at the far end; he follows exactly where she walks, but stops and cries if she runs ahead and cowers when bats come near. Out through the door with him close, and he runs home (`lostChild`, `side/follower.ts`) |
+| Eld | Prosten | Kyrkbyn | **Trial**, after the crypt: five candles in his attic, each under a carved sign (sun, cross, heart, star, moon), lit in the order of his verse. A wrong one puts every flame out (`candleTrial`, `side/trial.ts`) |
+| Skydd | Smeden Holm | Bruksorten | A **rönnkvist** from Rönnen vid forsen, the miller's rowan on the far bank – rowan was planted by mills and water against Bäckahästen |
 | Uppåtstöt | Förman Karlsson | Bruksorten | For his pick, hidden behind the waterfall north of the mill (Fallgrottan) |
-| Hopp | Viola | Fiskeläget | A wagtail's **fjäder**, on the rocks of the lighthouse skerry |
-| Hamn | Gammelmor Karna | Fäboden | After the mine |
-| Åska | Telegrafisten Oskar | Stationssamhället | An **åskvigg** (a stone-age axe folk thought the thunder threw down) from the field by Milstolpen |
+| Hopp | Viola | Fiskeläget | A wagtail's **fjäder**, on Ärlskäret, a skerry with a cairn north of the lighthouse (by boat, before the temple) |
+| Hamn | Gammelmor Karna | Fäboden | A **fjäder from the eagle-owl** (berguv), at the top of Uvberget, the crag east of the summer farm |
+| Åska | Telegrafisten Oskar | Stationssamhället | **Trade chain:** a **porslinsknopp** to put the telegraph wire back on its pole. Kalle has a box of them but swaps one only for an **åskvigg** (a stone-age axe folk thought the thunder threw down), which lies in the field by Milstolpen |
 
 The seven readings are taught up in attics (`data/areas/vindar.ts`): each
 teacher sits under the roof of a house in the village, behind the house's own
@@ -36,7 +36,7 @@ Like Zelda II, a reading cast in a room lasts until Dagny leaves it (Skydd,
 Hopp, Lyse, Eld and Hamn); casting one that is already burning costs nothing
 and does nothing. A bird that casts again comes down where there is room.
 
-Each thing a teacher asks for lies further on, past their village and before the temple that needs the reading, and only once they have asked (`finds` with `after`).
+Each thing a teacher asks for lies out in the world, never inside a temple, and is always there (as in Zelda II): geography decides when Dagny can reach it, not the quest. If she finds it before she is asked, the teacher simply takes it and teaches the reading (`*_hittat` dialogs).
 
 The NPC dialog conditions are in `src/data/npcs.ts`; `tests/start.test.ts`
 checks that Läkning and Nedåtstöt cannot be had for free.
@@ -77,6 +77,57 @@ creature, a page opens (with a toast). Each page has two leaves:
 The texts are in `src/data/vasen.ts`; a test checks that every creature and
 guardian has a page and that every page fits its panel.
 
+## Creatures with their own answer, and the later fencers
+
+- **Grytvätten** (Kvarnen) wears an iron pot: the blade glances off from the side; only a thrust from above bites (`only: 'down'`).
+- **Bjäran** (Fäbodskogen), the milk hare of folk belief, is sticks and yarn: only a fireball bites (`only: 'fire'`; fireballs strike as `'fire'`, Åska and the näverlur's vätte as `'magic'`).
+- **Maran** (Folkparken, in the dark) is all but invisible and cannot be struck until Lyse burns, though she still hurts (`veiledUnlessLit`).
+- Each stands only where Dagny already has its answer, and never in a room that opens only when every creature is beaten (`tests/answers.test.ts`).
+- **Fencers in every later temple:** Gasten (Fyren), Kavaljeren (Folkparken), Vittran (Fäbodskogen) and Drabanten (Trollberget) fight like the tomtenisse, each quicker to follow Dagny's height and to thrust (`guardDelay`, `thrustRest`; `tests/fencer.test.ts`).
+
+## The rule of three: each ability is wanted again
+
+Every ability that opens the world is wanted in at least three rooms, one of them in Trollberget, and each time it guards something (`tests/abilities.test.ts`). Four new kinds of obstacle (`game/side/obstacles.ts`), besides the hatch:
+
+- **Rotten boards** (`_`): a thrust from above (Nedåtstöt) breaks them – Krypta, Gruvan, Trollberget.
+- **Dry roots** (`(`): a fireball (Eld) sets the whole tangle alight – Gruvan, Fäbodskogen, Trollgångarna.
+- **A gate of dead lanterns** (`[`): thunder (Åska) in the room lights them and the gate opens – Fyren, Trollgångarna (and Folkparken's dance floor).
+- **A light path** (`-`): one-way ledges that are only there while Lyse burns – Gruvan, Kvarnen, Trollberget.
+- Hatches (Uppåtstöt) now also in the lighthouse tower and Trollberget; ledges too high for an ordinary jump (Hopp) in Folkparken and Trollberget; pockets under the roof with a slot only a bird passes (Hamn) in Kvarnen and Trollgångarna. A pocket always has a hole to drop out of, so Dagny is never shut in without magic.
+- The rewards are small (bullar, termosar, lingon) and lie off the main path. Boxes stand two tiles high at the walls with a roof over the nook, so they are climbed in two short steps from either side.
+- Measured jumps (`Player`): an ordinary jump rises 50 px, Hopp 90 px; the placements keep clear of both.
+
+## Readings that change the map
+
+Four things on the map open for good when Dagny casts the right reading standing beside them (`OverworldDef.mended` with `spell`; `castOnMap` in `game/overworld.ts`). It costs magic as usual; any other reading does nothing there.
+
+- **Two dry thickets** (`{`), burnt with Eld: Offerkällan in the spruce north of Kyrkbacken, and Jordkällaren on the highland side of the same forest.
+- **A dark cleft** (`[`) by Gruvsamhället, lit with Lyse: Den mörka orten, with names cut in the rock.
+- **A great boulder** (`]`) above Stationssamhället, split by Åska: Den kluvna stenen.
+- Each place behind gives XP and an extra life (Jordkällaren fills health and magic instead), and is found once.
+- The solver opens them when it has the reading and reaches a tile beside them; `tests/world.test.ts` checks that the places behind are reached only that way.
+
+## The hush before a guardian (as in Zelda II)
+
+Every guardian's room begins with a long, narrow, quiet way in (`AreaDef.hush`, 24 tiles of low tunnel, three tiles high): no creatures, the temple's tune gone, only **Väntan** – a slow heartbeat and a low tone that never lands. Ahead, **drapes** hang from the roof over the arena (`AreaDef.drapes`), the same sign in every temple in its own material: mourning crape (Kryptan), sacking (Gruvan), flour sacks (Kvarnen), fishing nets (Fyren), stage curtains (Folkparken), birch bark (Fäbodskogen), roots (Trollberget). The guardian is not seen until it wakes, five tiles into the arena: it steps out of mist, an iron grille drops where the tunnel meets the arena (and goes up again when the guardian is reconciled), the guardian is kept over its arena, and the guardian music starts – now with a chugging sixteenth-note bass and busier drums (168 bpm).
+
+The lesser guardians (Klockaren, Malmjätten) have their own tune, **Vakten vid dörren**.
+
+## The crypt as a net (fas 4)
+
+Stenkyrkan's crypt is built the same way as the mine. From **Gravkoret** (a candle, three ways) Dagny goes to **Sakristian**, where the way back shuts and **Klockaren**, the dead bell-ringer (a fencer, `guard: true`), keeps the **järnspett**; to **Benhuset**, a dark dead end with the key to the vaults; and – once the crowbar is hers – through a wall of **loose stones** (`}`, struck with the crowbar in the pack) on to Valvgången, Gravkammaren and Grimmen.
+
+- **Grimmen needs Nedåtstöt**, as smeden Algot says: floating in his second phase he is struck only from above (`BossPhase.only: 'down'`; `BossDef.needs` tells the solver).
+- Saves (version 6): the crowbar is given to a save standing past the wall, or with the crypt done.
+
+## The mine as a net (fas 4 pilot)
+
+Den gamla gruvan is no longer a corridor. From **Hisshallen** (a candle, three ways) Dagny goes to **Verkstaden**, where the way back shuts and **Malmjätten** (a lesser guardian, `guard: true`) stands over the **hissvev**; to **Malmorten**, a dead end with the temple's key and the ore for the smith; and on to **Hisschaktet**, whose lifts stand still without the crank (`PlatformDef.needs`). The landing's floor is whole but for one hole, which the dead lift fills, so the shaft can't be dropped into without it. The hall's own lift runs to a gallery under the roof (a thermos) – the crank used again.
+
+- The solver reads `AreaDef.needsItem`; the softlock test walks such rooms with and without the tool; `tests/temples.test.ts` checks the net and that without the crank the guardian is never reached.
+- Saves (version 5): the crank is given to a save standing past the landing, or with the mine done (`TempleDef.tool`).
+- The rest of the temples follow only once this has been played.
+
 ## The first temple's creatures
 
 Dagny starts with 8 health (four bars), so the crypt must not drain it faster than skill can keep up:
@@ -91,12 +142,14 @@ Dagny starts with 8 health (four bars), so the crypt must not drain it faster th
 - Three stats, **Styrka, Magi, Liv**, each 1–12, raised with XP (`COSTS` in `src/data/progression.ts`).
 - **Like Zelda II, a raise spends all the XP:** the counter starts again from 0, whatever was left over. Choosing "Senare" keeps saving up for a dearer level.
 - **Containers:** life (+2) and magic (+1), hidden in temples and caves, each taken once.
+- **Each temple hits harder** (as in Zelda II): ordinary creatures do +0, +0, +1, +1, +2, +2 and +3 damage in temple 1–7, and the guardians do 3, 3, 4, 4, 5, 5 and 6 with a touch (their shots rise the same way). Liv levels and life containers are what let Dagny keep up (`data/progression.ts`).
+- **Creatures grow with Dagny.** From temple 3 on, an ordinary creature has at least enough life to take 2 blows (light fliers), 3 (ordinary) or 5 (heavy, the tanks) at the sword damage Dagny is expected to have there (`EXPECTED_SWORD`: 2, 2, 4, 6, 8, 9, 10), and its XP grows with its life (`lifeAtTier`). The first two temples are left as tuned. Caves and small places take the tier of the region where they lie, and meetings on the map the tier of the region where they start (`game/reach.ts`, `tierAt`, `areaTier`). `tests/difficulty.test.ts` holds the median at 2–4 blows in every temple, and no ordinary creature above 6 (heavy ones above 10).
 - **Sword upgrades:** smith Holm tempers the blade with ore and hones it with the thunderstone. A silver fitting lies hidden in Tjuvgrottan and only shows in the light of the karbidlampa. Each upgrade gives +1 damage.
 
 ## Lives and Game Over (Zelda II style)
 
 - Dagny has **3 lives** (`START_LIVES`), at most 9. Lives show in the HUD as little doll heads.
-- **Defeat with lives left:** one life is lost, and Dagny tries again at the door of the **same room** she fell in, with full health and magic. This holds everywhere: in temples, on paths, in caves and in meetings on the map. In a guardian's hall that means straight back to the guardian, at full health. She can also choose to wake in the last village she rested in.
+- **Defeat with lives left:** one life is lost, and Dagny tries again with full health and magic. Out in the world (paths, caves, meetings on the map) she starts at the door of the **same room** she fell in. In a **temple** she goes back, as in Zelda II: to the **last candle she lit** in that temple, or else to the temple's entrance – so a life in a temple is worth something. She can also choose to wake in the last village she rested in.
   - In Zelda II a lost life also sent you back to the start of the area outside palaces. Inside palaces it sent you to the palace entrance. Same-room restart in temples is a deliberate, kinder choice for a phone game.
   - Lit candles are save points: they save the game, and "Fortsätt" from the title screen starts there.
 - **The last life lost = Game Over:** she starts over at **Mormor's** with 3 lives. Unspent XP is lost; levels, items and containers are kept.
@@ -107,6 +160,8 @@ Dagny starts with 8 health (four bars), so the crypt must not drain it faster th
 
 Code: `GameOverOverlay` (`src/game/menus.ts`), `retryRoom` and
 `gameOver` (`src/game/flow.ts`). Tests: `tests/lives.test.ts`.
+
+- **Fallen at a guardian**, the retry is in its room, at the end of the quiet way in, a few steps from the grille (`AreaDef.hush`): the fight again, not the whole temple.
 
 ## The order of the temples (decided: fixed)
 
@@ -187,7 +242,7 @@ blends over a couple of tiles where two meet.
 | `fjall` | Bare fell below Trollberget | **Kalfjället** (the hardest), heath, storm |
 | `odetorp` | Round the deserted crofts | **Ödetorpet** (vättar indoors), forest path, night |
 
-About 10–15 % of each table is a friendly meeting instead of a fight. Every
+Every meeting is a fight; there are no friendly meetings on the map. Every
 region has its own creatures wandering the map, each tied to its ground, so the
 same meeting doesn't turn up everywhere.
 
@@ -233,7 +288,7 @@ not the road's or a village's music.
 | Place | Where | How it is found | What is in it |
 |---|---|---|---|
 | **Björkhagen** | Southeast of Mormors by | Open from the start | Johannesört for Sven – nothing else, so the first errand stays clear (Murre has wandered to Kyrkbyn; the early näverdocka sits on the ledge at Gamla kyrkogården) |
-| **Tjuvgrottan** | Out in the marsh (stövlar) | On the map | Grå-Pelle's stolen silver: the silver fitting and a magic container show in the karbidlampa's light; a life container and a näverdocka |
+| **Tjuvgrottan** | Out in the marsh (stövlar) | On the map | Five rooms, one find in each of the last four: the life container in Schaktet, the näverdocka high in Droppgången, a magic container in a niche in Klyftan (karbidlampa) and, last of all, Grå-Pelle's silver fitting in Tjuvarnas kammare (karbidlampa) |
 | **Jättegrytan** | On the islet in the lake (boat) | On the map | Initials "D. och H." under a little sun (Dagmar and Hulda) in the ficklampa's light, a magic container and a näverdocka |
 | **Fallgrottan** | Behind the waterfall on the mill valley's northern cliff | Seen only from right beside it | A life container on a ledge, a näverdocka, and Dagmar's carving: "Den som gömmer sig bakom fallet hörs inte av berget" |
 | **Väktarkammaren** | A door in the cliffs below Trollberget | Only with the radio | Dagmar's notebook from midsummer eve 1946, the Väktare's names on the wall – with room for one more – and a magic container |

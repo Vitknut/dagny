@@ -45,7 +45,7 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
   naverlur: {
     id: 'naverlur',
     name: 'Näverluren',
-    description: 'Håll NER och tryck MAGI: en vätte du förlikat kommer och slåss vid din sida en stund.',
+    description: 'Håll NER och tryck på magi: en vätte du förlikat kommer och slåss vid din sida en stund.',
     sprite: 'naverlur',
     treasure: true,
   },
@@ -85,17 +85,17 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
     description: 'En gammal berghacka med ett K inbränt i skaftet. Förman Karlsson i Bruksorten vill ha tillbaka den.',
     sprite: 'hacka',
   },
-  solsten: {
-    id: 'solsten',
-    name: 'Solstenen',
-    description: 'En klar, kantig sten som samlar ljuset även i dimma. Gamla Elin i Gruvsamhället väntar på den.',
-    sprite: 'solsten',
-  },
   ronnkvist: {
     id: 'ronnkvist',
     name: 'Rönnkvisten',
     description: 'En kvist rönn från kvarnen vid forsen, med bären kvar. Smeden Holm i Bruksorten väntar på den.',
     sprite: 'ronnkvist',
+  },
+  uvfjader: {
+    id: 'uvfjader',
+    name: 'Berguvens fjäder',
+    description: 'En stor, brunspräcklig fjäder från en berguv. Gammelmor Karna på Fäboden väntar på den.',
+    sprite: 'uvfjader',
   },
   fjader: {
     id: 'fjader',
@@ -106,8 +106,14 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
   askvigg: {
     id: 'askvigg',
     name: 'Åskviggen',
-    description: 'En slipad stenyxa. Folk sa att åskan kastat ner den. Telegrafisten Oskar väntar på den.',
+    description: 'En slipad stenyxa. Folk sa att åskan kastat ner den. Kalle i Stationssamhället samlar på konstiga stenar.',
     sprite: 'askvigg',
+  },
+  porslinsknopp: {
+    id: 'porslinsknopp',
+    name: 'Porslinsknoppen',
+    description: 'En vit porslinsknopp, en sådan som telegraftråden vilar på. Telegrafisten Oskar behöver en.',
+    sprite: 'porslinsknopp',
   },
   johannesort: {
     id: 'johannesort',
@@ -144,6 +150,18 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
     name: 'Visselpipan',
     description: 'Stinsens visselpipa i nysilver. Utan den går inga tåg.',
     sprite: 'visselpipa',
+  },
+  spett: {
+    id: 'spett',
+    name: 'Järnspettet',
+    description: 'Ett tungt spett från sakristian. Med det bryter Dagny loss lösa stenar ur murarna.',
+    sprite: 'spett',
+  },
+  hissvev: {
+    id: 'hissvev',
+    name: 'Hissveven',
+    description: 'En vev av smidesjärn från gruvans verkstad. Med den går de gamla hissarna igen.',
+    sprite: 'hissvev',
   },
   malm: {
     id: 'malm',
@@ -184,4 +202,4 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = {
 };
 
 /** Order shown in the items menu. */
-export const ITEM_ORDER = ['svard', 'eka', 'karbidlampa', 'stovlar', 'ficklampa', 'radio', 'naverlur', 'klingaHardad', 'klingaBlank', 'silverbeslag', 'malm', 'askstenen', 'murre', 'tang', 'hacka', 'solsten', 'ronnkvist', 'fjader', 'askvigg', 'johannesort', 'prastkragar', 'runbit', 'posthorn', 'fickur', 'psalmbok', 'medaljong', 'kompass', 'skalla', 'visselpipa'];
+export const ITEM_ORDER = ['svard', 'eka', 'karbidlampa', 'stovlar', 'ficklampa', 'radio', 'naverlur', 'klingaHardad', 'klingaBlank', 'silverbeslag', 'malm', 'spett', 'hissvev', 'askstenen', 'murre', 'tang', 'hacka', 'ronnkvist', 'fjader', 'uvfjader', 'askvigg', 'porslinsknopp', 'johannesort', 'prastkragar', 'runbit', 'posthorn', 'fickur', 'psalmbok', 'medaljong', 'kompass', 'skalla', 'visselpipa'];

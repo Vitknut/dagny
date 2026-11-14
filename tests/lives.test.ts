@@ -93,7 +93,36 @@ describe('lives', () => {
     expect(s.lives).toBe(START_LIVES);
   });
 
-  it('with lives left in a temple, the retry is in the same room – at the guardian in its hall', () => {
+  it('a retry in a temple goes back, as in Zelda II: to the last candle lit there, or else to the entrance', () => {
+    const where = (s: GameState, area: string): string => {
+      // Run the scene change only far enough to see where Dagny is sent.
+      const g = { ...fakeGame(s), transition: (fn: () => void) => { try { fn(); } catch { /* no scene in tests */ } } } as unknown as Game;
+      retryRoom(g, area, 'A');
+      return s.loc.area;
+    };
+    const s = newGame();
+    expect(where(s, 'krypta_3')).toBe(TEMPLES.find((x) => x.id === 'krypta')!.entryArea);
+    s.checkpoint = { area: 'krypta_2', x: 40, y: 100 };
+    expect(where(s, 'krypta_3')).toBe('krypta_2');
+    // A candle in another temple does not count.
+    expect(where(s, 'gruvan_3')).toBe(TEMPLES.find((x) => x.id === 'gruvan')!.entryArea);
+    // Outside the temples: the same room.
+    expect(where(s, 'bjorkhagen')).toBe('bjorkhagen');
+  });
+
+  it('fallen at a guardian, the retry is at its door, a few steps from the grille – in every temple', () => {
+    for (const t of TEMPLES) {
+      const boss = Object.values(AREAS).find((a) => a.temple === t.id && a.hush)!;
+      const s = newGame();
+      s.checkpoint = { area: t.entryArea!, x: 40, y: 100 };
+      const g = { ...fakeGame(s), transition: (fn: () => void) => { try { fn(); } catch { /* no scene in tests */ } } } as unknown as Game;
+      retryRoom(g, boss.id, 'A');
+      expect(s.loc.area, t.id).toBe(boss.id);
+      expect(Math.floor(s.loc.x / 16), t.id).toBe(boss.hush! - 3);
+    }
+  });
+
+  it('with lives left in a temple, there is a retry (or waking in the village)', () => {
     const s = newGame();
     const o = new GameOverOverlay(fakeGame(s), 'krypta', { area: 'krypta_4', entry: 'A' });
     const labels = (o as unknown as { menu: { items: Array<{ label: string }> } }).menu.items.map((i) => i.label);
@@ -152,11 +181,10 @@ describe('näverdockor (extra lives)', () => {
 describe('Trollberget', () => {
   const rooms = Object.values(AREAS).filter((a) => a.temple === 'trollberget');
 
-  it('is the longest temple, and every room in it is hard', () => {
+  it('is the longest temple (at least as long as any other; fas 6 makes it longer)', () => {
     for (const t of TEMPLES.filter((x) => x.id !== 'trollberget')) {
-      expect(rooms.length).toBeGreaterThan(Object.values(AREAS).filter((a) => a.temple === t.id).length);
+      expect(rooms.length).toBeGreaterThanOrEqual(Object.values(AREAS).filter((a) => a.temple === t.id).length);
     }
-    for (const a of rooms.filter((r) => r.id !== 'troll_4')) expect(a.hard, a.id).toBe(true);
   });
 
   it('Trollgångarna: one door in each maze room goes on, the others lead back', () => {

@@ -37,15 +37,16 @@ describe('the overworld', () => {
       }
       if (temple.treasure) carried.push(temple.treasure);
     }
-    // Trollberget is on the road from the last region, and waits for the six flags.
+    // Trollberget is on the road from the last region, and waits for the six places and Hulda's last piece.
     const troll = placeOfArea('troll_1');
     expect(reach(carried).has(`${troll.x},${troll.y}`)).toBe(true);
     expect(reach(carried.filter((i) => i !== 'radio')).has(`${troll.x},${troll.y}`), 'Trollberget without the radio').toBe(false);
-    expect(troll.requires).toHaveLength(6);
+    expect(troll.requires).toHaveLength(7);
   });
 
-  it('every place is reachable with all treasures, and every gate has a hint', () => {
-    const all = reach(TEMPLES.flatMap((x) => (x.treasure ? [x.treasure] : [])));
+  it('every place is reachable with all treasures (and what readings open on the map), and every gate has a hint', () => {
+    const opened = (OVERWORLD.mended ?? []).map((m) => m.flag);
+    const all = reachableTiles(TEMPLES.flatMap((x) => (x.treasure ? [x.treasure] : [])), undefined, opened);
     for (const p of OVERWORLD.places) {
       expect(all.has(`${p.x},${p.y}`), p.name).toBe(true);
       if (p.area) expect(AREAS[p.area], p.area).toBeDefined();
@@ -222,4 +223,53 @@ describe('Bergsstigen (chapter 8)', () => {
     expect(door.to).not.toBe('vattegangen');
     for (const [ch, d] of Object.entries(a.doors!)) if (ch !== a.lurGuide) expect(d.to).toBe('vattegangen');
   });
+});
+
+describe('the washed-away bridge', () => {
+  it('is rebuilt once Folkparken is done, and leads across the rapids', async () => {
+    const { owTile } = await import('../src/game/overworld');
+    const { newGame } = await import('../src/game/state');
+    const s = newGame();
+    const row = (): string => [30, 31, 32, 33, 34, 35].map((x) => owTile(s, x, 58)).join('');
+    expect(row()).toBe('..bb^.');
+    s.flags.push('folkparken_klar');
+    expect(row()).toBe('..==..');
+    const { OVERWORLD } = await import('../src/data/overworld');
+    for (const ch of row()) expect(OVERWORLD.blocked.includes(ch)).toBe(false);
+  });
+});
+
+describe('what a reading opens on the map (fas 3.2)', () => {
+  const opened = (OVERWORLD.mended ?? []).filter((m) => m.spell);
+
+  it('a dry thicket twice (Eld), a dark cleft (Lyse) and a boulder (Åska)', () => {
+    expect(opened.filter((m) => m.spell === 'eld')).toHaveLength(2);
+    expect(opened.filter((m) => m.spell === 'lyse')).toHaveLength(1);
+    expect(opened.filter((m) => m.spell === 'aska')).toHaveLength(1);
+  });
+
+  it('each is shut before, open after, and the place behind it is reached only that way', async () => {
+    const { owTile } = await import('../src/game/overworld');
+    const { newGame } = await import('../src/game/state');
+    const { playthrough } = await import('../src/tools/playthrough');
+    const s = newGame();
+    for (const m of opened) {
+      expect(OVERWORLD.blocked.includes(owTile(s, m.x, m.y)), `${m.flag} before`).toBe(true);
+    }
+    s.flags.push(...opened.map((m) => m.flag));
+    for (const m of opened) expect(OVERWORLD.blocked.includes(owTile(s, m.x, m.y)), `${m.flag} after`).toBe(false);
+    const behind = (m: (typeof opened)[number]) =>
+      OVERWORLD.places.find((p) => p.dialog && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => p.x === m.x + dx && p.y === m.y + dy))!;
+    const all = playthrough();
+    // One run without each reading (the solver is slow on a CI runner).
+    const without = new Map([...new Set(opened.map((m) => m.spell!))].map((sp) => [sp, playthrough({ withholdSpells: [sp] })]));
+    for (const m of opened) {
+      const p = behind(m);
+      expect(p, m.flag).toBeDefined();
+      expect(all.dialogs.has(p.dialog!), `${p.name} with every reading`).toBe(true);
+      const run = without.get(m.spell!)!;
+      expect(run.dialogs.has(p.dialog!), `${p.name} without ${m.spell}`).toBe(false);
+      expect(run.flags.has(m.flag), `${m.flag} without ${m.spell}`).toBe(false);
+    }
+  }, 30_000);
 });

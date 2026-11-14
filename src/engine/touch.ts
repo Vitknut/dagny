@@ -39,6 +39,19 @@ export class TouchControls {
     this.apply(layout);
     const coarse = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches;
     this.setVisible(coarse || 'ontouchstart' in window);
+    // A finger's "up" can be lost (a notification, switching apps, the page
+    // reloading under the thumb): let go of everything when the game loses
+    // focus, so nothing stays held and the stick answers the next touch.
+    window.addEventListener('blur', () => this.releaseAll());
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) this.releaseAll();
+    });
+  }
+
+  /** Lets go of the stick and every button. */
+  releaseAll(): void {
+    this.clearStick();
+    for (const pointer of [...this.fingers.keys()]) this.hold(pointer, null);
   }
 
   setVisible(v: boolean): void {
@@ -213,7 +226,9 @@ export class TouchControls {
     };
     zone.addEventListener('pointerdown', (e) => {
       e.preventDefault();
-      if (this.stickPointer !== null) return;
+      // A new thumb always takes the stick, even if the last one's release
+      // never arrived (otherwise the stick would stay dead).
+      if (this.stickPointer !== null && this.stickPointer !== e.pointerId) this.clearStick();
       this.stickPointer = e.pointerId;
       try {
         zone.setPointerCapture(e.pointerId);

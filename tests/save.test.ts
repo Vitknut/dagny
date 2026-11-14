@@ -169,3 +169,84 @@ describe('version 4 (Kartan 2.0, 96 × 72)', () => {
     expect(isExplored(f.state, p.x, p.y)).toBe(true);
   });
 });
+
+describe('version 5 (the mine as a net, fas 4)', () => {
+  it('a save with the mine done, from before the crank, has the crank', () => {
+    const old = { ...newGame(), items: ['svard', 'eka', 'karbidlampa'], flags: ['gruvan_klar'] };
+    const f = deserialize(JSON.stringify({ v: 4, savedAt: 0, state: old }))!;
+    expect(f.state.items).toContain('hissvev');
+  });
+
+  it('a save standing past the landing gets the crank, so the lifts run', () => {
+    const old = { ...newGame(), items: ['svard', 'eka'], loc: { area: 'gruvan_3', x: 40, y: 140 } };
+    const f = deserialize(JSON.stringify({ v: 4, savedAt: 0, state: old }))!;
+    expect(f.state.items).toContain('hissvev');
+  });
+
+  it('a save on the way in (or outside) does not', () => {
+    for (const area of ['gruvan_1', 'mormors_by']) {
+      const old = { ...newGame(), items: ['svard', 'eka'], loc: { area, x: 40, y: 140 } };
+      const f = deserialize(JSON.stringify({ v: 4, savedAt: 0, state: old }))!;
+      expect(f.state.items, area).not.toContain('hissvev');
+    }
+  });
+});
+
+describe('version 6 (the crypt as a net, fas 4)', () => {
+  it('a save past the loose wall, or with the crypt done, has the crowbar', () => {
+    const past = deserialize(JSON.stringify({ v: 5, savedAt: 0, state: { ...newGame(), items: ['svard'], loc: { area: 'krypta_3', x: 40, y: 140 } } }))!;
+    expect(past.state.items).toContain('spett');
+    const done = deserialize(JSON.stringify({ v: 5, savedAt: 0, state: { ...newGame(), items: ['svard', 'eka'], flags: ['krypta_klar'] } }))!;
+    expect(done.state.items).toContain('spett');
+    const before = deserialize(JSON.stringify({ v: 5, savedAt: 0, state: { ...newGame(), items: ['svard'], loc: { area: 'krypta_1', x: 40, y: 140 } } }))!;
+    expect(before.state.items).not.toContain('spett');
+  });
+});
+
+describe('keys that moved when the temples became nets', () => {
+  it('a key taken where it used to lie is not had a second time where it lies now', () => {
+    for (const [was, now] of [['krypta_2:39,3', 'krypta_benhus:34,9'], ['gruvan_2:20,11', 'gruvan_malm:33,9']]) {
+      const f = deserialize(JSON.stringify({ v: 6, savedAt: 0, state: { ...newGame(), opened: [was] } }))!;
+      expect(f.state.opened, was).toContain(now);
+    }
+  });
+
+  it('the new places are where the keys really lie', async () => {
+    const { AREAS } = await import('../src/data/areas');
+    for (const pid of ['krypta_benhus:34,9', 'gruvan_malm:33,9']) {
+      const [area, xy] = pid.split(':');
+      const [x, y] = xy.split(',').map(Number);
+      expect(AREAS[area].tiles[y][x], pid).toBe('k');
+    }
+  });
+});
+
+describe('version 7 (the ways that need a reading, 3.1b)', () => {
+  it('a save inside the mine without Eld is put outside its entrance, not shut in behind the roots', () => {
+    const old = { ...newGame(), items: ['svard', 'eka'], spells: ['lakning'], loc: { area: 'gruvan_hall', x: 40, y: 140 }, checkpoint: { area: 'gruvan_hall', x: 120, y: 140 } };
+    const f = deserialize(JSON.stringify({ v: 6, savedAt: 0, state: old }))!;
+    expect(f.state.loc.area).toBe('overworld');
+    expect(f.state.ow).toEqual({ x: 55, y: 18 });
+    expect(f.state.checkpoint).toBeNull();
+  });
+
+  it('with Eld she stays where she was', () => {
+    const old = { ...newGame(), items: ['svard', 'eka'], spells: ['eld'], loc: { area: 'gruvan_hall', x: 40, y: 140 } };
+    const f = deserialize(JSON.stringify({ v: 6, savedAt: 0, state: old }))!;
+    expect(f.state.loc.area).toBe('gruvan_hall');
+  });
+});
+
+describe('Jättegrytan rebuilt (3.1b)', () => {
+  it('its magic container, taken where it used to lie, still counts once where it lies now', () => {
+    const f = deserialize(JSON.stringify({ v: 7, savedAt: 0, state: { ...newGame(), containers: ['magi:jattegrytan:26,5'] } }))!;
+    expect(f.state.containers).toEqual(['magi:jattegrytan:44,3']);
+  });
+});
+
+describe('the mill rebuilt (fas 4, Kvarnen)', () => {
+  it('Kvarnstugan\'s door, opened where it used to be, is open where it is now', () => {
+    const f = deserialize(JSON.stringify({ v: 7, savedAt: 0, state: { ...newGame(), opened: ['kvarnen_2:58,7', 'kvarnen_2:58,8', 'kvarnen_2:58,9'] } }))!;
+    for (const pid of ['kvarnen_2:57,4', 'kvarnen_2:57,5', 'kvarnen_2:57,6']) expect(f.state.opened).toContain(pid);
+  });
+});

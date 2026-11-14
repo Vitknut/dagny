@@ -14,7 +14,7 @@ import { DialogOverlay } from './dialog';
 import type { Condition, DialogAction } from '../data/types';
 import { loadSettings, saveSettings, PLACEMENT_OFFSETS, type Settings } from './settings';
 import { readSave, writeSave } from './save';
-import { MAX_LIVES, addContainer, hasFlag, hasItem, hpMax, mpMax, setFlag, type GameState } from './state';
+import { MAX_LIVES, addContainer, checkConditions, hasFlag, hpMax, mpMax, setFlag, type GameState } from './state';
 
 export interface Scene {
   /** Music id to play while this scene is active. */
@@ -203,6 +203,18 @@ export class Game {
     if (this.toasts.length > 3) this.toasts.shift();
   }
 
+  /**
+   * A line that explains how something works: shown the first time only
+   * (remembered in the save as `sett_<key>`). After that the sound and what
+   * happens on screen say it.
+   */
+  toastOnce(key: string, text: string, seconds = 1.6): void {
+    const s = this.state;
+    if (!s || s.flags.includes(`sett_${key}`)) return;
+    s.flags.push(`sett_${key}`);
+    this.toast(text, seconds);
+  }
+
   vibrate(ms: number | number[]): void {
     vibrate(ms);
   }
@@ -242,18 +254,7 @@ export class Game {
   // --- Conditions & actions used by dialog ---------------------------------------------
 
   check(conds: Condition[] | undefined): boolean {
-    const s = this.state;
-    if (!conds || !conds.length) return true;
-    if (!s) return false;
-    return conds.every((c) => {
-      if ('flag' in c) return hasFlag(s, c.flag);
-      if ('notFlag' in c) return !hasFlag(s, c.notFlag);
-      if ('item' in c) return hasItem(s, c.item);
-      if ('notItem' in c) return !hasItem(s, c.notItem);
-      if ('spell' in c) return s.spells.includes(c.spell);
-      if ('notSpell' in c) return !s.spells.includes(c.notSpell);
-      return true;
-    });
+    return checkConditions(conds, this.state);
   }
 
   /** Hook for scenes that need to react to actions (e.g. resting heals visually). */

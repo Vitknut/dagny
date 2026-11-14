@@ -1,3 +1,4 @@
+import { owTile } from './overworld';
 import { VILLAGES } from '../data/temples';
 import { VIEW_W, VIEW_H } from '../engine/screen';
 import { drawSprite, getSprite } from '../engine/sprites';
@@ -343,7 +344,7 @@ export class MapOverlay extends SubOverlay {
           ctx.fillRect(px, py, cw, chh);
           continue;
         }
-        const ch = tiles[y][x];
+        const ch = owTile(s, x, y);
         // The hidden path and the cliff door look like their surroundings until the radio finds them.
         const shown = (ch === 'H' || ch === 'E') && radio ? 'W' : TERRAIN[ch]?.map ?? 'M';
         ctx.fillStyle = P[shown] ?? P.M;

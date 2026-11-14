@@ -1,3 +1,4 @@
+import { allShut } from './obstacles';
 import { moveBody, overlaps } from '../../engine/collision';
 import { VIEW_W, VIEW_H } from '../../engine/screen';
 import { TILE } from '../../engine/collision';
@@ -46,8 +47,8 @@ export function castSpell(sc: SideScene): void {
   }
   const cost = spellCost(s, id);
   if (s.mp < cost) {
+    // Just the dull click: the empty magic bar says the rest.
     sc.sfx('cancel');
-    g.toast(STR.notEnoughMp);
     return;
   }
   const p = sc.player;
@@ -94,6 +95,8 @@ export function castSpell(sc: SideScene): void {
         const r = e.takeHit(8 + s.levels.magi * 2, e.x, 'magic', sc);
         if (r === 'dead') killEnemy(sc, e);
       }
+      // Dead lanterns in the room light up, and their gates open.
+      sc.openCells(allShut(sc, '['), 'thunder');
       // The thunder runs into the dead light strings, and the dance floor wakes.
       const wake = sc.area.beat?.wake;
       if (wake && !hasFlag(s, wake)) {
@@ -118,7 +121,7 @@ export function blowLur(sc: SideScene): void {
   const p = sc.player;
   sc.helpers.push({ x: p.x - p.facing * 20, y: p.y + p.h - 12, vx: 0, vy: -2, onGround: false, w: 10, h: 12, life: 12 * 60, cd: 0, facing: p.facing });
   sc.puff(p.x - p.facing * 16, p.y + p.h - 6, 'moss');
-  g.toast(DialogOverlay.get('lur_blast').pages[0], 2.5);
+  g.toastOnce('lur', DialogOverlay.get('lur_blast').pages[0], 2.5);
 }
 
 export function updateHelpers(sc: SideScene): void {

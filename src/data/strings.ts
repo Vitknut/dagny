@@ -1,8 +1,8 @@
 /** All user-interface text, kept in data so the game can be translated later. */
 export const STR = {
   title: 'Dagnys äventyr',
-  studio: 'Co-Dawn Studio',
-  presents: 'Co-Dawn Studio presenterar',
+  studio: 'Vitknut Studios',
+  presents: 'Vitknut Studios presenterar',
   subtitle: 'Sommaren 1964',
   newGame: 'Nytt spel',
   continue: 'Fortsätt',
@@ -67,7 +67,6 @@ export const STR = {
   levelUpLater: 'Spara till senare',
   levelMax: 'MAX',
   needXp: 'XP',
-  notEnoughMp: 'Inte nog med magi',
   checkpoint: 'Ljusstaken brinner',
   saved: 'Sparat',
   autosaved: 'Sparat',
@@ -86,6 +85,8 @@ export const STR = {
   restartMountain: 'Börja om vid bergets fot',
   extraLife: 'Ett extra liv!',
   sealOpen: 'Vägen är fri',
+  sluiceOut: 'Dammluckan öppnas. Vattnet rinner ur rännan.',
+  sluiceIn: 'Dammluckan stängs. Vattnet stiger i rännan igen.',
   meetingShut: 'Vägen tillbaka är stängd. Bara framåt.',
   mapKeyTemple: 'Tempel',
   mapKeyVillage: 'By',
@@ -93,6 +94,8 @@ export const STR = {
   mapKeyRumour: 'Hört talas om',
   lightsWake: 'Åskan rinner in i ljusslingorna. Dansbanan vaknar!',
   sank: 'Den ljusa mossan ger vika. Under den finns ingen botten, och stövlarna hjälper inte. Dagny tar sig upp där marken bar.',
+  followerHome: 'Gösta springer hem till Gruvsamhället.',
+  followerLeft: 'Gösta blev kvar i mörkret.',
   mountainRumble: 'Det mullrar i Trollberget.',
   wakeHome: 'Vakna hos mormor',
   wakeIn: 'Vakna i',
@@ -120,7 +123,7 @@ export const STR = {
   ],
   // The credits after the epilogue.
   credits: [
-    'Co-Dawn Studio presenterar\n\nDagnys äventyr\nEtt äventyr genom den svenska folktron.',
+    'Vitknut Studios presenterar\n\nDagnys äventyr\nEtt äventyr genom den svenska folktron.',
     'Idé och manus\nSaman Akbarian och Claude\n\nProgrammering, grafik och musik\nSaman Akbarian och Claude',
     'Tack till alla väsen som lät sig förlikas, och till alla som spelade ända hit.',
   ],

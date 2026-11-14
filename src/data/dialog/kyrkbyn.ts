@@ -21,11 +21,26 @@ export const KYRKBYN: Record<string, DialogDef> = {
     pages: ['Dörren är olåst. Det har den varit sedan 1700-talet.'],
   },
 
-  prosten_lar: {
+  prosten_prov: {
     speaker: 'Prosten',
     pages: [
       'Så du är flickan från klockstapeln. Jag döpte dig, vet du. Du skrek så att det ekade i valvet.',
-      'Kryptan sover lugnt nu. Då kan jag lära dig det min företrädare lärde sig av den förra Väktaren.',
+      'Kryptan sover lugnt nu. Jag kan lära dig det min företrädare lärde sig av den förra Väktaren. Men elden är farlig i fel händer.',
+      'Ser du ljusen här på vinden, och tecknen ovanför dem? Tänd dem som det står i den gamla versen:',
+      '"Först solen som väcker oss, sedan korset som vi bär. Så hjärtat som värmer, och stjärnan som visar vägen. Sist månen, som vakar i natt."',
+    ],
+    actions: [{ type: 'flag', flag: 'eld_prov' }],
+  },
+
+  prosten_versen: {
+    speaker: 'Prosten',
+    pages: ['"Först solen som väcker oss, sedan korset som vi bär. Så hjärtat som värmer, och stjärnan som visar vägen. Sist månen, som vakar i natt."'],
+  },
+
+  prosten_lar: {
+    speaker: 'Prosten',
+    pages: [
+      'Där. Alla fem, och i rätt ordning. Du har tålamod med elden, och det är det viktigaste.',
       '"Eld i järn, eld i sol, eld som midsommarnatten stal..." Så. Nu brinner det i klingan när du ber den.',
     ],
     actions: [{ type: 'learnSpell', spell: 'eld' }],

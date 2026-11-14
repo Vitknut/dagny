@@ -80,16 +80,28 @@ export interface EnemyDef {
   drops?: { bulle?: number; termos?: number; lingon?: number };
   /** Takes no knockback. */
   heavy?: boolean;
+  /** A heavy creature that still rocks back this much from a strike (no hop). */
+  nudge?: number;
   /** Ignores gravity. */
   flying?: boolean;
   /** Can only be hurt from behind (strikes from the front are blocked). */
   backOnly?: boolean;
   /** Eld's fireballs bite less: damage is multiplied by this (Gruvrået carries her own flame). */
   fireResist?: number;
+  /** Only this kind of blow bites (a fireball, or a thrust from above or below); others glance off. */
+  only?: 'fire' | 'down' | 'up';
+  /** All but invisible, and not to be struck, until Lyse burns in the room. It still hurts. */
+  veiledUnlessLit?: boolean;
+  /** Fencers (behaviour 'parrier'): steps before it follows Dagny's change of height (default 22). */
+  guardDelay?: number;
+  /** Fencers: steps of rest between thrusts, at the least (default 70). */
+  thrustRest?: number;
   /** Projectile sprite for shooters (default: a water droplet). */
   shot?: string;
   /** Becomes friendly after being defeated (flavour text shown). */
   befriend?: string;
+  /** A lesser guardian (the mine's ore giant by the crank): many blows on purpose, so not held to the ordinary creatures' count. */
+  guard?: boolean;
 }
 
 export interface BossPhase {
@@ -99,6 +111,8 @@ export interface BossPhase {
   speed: number;
   /** Seconds between attacks. */
   attackEvery: number;
+  /** In this phase only this kind of blow bites (Grimmen floating: a thrust from above). */
+  only?: 'down' | 'up' | 'fire';
 }
 
 export interface BossDef extends EnemyDef {
@@ -108,6 +122,8 @@ export interface BossDef extends EnemyDef {
   introDialog: string;
   /** Dialog shown when the boss is reconciled ("förlikad"). */
   defeatDialog: string;
+  /** A technique without which the guardian can't be beaten (for the solver; the phase's `only` is what really asks for it). */
+  needs?: SkillId;
 }
 
 export interface TempleDef {
@@ -127,6 +143,8 @@ export interface TempleDef {
   entryArea: string | null;
   /** Lore found inside – the story of the last Väktare, piece by piece. */
   lore: string;
+  /** The tool found inside that opens the rest of the temple (fas 4); given to old saves of a finished temple. */
+  tool?: string;
 }
 
 export interface VillageDef {
@@ -250,6 +268,8 @@ export interface Prop {
 }
 
 export type AreaKind = 'village' | 'path' | 'temple' | 'encounter';
+/** Small harmless animals (game/side/critters.ts). */
+export type CritterKind = 'arla' | 'sparv' | 'hona' | 'ekorre' | 'hare' | 'anka';
 export type Backdrop = 'outdoor' | 'forest' | 'crypt' | 'mine' | 'mill' | 'sea' | 'park' | 'none';
 
 /**
@@ -292,11 +312,17 @@ export interface PlatformDef {
   mode: 'loop' | 'ride';
   /** Pixels per step (default 0.6 for lifts, 1.1 for carts). */
   speed?: number;
+  /** Stands still (at tx, ty) until Dagny carries this item (a mine lift and its crank). */
+  needs?: string;
+  /** Floats on the mill's water: at ty while the water is high, sunk to this row when it is let out (the sluice). */
+  float?: number;
 }
 
 export interface AreaDef {
   id: string;
   name: string;
+  /** Another name once a flag is set (a place whose real name would give the story away). */
+  nameAfter?: { flag: string; name: string };
   kind: AreaKind;
   tone: string;
   music: string;
@@ -345,6 +371,29 @@ export interface AreaDef {
    * Things only seen in the light of a lamp Dagny carries (karbidlampan,
    * ficklampan): a container lying there, or words to read (Up).
    */
+  /**
+   * Someone lost here who follows Dagny out once she has talked to them
+   * (game/side/follower.ts). Talking sets `<npc>_folger`; leaving the room
+   * with them close sets `home`.
+   */
+  lostChild?: { npc: string; home: string };
+  /**
+   * A trial of candles (game/side/trial.ts): once `requires` is set, the
+   * candles must be lit in `order` (by the signs above them). Done, it sets
+   * `flag` and shows `dialog`.
+   */
+  candleTrial?: {
+    requires: string;
+    flag: string;
+    dialog: string;
+    order: string[];
+    candles: Array<{ tx: number; ty: number; sign: string }>;
+  };
+  /**
+   * Small harmless animals placed by hand (game/side/critters.ts). Without
+   * this, villages, forests and open water get a few by themselves.
+   */
+  critters?: Array<{ kind: CritterKind; tx: number; ty: number }>;
   lampSecrets?: Array<{ item: 'karbidlampa' | 'ficklampa'; tx: number; ty: number; container?: 'liv' | 'magi'; dialog?: string; gives?: string }>;
   /**
    * Containers that appear in the room once a task here is done (the flag is
@@ -362,16 +411,33 @@ export interface AreaDef {
    */
   sealed?: { dialog: string; music?: string };
   /**
+   * A guardian's room: tile columns of quiet way in before the arena (no
+   * creatures, the waiting music). The guardian wakes once Dagny is five
+   * tiles past it, and the way back shuts there.
+   */
+  hush?: number;
+  /**
+   * The sluice wheel of the mill (fas 4, Kvarnen): Up at it lets the water out
+   * or in again (flag `kvarn_lagvatten`). Mill water (`]`) is deep while the
+   * water is high and a dry bed when it is low; floating logs rise and sink with it.
+   */
+  sluice?: { tx: number; ty: number };
+  /** Drapes along the arena's roof, the sign of a guardian ahead (sprite id; side/render.ts). */
+  drapes?: string;
+  /**
    * The door (its character) a vätte called with the näverlur runs to and waits
    * by when there is nothing to fight: the one way on among several (Vättegången).
    */
   lurGuide?: string;
   /**
-   * Parts of the room only a reading gets Dagny up to – a ledge too high for an
-   * ordinary jump that Hopp reaches (tile boxes, inclusive). For the
-   * playthrough solver; the room's shape is what really keeps her out.
+   * Parts of the room only an ability gets Dagny to – a ledge too high for an
+   * ordinary jump (Hopp), a hole only a bird gets through (Hamn), a path only
+   * there in the light (Lyse) (tile boxes, inclusive). For the playthrough
+   * solver; the room's shape is what really keeps her out.
    */
-  needsSpell?: Array<{ spell: string; x0: number; y0: number; x1: number; y1: number }>;
+  needs?: Array<{ ability: SpellId | SkillId; x0: number; y0: number; x1: number; y1: number }>;
+  /** Parts of the room only a temple's tool gets Dagny to (a lift that runs only with the crank). For the solver, like `needs`. */
+  needsItem?: Array<{ item: string; x0: number; y0: number; x1: number; y1: number }>;
   /**
    * A cave-in that chases Dagny: once she passes tile column `at` (coming in
    * from the left), the roof comes down behind her and the rubble moves right
@@ -383,8 +449,6 @@ export interface AreaDef {
   themeBoxes?: Array<{ x0: number; y0: number; x1: number; y1: number; theme: string }>;
   /** Leaving by the right exit sets this flag: a way that opens only from inside. */
   opens?: string;
-  /** Tougher creatures (the last temple): more health and harder blows. */
-  hard?: boolean;
   /** Dialog started automatically the first time (needs flag to not repeat). */
   onEnter?: { dialog: string; unlessFlag: string; setFlag: string };
 }
@@ -397,6 +461,8 @@ export interface OverworldPlace {
   x: number;
   y: number;
   name: string;
+  /** Another name once a flag is set (a place whose real name would give the story away). */
+  nameAfter?: { flag: string; name: string };
   /** Side-view area and entry when entering this tile. */
   area?: string;
   entry?: string;
@@ -404,6 +470,8 @@ export interface OverworldPlace {
   dialog?: string;
   /** Flags needed before the area opens; `dialog` is shown until then. */
   requires?: string[];
+  /** Shown instead of `dialog` when this is the only flag still missing. */
+  dialogWhen?: Array<{ missing: string; dialog: string }>;
   /**
    * A hidden place: 'near' shows only when Dagny stands right beside it
    * (a cave behind a waterfall); 'radio' only when she carries the radio.
@@ -453,4 +521,10 @@ export interface OverworldDef {
   blocked: string;
   music: string;
   tone: string;
+  /**
+   * Tiles that change for good once a flag is set (the washed-away bridge,
+   * rebuilt after Folkparken). With `spell`, Dagny sets the flag herself by
+   * casting that reading beside the tile (a dry thicket burnt with Eld).
+   */
+  mended?: Array<{ x: number; y: number; flag: string; ch: string; spell?: SpellId }>;
 }

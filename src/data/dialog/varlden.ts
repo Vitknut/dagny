@@ -1,6 +1,6 @@
 import type { DialogDef } from '../types';
 
-/** The overworld: the sleeping mountain, what each border needs, friendly meetings and the caves. */
+/** The overworld: the sleeping mountain, what each border needs and the caves. */
 export const VARLDEN: Record<string, DialogDef> = {
   stollen_ras_skylt: {
     pages: ['Ett kors av två bjälkar, och en lapp i en spik:\n"HÄR GICK TAKET 1931. TRE KOM UT. LYSSNA PÅ BERGET – OCH SPRING."'],
@@ -14,46 +14,6 @@ export const VARLDEN: Record<string, DialogDef> = {
   stollen_skylt: {
     pages: ['Ett murket plank vid ortmynningen:\n"GAMLA STOLLEN. STÄNGD 1931 EFTER RASET. TRÄD EJ IN."', 'Någon har ristat under, med kniv: "Lampan visar vägen. Håll dig från taket."'],
   },
-
-  mote_vatte_liv: {
-    speaker: 'Vätten',
-    pages: ['En vätte kliver fram ur gräset med en kopp kaffe. "Du förlikade min släkt i templen. Drick nu, Väktare."', 'Dagny känner sig starkare. Livet är fyllt.'],
-    actions: [{ type: 'heal' }],
-  },
-
-  mote_vatte_magi: {
-    speaker: 'Vätten',
-    pages: ['En vätte sticker åt Dagny en näve hjortron. "Mormor sa att de är bra för läsningarna."', 'Dagny känner hur magin kommer tillbaka.'],
-    actions: [{ type: 'magic' }],
-  },
-
-  mote_vandrare_lore: {
-    speaker: 'Vandraren',
-    pages: ['En gesäll med ränsel stannar och hälsar. "Jag hörde en gammal gumma i Kyrkbyn berätta om natten då klockan ringde av sig själv. Hon såg en kvinna med kopparhår gå mot Trollberget."'],
-  },
-
-  mote_vandrare_vag: {
-    speaker: 'Vandraren',
-    pages: ['En skogsarbetare vilar på en stubbe. "Ska du ner mot kusten? Akta dig för tidvattenkärret. Det har tagit fler än en, och det släpper inte taget om skorna."'],
-  },
-
-  mote_vandrare_fyr: {
-    speaker: 'Vandraren',
-    pages: ['En fiskare med håv över axeln nickar. "Gamle Ture i Fiskeläget var fyrvaktare förr. Han skrev upp allt i en loggbok, till och med natten 1946."'],
-  },
-
-  mote_irrbloss_radio: {
-    pages: ['Ett vänligt irrbloss dansar runt Dagny och surrar som en radio mellan stationerna. Det känns som om det vill säga: i templen finns väggar som surrar på samma sätt.'],
-  },
-
-  mote_irrbloss_holmen: {
-    pages: ['Ett irrbloss svävar ut över sjön och stannar vid en liten holme mitt i vattnet. Där slocknar det, precis vid en mörk grottöppning.'],
-  },
-
-  mote_irrbloss_grottan: {
-    pages: ['Ett irrbloss leder Dagny en bit söderut över myren och lyser upp en klippa. Bakom ljungen gapar en grotta. Det fnissar och försvinner.'],
-  },
-
   tjuvgrottan_skylt: {
     pages: ['Någon har ristat i berget med en kniv:\n"HÄR GÖMDE GRÅ-PELLE SITT SILVER 1899. DET SYNS BARA I RÄTT LJUS."'],
   },
@@ -68,6 +28,10 @@ export const VARLDEN: Record<string, DialogDef> = {
 
   trollberget_sover: {
     pages: ['Trollberget reser sig svart mot himlen. Vägen upp är stängd så länge de andra platserna sover.'],
+  },
+
+  trollberget_vantar: {
+    pages: ['Berget är tyst nu. Det är som om det väntar på att något ska sägas först. Hemma.'],
   },
 
   behover_eka: {
@@ -95,6 +59,44 @@ export const VARLDEN: Record<string, DialogDef> = {
     pages: ['Inristat i berget bakom vattenridån:\n"DEN SOM GÖMMER SIG BAKOM FALLET HÖRS INTE AV BERGET. – D."'],
   },
   // --- Bruset: Dagmar's voice in the radio's static (chapter 7) ---
+  // --- What a reading opens on the map (fas 3.2) ---------------------------------------
+  snaret_brinner: {
+    pages: ['Det torra snåret fattar eld med ett fräsande, och brinner ner till svart aska. Bakom det går en stig in i granarna.'],
+  },
+  klyftan_lyses: {
+    pages: ['Ljuset faller in i klyftan. Den är inte så djup som den såg ut – och längst in står det något och väntar.'],
+  },
+  bumlingen_klyvs: {
+    pages: ['Blixten slår ner i bumlingen. Den spricker mitt itu med en knall som ekar mellan fjällen.'],
+  },
+  offerkallan: {
+    pages: [
+      'En källa, inne bland granarna där ingen har gått på länge. På botten ligger mynt, ett bredvid ett annat, gröna av ärg.',
+      'Och på en sten vid kanten sitter en liten näverdocka, torr och hel, som om någon nyss har lagt den där.',
+    ],
+    actions: [{ type: 'flag', flag: 'offerkallan_sedd' }, { type: 'life', id: 'offerkallan' }, { type: 'xp', amount: 150 }],
+  },
+  jordkallaren: {
+    pages: [
+      'En jordkällare, igenvuxen sedan många somrar. Dörren hänger på ett gångjärn.',
+      'Därinne står burkar med sylt, och en har någon skrivit på med blyerts: "Till den som kommer sist."',
+    ],
+    actions: [{ type: 'flag', flag: 'jordkallaren_sedd' }, { type: 'heal' }, { type: 'magic' }, { type: 'xp', amount: 150 }],
+  },
+  morka_orten: {
+    pages: [
+      'En gammal ort, huggen för hand. På väggen står namn inristade, ett under ett annat, med årtal från förra seklet.',
+      'Längst ner, nyare än de andra: ett D. Ingenting mer.',
+    ],
+    actions: [{ type: 'flag', flag: 'morka_orten_sedd' }, { type: 'life', id: 'morka_orten' }, { type: 'xp', amount: 200 }],
+  },
+  kluvna_stenen: {
+    pages: [
+      'Inne i den kluvna stenen är det ihåligt, som ett skrin. Där ligger en sölja av silver, svart av ålder.',
+      'Den är kall i handen, och ändå känns den bekant.',
+    ],
+    actions: [{ type: 'flag', flag: 'kluvna_stenen_sedd' }, { type: 'life', id: 'kluvna_stenen' }, { type: 'xp', amount: 250 }],
+  },
   bruset_1: {
     pages: [
       'Radion sprakar till. Mellan bruset, mycket svagt, en kvinnoröst:',

@@ -3,6 +3,18 @@ import type { SpriteDef } from '../engine/sprites';
 /** 16×16 tiles for side views. Multi-frame tiles animate. */
 const t = (...frames: string[][]): SpriteDef => ({ w: 16, h: 16, frames });
 
+/** A pleated drape two tiles long with a scalloped hem (the sign of a guardian ahead), in light/dark/hem colours; two frames, the lobes shifted. */
+function drape(light: string, dark: string, hem: string): SpriteDef {
+  const fold = 'aabbbaaabbbaaabb';
+  const lit = 'aaabbaaaabbaaaab';
+  const body = Array.from({ length: 24 }, (_, i) => (i % 6 < 3 ? fold : lit));
+  const tail = ['aabbbaaabbbaaabb', '.abbbaa..bbaaab.', '.abbba....bbaa..', '..ebb......ee...', '..ee............', '................'];
+  const rows = ['kkkkkkkkkkkkkkkk', 'eeeeeeeeeeeeeeee', ...body, ...tail];
+  const paint = (r: string): string => r.replace(/a/g, light).replace(/b/g, dark).replace(/e/g, hem);
+  const roll = (r: string): string => r.slice(8) + r.slice(0, 8);
+  return { w: 16, h: 32, frames: [rows.map(paint), rows.map((r, i) => paint(i >= 26 ? roll(r) : r))] };
+}
+
 export const tileSprites: Record<string, SpriteDef> = {
   // --- Outdoors ---
   grass: t([
@@ -687,6 +699,173 @@ export const tileSprites: Record<string, SpriteDef> = {
     'kBtBBBBkBBBBtBBk',
     'kBBBBBBkBBBBBBBk',
     'kkkkkkkkkkkkkkkk',
+  ]),
+  /** The sluice wheel of the mill (Kvarnen): a big iron wheel on a post; Up beside it lets the water out or in. */
+  ratt: { w: 32, h: 32, frames: [
+    ['...............Y................', '...............y................', '...........kkkkGGkkkk...........', '..........kGWGGGGGGWGk..........', '........kkWGGkkkkkkkGWkk........', '.......kkWGWG.......WGWkk.......', '.....Y.kWkkWWG.....WWkkWk.Y.....', '.....ykWGk..WW....WWG.kGWky.....', '.....kGGk....WG...WG...kGGk.....', '.....kWk.....WW..WW.....kWk.....', '.....kGk.....kkkkkk.....kGk.....', '.....kGk.....kYYYYk.....kGk.....', '.....GGGWWWWWkYyyYkWWWWWWGG.....', '.....GGWW....kYyyYkGGGGGGGG.....', '.....kGk.....kYYYYk.....kGk.....', '.....kGk.....kkkkkk.....kGk.....', '.....kWk.....WWKKWW.....kWk.....', '.....kGGk...GWKKKGW....kGGk.....', '.....ykWGk.GWWKKKKWW..kGWky.....', '.....Y.kWkkGWkKKKKGWWkkWk.Y.....', '.......kkWGW.kKKKKkGWGWkk.......', '........kkWGkkkkkkkGGWkk........', '..........kGWGGGGGGWGk..........', '...........kkkkGGkkkk...........', '.............kKKyKk.............', '.............kKKYKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '........kggggggggggggggk........', '........kggggggggggggggk........', '........kkkkkkkkkkkkkkkk........'],
+    ['................................', '....................Y...........', '...........kkkkGGkkkk...........', '.......Yy.kGWGGGGGGWGk..........', '........kkWGkkWGkkkkGWkk........', '.......kkWGk..WG....kGWkk.......', '.......kWkk...WG.....kkWk.......', '......kWGk....WW.....WWGWk......', '.....kGGk......W....WWGkGGk.....', '.....kWWGG.....WG..WWG..kWk.....', '.....kGWWWWGGkkkkkkWG...kGkyY...', '.....kGk..WWWkYYYYkG....kGk.....', '.....GGk.....kYyyYk.....kGG.....', '.....GGk.....kYyyYk.....kGG.....', '.....kGk....GkYYYYkWWW..kGk.....', '...YykGk...GWkkkkkkGGWWWWGk.....', '.....kWk..GWWkKGWKk...GGWWk.....', '.....kGGkGWW.kKKWKk....kGGk.....', '......kWGWW..kKKWWk...kGWk......', '.......kWkk..kKKGWk..kkWk.......', '.......kkWGk.kKKGWk.kGWkk.......', '........kkWGkkkkGWkkGWkk........', '..........kGWGGGGGGWGk.yY.......', '...........kkkkGGkkkk...........', '...........Y.kKKKKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '........kggggggggggggggk........', '........kggggggggggggggk........', '........kkkkkkkkkkkkkkkk........'],
+    ['................................', '...........Y....................', '...........kkkkGGkkkk...........', '..........kGWGGGGGGWGk.yY.......', '........kkWGkkkkkWGkGWkk........', '.......kkWGk.....WG.kGWkk.......', '.......kWGk......W...kkWk.......', '......kWGWW.....WW....kGWk......', '.....kGGk.WWG...WG.....kGGk.....', '.....kWk...WWG..WG......WWk.....', '...YykGk....Wkkkkkk..WWWWGk.....', '.....kGk.....kYYYYkWWWGGkGk.....', '.....GGk.....kYyyYkGG...kGG.....', '.....GGk...GGkYyyYk.....kGG.....', '.....kGkGGWWWkYYYYk.....kGk.....', '.....kGWWWW..kkkkkkW....kGkyY...', '.....kWW.....kGWKKGWW...kWk.....', '.....kGGk....kGWKKkGWW.kGGk.....', '......kWGk...kWWKKk..WWGWk......', '.......kWkk..kWKKKk..kGWk.......', '.......kkWGk.GWKKKk.kGWkk.......', '........kkWGkGWkkkkkGWkk........', '.......Yy.kGWGGGGGGWGk..........', '...........kkkkGGkkkk...........', '.............kKKKKk.Y...........', '.............kKKKKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '.............kKKKKk.............', '........kggggggggggggggk........', '........kggggggggggggggk........', '........kkkkkkkkkkkkkkkk........']
+  ] },
+  /** The mill race's bed once the water is let out: wet mud and stones. */
+  mudBed: t([
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '..b......K..b...',
+    '.bKb...bbKb.bK..',
+    'bbKbbbbKbbbbbKbb',
+    'KbbbKbbbbbKbbbbK',
+    'bKbbbbKbbbbbKbbb',
+    'bbbKbbbbbKbbbbbK',
+  ]),
+  /** The iron grille that drops behind Dagny when a guardian wakes. */
+  galler: t([
+    'WG..WG..WG..WG.',
+    'WGGGWGGGWGGGWGGG',
+    'WG..WG..WG..WG.',
+    'WG..WG..WG..WG.',
+    'WG..WG..WG..WG.',
+    'WG..WG..WG..WG.',
+    'WGGGWGGGWGGGWGGG',
+    'WG..WG..WG..WG.',
+    'WG..WG..WG..WG.',
+    'WG..WG..WG..WG.',
+    'WG..WG..WG..WG.',
+    'WGGGWGGGWGGGWGGG',
+    'WG..WG..WG..WG.',
+    'WG..WG..WG..WG.',
+    'WG..WG..WG..WG.',
+    'WG..WG..WG..WG.',
+  ]),
+  // Drapes before each guardian: one sign, seven materials.
+  drapeSorg: drape('P', 'p', 'G'),
+  drapeSack: drape('t', 'B', 'b'),
+  drapeMjol: drape('W', 'w', 't'),
+  drapeNat: drape('c', 'u', 'U'),
+  drapeRida: drape('R', 'r', 'Y'),
+  drapeNaver: drape('W', 'g', 'k'),
+  drapeRot: drape('B', 'b', 'm'),
+  /** Rotten boards over a drop: a thrust from above (Nedåtstöt) breaks them. */
+  skortGolv: t([
+    'kbbbbbbkbbbbbbbk',
+    'bBtBBkBbBBtBkBBb',
+    'bBBBkBBbBkBBBBBb',
+    'bkBBBBkbBBBBkBBb',
+    'kbbbbbbkbbbbbbbk',
+    '.bk..kb.b.kk.bk.',
+    '..b...k..k...b..',
+    '...k.......b....',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+  ]),
+  /** A tangle of dry roots: a fireball (Eld) burns it away. */
+  torraRotter: t([
+    'bt..Bb..tB..bB.t',
+    '.Bb.tBb.B..bt.Bb',
+    '..tBb.BtB.Bb.tB.',
+    '.bB.bt.Bb.tB.b..',
+    'tB..B.btB.B..Bbt',
+    'B.tb.Bb..tBb.b.B',
+    '.Bb.tB.bB.B.bt..',
+    'bt.B..BtbB..Bb.b',
+    '.B.bt.Bb.tB.b.Bt',
+    'tb.B.b..Bb.tB.b.',
+    '.Bt.Bb.tB..B.bt.',
+    'B.b..tBb.bB.t.Bb',
+    '.tB.bB.B.t.bB..B',
+    'b.Bt..bt.Bb..tb.',
+    '.B.bB.B.b.tB.B.b',
+    'tb.B.tb.B.b.Bb.t',
+  ]),
+  /** A gate of dead lanterns: thunder (Åska) in the room lights them, and it opens. */
+  lyktgrind: t([
+    'kKKKKKKKKKKKKKKk',
+    'kgk.gk.gk.gk.gKk',
+    'kgk.gk.gk.gk.gKk',
+    'kgkGgkGgkGgkGgKk',
+    'kgkGgkGgkGgkGgKk',
+    'kgk.gk.gk.gk.gKk',
+    'kKKKKKKKKKKKKKKk',
+    'kg.kgk.gk.kgk.gk',
+    'kg.kgk.gk.kgk.gk',
+    'kKKKKKKKKKKKKKKk',
+    'kgk.gk.gk.gk.gKk',
+    'kgkGgkGgkGgkGgKk',
+    'kgkGgkGgkGgkGgKk',
+    'kgk.gk.gk.gk.gKk',
+    'kgk.gk.gk.gk.gKk',
+    'kKKKKKKKKKKKKKKk',
+  ]),
+  /** A ledge that is only there in the light (Lyse): two shimmers. */
+  ljusstig: t(
+    [
+      'YWYYWYYYWYYWYYYW',
+      'cYccYcccYccYcccY',
+      '.c..c...c..c...c',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+    ],
+    [
+      'WYYWYYYWYYWYYYWY',
+      'YccYcccYccYcccYc',
+      'c..c...c..c...c.',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+    ],
+  ),
+  /** Loose masonry in a crypt wall: the crowbar brings it down (fas 4). */
+  lostBlock: t([
+    'kgggggkkgggggggk',
+    'gGGGGgkgGGGwGGgk',
+    'gGwGGgkgGGGGGGgk',
+    'gGGGGgkgGGGGGGgk',
+    'kgggggkkggggggkk',
+    'kkkk.kkkkk.kkkkk',
+    'gggkgggggkkggggk',
+    'GGgkgGGGGgkgGGGg',
+    'GwgkgGGwGgkgGwGg',
+    'GGgkgGGGGgkgGGGg',
+    'gggkkggggkkkgggk',
+    'kk.kkkk.kkkkk.kk',
+    'kgggggkggggkgggk',
+    'gGGGGgkgGGgkgGGg',
+    'gGGwGgkgGGgkgGwg',
+    'kgggggkkgggkkggk',
   ]),
   /** Locked door – solid until opened with a key. */
   lockedDoor: t([

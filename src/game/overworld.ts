@@ -11,11 +11,11 @@ import type { EncounterDef, OverworldPlace } from '../data/types';
 import { DialogOverlay } from './dialog';
 import type { Game, Scene } from './game';
 import { drawHud } from './hud';
-import { hasFlag, hasItem, setFlag, type GameState } from './state';
+import { hasFlag, hasItem, setFlag, shownName, spellCost, type GameState } from './state';
 import * as flow from './flow';
 import { ENCOUNTER_TABLES, TERRAIN_TYPE } from '../data/encounters';
 import { pickEncounter } from './encounters';
-import { reachableTiles } from './reach';
+import { reachableTiles, tierAt } from './reach';
 import { markExplored } from './explored';
 import { SPRITES } from '../art';
 
@@ -85,6 +85,12 @@ const ROAD = '|-+=';
 let wokenMap: { key: string; canvas: HTMLCanvasElement } | null = null;
 
 /** The flag set when Dagny has found a place only the radio shows. */
+/** The tile at x, y as it stands now: a mended tile once its flag is set, otherwise the map's own. */
+export function owTile(s: GameState | null | undefined, x: number, y: number): string {
+  if (s) for (const m of OVERWORLD.mended ?? []) if (m.x === x && m.y === y && hasFlag(s, m.flag)) return m.ch;
+  return OVERWORLD.tiles[y]?.[x] ?? '^';
+}
+
 export function radioFound(pl: OverworldPlace): string {
   // A room with a door on each side (Väktarkammaren) is found once, by either door.
   return pl.area ? `radiofynd_${pl.area}` : `radiofynd_${pl.x}_${pl.y}`;
@@ -332,7 +338,7 @@ export class OverworldScene implements Scene {
       const t = regionTemple(k);
       return t && !hasFlag(this.s, `${t}_klar`) ? 1 : 0;
     };
-    const key = TEMPLES.map((t) => (hasFlag(this.s, `${t.id}_klar`) ? 1 : 0)).join('');
+    const key = TEMPLES.map((t) => (hasFlag(this.s, `${t.id}_klar`) ? 1 : 0)).join('') + (OVERWORLD.mended ?? []).map((m) => (hasFlag(this.s, m.flag) ? 1 : 0)).join('');
     if (wokenMap?.key !== key && staticMap && typeof document !== 'undefined') {
       // Drawn once here, not every frame: blending tile by tile is far too slow for phones.
       const c = document.createElement('canvas');
@@ -340,6 +346,20 @@ export class OverworldScene implements Scene {
       c.height = staticMap.height;
       const ctx = c.getContext('2d') as CanvasRenderingContext2D;
       ctx.drawImage(staticMap, 0, 0);
+      // Mended tiles (the rebuilt bridge) drawn over the old ones.
+      for (const m of OVERWORLD.mended ?? []) {
+        if (!hasFlag(this.s, m.flag)) continue;
+        if (m.ch !== '.') {
+          drawSprite(ctx, TILE_SPRITE[m.ch] ?? 'owGrass', 0, m.x * T, m.y * T);
+          continue;
+        }
+        // Cleared ground: the (tinted) ground of a neighbour that was always open.
+        const open = [[1, 0], [-1, 0], [0, 1], [0, -1]].find(([dx, dy]) => {
+          const ch = tiles[m.y + dy]?.[m.x + dx];
+          return ch && !OVERWORLD.blocked.includes(ch) && !(OVERWORLD.mended ?? []).some((o) => o.x === m.x + dx && o.y === m.y + dy);
+        });
+        if (open) ctx.drawImage(staticMap, (m.x + open[0]) * T, (m.y + open[1]) * T, T, T, m.x * T, m.y * T, T, T);
+      }
       ctx.globalCompositeOperation = 'saturation';
       ctx.fillStyle = '#808080';
       const R = 2;
@@ -382,8 +402,8 @@ export class OverworldScene implements Scene {
     const woken = TEMPLES.filter((t) => t.id !== 'trollberget' && hasFlag(s, `${t.id}_klar`)).length;
     if (woken > 0 && !hasFlag(s, `berg_mullrar_${woken}`) && !hasFlag(s, 'trollberget_klar')) {
       s.flags.push(`berg_mullrar_${woken}`);
-      this.shakeT = 60;
-      this.game.audio.play('roar');
+      this.shakeT = 90;
+      this.game.audio.play('rumble');
       this.game.toast(STR.mountainRumble, 3.5);
       this.game.vibrate([60, 40, 90]);
     }
@@ -416,7 +436,30 @@ export class OverworldScene implements Scene {
   }
 
   private tile(x: number, y: number): string {
-    return OVERWORLD.tiles[y]?.[x] ?? '^';
+    return owTile(this.s, x, y);
+  }
+
+  /**
+   * A reading cast beside what it answers to opens it for good (OverworldDef.mended
+   * with `spell`): a dry thicket burns, a dark cleft is lit, a boulder splits.
+   * Anything else cast on the map does nothing, as before. Costs magic as usual.
+   */
+  private castOnMap(): boolean {
+    const s = this.s;
+    const m = (OVERWORLD.mended ?? []).find((o) => o.spell && !hasFlag(s, o.flag) && Math.abs(o.x - this.me.x) + Math.abs(o.y - this.me.y) === 1);
+    if (!m) return false;
+    const id = s.selectedSpell;
+    if (id !== m.spell || s.mp < spellCost(s, id)) {
+      this.game.audio.play('cancel');
+      return true;
+    }
+    s.mp -= spellCost(s, id);
+    setFlag(s, m.flag);
+    this.game.audio.play(id === 'eld' ? 'fire' : id === 'aska' ? 'thunder' : 'magic');
+    this.game.vibrate(id === 'aska' ? [80, 40, 80] : 40);
+    this.game.pushOverlay(new DialogOverlay(this.game, id === 'eld' ? 'snaret_brinner' : id === 'aska' ? 'bumlingen_klyvs' : 'klyftan_lyses'));
+    this.game.save();
+    return true;
   }
 
   private placeAt(x: number, y: number): OverworldPlace | undefined {
@@ -448,6 +491,7 @@ export class OverworldScene implements Scene {
       me.t = Math.min(1, me.t + 1 / STEP_FRAMES);
       if (me.t >= 1) this.arrive();
     } else {
+      if (input.pressed(Act.Magic) && this.castOnMap()) return;
       let dx = 0;
       let dy = 0;
       if (input.held(Act.Left)) dx = -1;
@@ -513,7 +557,7 @@ export class OverworldScene implements Scene {
     this.updateEncounters();
     this.updateSounds();
     this.signal = this.radioSignal();
-    if (this.signal > 0 && this.frame % [0, 90, 50, 26, 12][this.signal] === 0) this.game.audio.play('static', { vol: 0.4 + this.signal * 0.15 });
+    if (this.signal > 0 && this.frame % [0, 70, 40, 22, 12][this.signal] === 0) this.game.audio.play('static', { vol: 0.55 + this.signal * 0.12 });
     this.updateCamera(false);
   }
 
@@ -566,7 +610,9 @@ export class OverworldScene implements Scene {
         this.game.audio.play('door');
         flow.goToArea(this.game, place.area, { entry: place.entry });
       } else if (place.dialog) {
-        this.game.pushOverlay(new DialogOverlay(this.game, place.dialog, () => this.afterRadioVoice()));
+        const missing = (place.requires ?? []).filter((f) => !hasFlag(this.s, f));
+        const why = missing.length === 1 ? place.dialogWhen?.find((w) => w.missing === missing[0])?.dialog : undefined;
+        this.game.pushOverlay(new DialogOverlay(this.game, why ?? place.dialog, () => this.afterRadioVoice()));
       }
     }
   }
@@ -687,17 +733,10 @@ export class OverworldScene implements Scene {
         const pick = pickEncounter(table, Math.random(), lastEncounter);
         lastEncounter = pick.id;
         this.s.ow = { x: me.t < 1 ? me.fx : me.x, y: me.t < 1 ? me.fy : me.y };
-        if ('dialog' in pick) {
-          // A friendly meeting instead of a fight.
-          this.grace = 60;
-          this.game.audio.play('magic');
-          this.game.pushOverlay(new DialogOverlay(this.game, pick.dialog));
-          return;
-        }
         this.leaving = true;
         this.game.audio.play('roar');
         this.game.vibrate(30);
-        flow.goToArea(this.game, pick.area, { entry: 'W', facing: 1 });
+        flow.goToArea(this.game, pick.area, { entry: 'W', facing: 1, tier: tierAt(me.t < 1 ? me.fx : me.x, me.t < 1 ? me.fy : me.y) });
         return;
       }
     }
@@ -909,14 +948,15 @@ export class OverworldScene implements Scene {
       (pl) => Math.abs(pl.x - this.me.x) + Math.abs(pl.y - this.me.y) <= 1 && ((pl.hidden !== 'radio' && !pl.radio) || hasItem(this.s, 'radio')),
     );
     if (near) {
-      const w = measure(near.name) + 12;
+      const label = shownName(this.s, near);
+      const w = measure(label) + 12;
       const x = Math.round((VIEW_W - w) / 2);
       const y = VIEW_H - 22;
       ctx.fillStyle = PALETTE.k;
       ctx.fillRect(x, y, w, 14);
       ctx.fillStyle = PALETTE.y;
       ctx.fillRect(x, y + 13, w, 1);
-      drawText(ctx, near.name, VIEW_W / 2, y + 2, 'W', { align: 'center' });
+      drawText(ctx, label, VIEW_W / 2, y + 2, 'W', { align: 'center' });
     }
     if (!this.game.hudHidden) drawHud(ctx, s, { frame: this.frame });
     if (!this.game.hudHidden && hasItem(s, 'radio')) this.renderRadio(ctx);

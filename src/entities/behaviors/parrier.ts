@@ -3,7 +3,8 @@ import type { WorldApi } from '../types';
 import type { Behavior, Sense } from './types';
 
 /**
- * Tomtenisse-krigare: a fencer. Copies Dagny’s stance and parries strikes at
+ * Fencers: the tomtenisse-krigare, and in the later temples the gast, the
+ * kavaljer, the vittra and Bergakungen's drabant (quicker each time). Copies Dagny’s stance and parries strikes at
  * that height, keeps its distance, and now and then makes a short thrust
  * (open while thrusting). It never rushes her: beating it is about changing
  * height faster than it can follow, or striking into the thrust.
@@ -15,7 +16,7 @@ export const parrier: Behavior = {
     // Match the player's stance after a short reaction time.
     const want: 'high' | 'low' = world.playerDucking() ? 'low' : 'high';
     if (want !== e.guard) {
-      if (++e.guardDelay > 22) {
+      if (++e.guardDelay > (e.def.guardDelay ?? 22)) {
         e.guard = want;
         e.guardDelay = 0;
       }
@@ -24,7 +25,7 @@ export const parrier: Behavior = {
       // Thrust: a short step in with the blade, guard open.
       if (--e.timer <= 0) {
         e.mode = 0;
-        e.timer = 70 + ((e.t * 13) % 50);
+        e.timer = (e.def.thrustRest ?? 70) + ((e.t * 13) % 50);
       }
       e.vx *= 0.9;
       e.frame = 2;

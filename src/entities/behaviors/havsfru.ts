@@ -57,7 +57,7 @@ export const havsfru: Behavior = {
           for (const off of [-0.25, 0, 0.25]) {
             world.spawnProjectile({
               x: cx - 3, y: cy, vx: Math.cos(base + off) * 2, vy: Math.sin(base + off) * 2,
-              w: 6, h: 6, sprite: 'droplet', damage: 2, fromPlayer: false, life: 160, ghost: true,
+              w: 6, h: 6, sprite: 'droplet', damage: 2 + e.bonusDamage, fromPlayer: false, life: 160, ghost: true,
             });
           }
           world.sfx('water');
@@ -88,7 +88,7 @@ export const havsfru: Behavior = {
             const x = Math.max(8, Math.min(gw - 16, p.x + off - 4));
             world.spawnProjectile({
               x, y: 0, vx: 0, vy: 0, w: 8, h: floorY,
-              sprite: 'bolt', damage: 3, fromPlayer: false, life: 14, ghost: true, delay: 46 + k * 10,
+              sprite: 'bolt', damage: 3 + e.bonusDamage, fromPlayer: false, life: 14, ghost: true, delay: 46 + k * 10,
             });
           }
           world.sfx('magic');
